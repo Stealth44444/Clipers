@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 type FormMode = 'sign-in' | 'sign-up';
+type SignUpRole = 'creator' | 'brand';
 
 export default function LoginForm() {
   const router = useRouter();
   const [mode, setMode] = useState<FormMode>('sign-in');
+  const [signUpRole, setSignUpRole] = useState<SignUpRole>('creator');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,8 +32,8 @@ export default function LoginForm() {
           email,
           password,
           options: {
-            data: { name: displayName.trim() },
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=/creator`,
+            data: { name: displayName.trim(), requested_role: signUpRole },
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=/${signUpRole === 'brand' ? 'brand' : 'creator'}`,
           },
         });
 
@@ -70,12 +72,40 @@ export default function LoginForm() {
           Clipers
         </a>
         <p className="app-eyebrow">PILOT CAMPAIGN WORKSPACE</p>
-        <h1 id="auth-title">{mode === 'sign-in' ? '다시 오셨네요' : '크리에이터로 시작하기'}</h1>
+        <h1 id="auth-title">
+          {mode === 'sign-in' ? '다시 오셨네요' : signUpRole === 'brand' ? '브랜드로 시작하기' : '크리에이터로 시작하기'}
+        </h1>
         <p className="app-muted">
-          {mode === 'sign-in' ? '계정에 로그인해 작업을 이어가세요.' : '가입 후 공개 캠페인에 지원할 수 있습니다.'}
+          {mode === 'sign-in'
+            ? '계정에 로그인해 작업을 이어가세요.'
+            : signUpRole === 'brand'
+              ? '가입 후 캠페인을 개설할 수 있습니다.'
+              : '가입 후 공개 캠페인에 지원할 수 있습니다.'}
         </p>
 
         <form className="app-form" onSubmit={handleSubmit}>
+          {mode === 'sign-up' && (
+            <div className="app-action-row" role="radiogroup" aria-label="가입 유형">
+              <label>
+                <input
+                  checked={signUpRole === 'creator'}
+                  onChange={() => setSignUpRole('creator')}
+                  type="radio"
+                  value="creator"
+                />
+                {' '}크리에이터로 가입
+              </label>
+              <label>
+                <input
+                  checked={signUpRole === 'brand'}
+                  onChange={() => setSignUpRole('brand')}
+                  type="radio"
+                  value="brand"
+                />
+                {' '}브랜드로 가입
+              </label>
+            </div>
+          )}
           {mode === 'sign-up' && (
             <label>
               이름
@@ -127,7 +157,7 @@ export default function LoginForm() {
             }}
             type="button"
           >
-            {mode === 'sign-in' ? '크리에이터 가입' : '로그인'}
+            {mode === 'sign-in' ? '회원가입' : '로그인'}
           </button>
         </p>
       </section>
