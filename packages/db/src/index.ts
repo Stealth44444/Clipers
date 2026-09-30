@@ -11,3 +11,4 @@ export * from './services/anomalyDetection';
 export * from './services/dispute';
 export * from './services/manualViewReport';
 export * from './services/slackNotifier';
+export * from './services/platformRate';
