@@ -1,0 +1,24 @@
+import { describe, it, expect } from 'vitest';
+import { calculateSlaDeadline, isSlaBreached } from './sla';
+
+describe('calculateSlaDeadline', () => {
+  it('adds the SLA hours to the submission time', () => {
+    const submittedAt = new Date('2026-01-01T00:00:00Z');
+    const deadline = calculateSlaDeadline(submittedAt, 48);
+    expect(deadline.toISOString()).toBe('2026-01-03T00:00:00.000Z');
+  });
+});
+
+describe('isSlaBreached', () => {
+  it('returns false before the deadline', () => {
+    const submittedAt = new Date('2026-01-01T00:00:00Z');
+    const now = new Date('2026-01-02T00:00:00Z');
+    expect(isSlaBreached(submittedAt, 48, now)).toBe(false);
+  });
+
+  it('returns true after the deadline', () => {
+    const submittedAt = new Date('2026-01-01T00:00:00Z');
+    const now = new Date('2026-01-04T00:00:00Z');
+    expect(isSlaBreached(submittedAt, 48, now)).toBe(true);
+  });
+});
