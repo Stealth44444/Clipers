@@ -63,6 +63,9 @@ importers:
 
   apps/site:
     dependencies:
+      '@clipers/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@clipers/ui':
         specifier: workspace:*
         version: link:../../packages/ui
