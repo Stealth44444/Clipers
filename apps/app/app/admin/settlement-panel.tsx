@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { calculateWeeklySettlementDrafts, getCampaignsToClose, getPreviousWeekPeriod } from '@clipers/db';
+import { calculateWeeklySettlementDrafts, findPlatformRate, getCampaignsToClose, getPreviousWeekPeriod } from '@clipers/db';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 type CampaignForSettlement = {
   id: string;
   title: string;
-  cpm_rate: number | string;
-  per_clip_cap: number | string;
   total_budget: number | string;
 };
 
@@ -16,6 +14,7 @@ type ApprovedClip = {
   id: string;
   campaign_id: string;
   creator_id: string;
+  platform: string;
   reviewed_at: string | null;
   campaign: CampaignForSettlement | null;
 };
@@ -117,7 +116,7 @@ export default function SettlementPanel({ userId }: { userId: string }) {
       while (true) {
         const { data, error: clipsError } = await supabase
           .from('clips')
-          .select('id,campaign_id,creator_id,reviewed_at,campaign:campaigns!clips_campaign_id_fkey(id,title,cpm_rate,per_clip_cap,total_budget)')
+          .select('id,campaign_id,creator_id,platform,reviewed_at,campaign:campaigns!clips_campaign_id_fkey(id,title,total_budget)')
           .eq('status', 'approved')
           .order('id', { ascending: true })
           .range(clipOffset, clipOffset + pageSize - 1);
@@ -132,6 +131,18 @@ export default function SettlementPanel({ userId }: { userId: string }) {
       if (clips.length === 0) {
         setMessage('정산할 승인 클립이 없습니다.');
         return;
+      }
+
+      const { data: rateRows, error: rateError } = await supabase
+        .from('campaign_platform_rates')
+        .select('campaign_id,platform,cpm_rate,max_payout')
+        .in('campaign_id', [...new Set(clips.map((clip) => clip.campaign_id))]);
+      if (rateError) throw rateError;
+      const platformRatesByCampaign = new Map<string, { platform: string; cpmRate: number; minPayout: number; maxPayout: number }[]>();
+      for (const row of (rateRows ?? []) as { campaign_id: string; platform: string; cpm_rate: number; max_payout: number }[]) {
+        const existing = platformRatesByCampaign.get(row.campaign_id) ?? [];
+        existing.push({ platform: row.platform, cpmRate: Number(row.cpm_rate), minPayout: 0, maxPayout: Number(row.max_payout) });
+        platformRatesByCampaign.set(row.campaign_id, existing);
       }
 
       const snapshots: SnapshotRow[] = [];
@@ -182,6 +193,9 @@ export default function SettlementPanel({ userId }: { userId: string }) {
         const campaign = clip.campaign;
         if (!campaign || existingClipIds.has(clip.id)) return [];
 
+        const rate = findPlatformRate(platformRatesByCampaign.get(clip.campaign_id) ?? [], clip.platform);
+        if (!rate) return [];
+
         const previousClipRows = previousSettlements.filter(
           (settlement) => settlement.clip_id === clip.id && settlement.period < period.period
         );
@@ -195,8 +209,8 @@ export default function SettlementPanel({ userId }: { userId: string }) {
           campaignId: clip.campaign_id,
           creatorId: clip.creator_id,
           reviewedAt: clip.reviewed_at,
-          cpmRate: Number(campaign.cpm_rate),
-          perClipCap: Number(campaign.per_clip_cap),
+          cpmRate: rate.cpmRate,
+          perClipCap: rate.maxPayout,
           campaignBudget: Number(campaign.total_budget),
           previouslySettledClipAmount: previousClipRows.reduce(
             (total, settlement) => total + Number(settlement.amount),
