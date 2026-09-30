@@ -1,6 +1,13 @@
 export { createSupabaseClient } from './client';
 export * from './services/errors';
 export * from './services/budget';
+export * from './services/escalation';
 export * from './services/sla';
 export * from './services/rejectClip';
+export * from './services/settlement';
 export * from './services/youtubeViews';
+export * from './services/campaignClosure';
+export * from './services/anomalyDetection';
+export * from './services/dispute';
+export * from './services/manualViewReport';
+export * from './services/slackNotifier';
