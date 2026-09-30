@@ -1,20 +1,11 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { rankCreatorEarnings, rollupDailyViews } from '@clipers/db';
+import { platformLabel, platformLabels, rankCreatorEarnings, rollupDailyViews } from '@clipers/db';
 import { getSupabaseServerClient } from '@/lib/supabase-server';
+import { creatorLoginUrl } from '@/lib/urls';
 import { ViewsChart } from './views-chart';
 
 export const revalidate = 60;
-
-const PLATFORM_LABEL: Record<string, string> = {
-  youtube_shorts: '유튜브 쇼츠',
-  tiktok: '틱톡',
-  instagram_reels: '릴스',
-  facebook: '페이스북',
-  x: 'X',
-  naver_clip: '네이버 클립',
-  kakao_shorts: '카카오 쇼츠',
-};
 
 export default async function CampaignDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -58,11 +49,12 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
   }
 
   const settlementRows = (settlements ?? []) as unknown as { creator_id: string; amount: number; creator: { display_name: string } | null }[];
-  const leaderboard = rankCreatorEarnings(
+  const rankedCreators = rankCreatorEarnings(
     settlementRows.map((row) => ({ creatorId: row.creator_id, creatorName: row.creator?.display_name ?? '크리에이터', amount: Number(row.amount) }))
-  ).slice(0, 3);
-  const totalEarned = settlementRows.reduce((sum, row) => sum + Number(row.amount), 0);
-  const consumedBudget = totalEarned;
+  );
+  const leaderboard = rankedCreators.slice(0, 3);
+  const consumedBudget = settlementRows.reduce((sum, row) => sum + Number(row.amount), 0);
+  const averageEarning = rankedCreators.length > 0 ? Math.round(consumedBudget / rankedCreators.length) : 0;
   const totalBudget = Number((campaign as { total_budget: number }).total_budget);
   const latestTotalViews = dailyViews.at(-1)?.totalViews ?? 0;
   const medal = ['🥇', '🥈', '🥉'];
@@ -70,11 +62,11 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
   return (
     <main className="app-page">
       <header className="app-global-header">
-        <Link className="app-wordmark" href="/">Clipers</Link>
+        <Link className="app-wordmark" href="/"><img alt="Clipers" src="/brand/clipers-wordmark.svg" /></Link>
         <nav className="app-global-nav" aria-label="서비스">
           <Link href="/discover">Discover</Link>
         </nav>
-        <a href="https://app.clipers.com/login?next=/creator">지원하기</a>
+        <a href={creatorLoginUrl}>지원하기</a>
       </header>
       <div className="app-shell">
         <div
@@ -91,9 +83,9 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
           <h1>{(campaign as { title: string }).title}</h1>
           <p className="app-muted">
             {(campaign as { category: string }).category} · 참여자 {(applications ?? []).length}명 ·{' '}
-            {((campaign as { allowed_platforms: string[] }).allowed_platforms).map((platform) => PLATFORM_LABEL[platform] ?? platform).join(', ')}
+            {platformLabels((campaign as { allowed_platforms: string[] }).allowed_platforms)}
           </p>
-          <a className="app-button app-button-primary" href="https://app.clipers.com/login?next=/creator" style={{ display: 'inline-flex', marginTop: 12 }}>
+          <a className="app-button app-button-primary" href={creatorLoginUrl} style={{ display: 'inline-flex', marginTop: 12 }}>
             지원하기
           </a>
         </div>
@@ -108,7 +100,7 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
                   const row = rate as { platform: string; cpm_rate: number; min_payout: number; max_payout: number };
                   return (
                     <tr key={row.platform}>
-                      <td>{PLATFORM_LABEL[row.platform] ?? row.platform}</td>
+                      <td>{platformLabel(row.platform)}</td>
                       <td>{Number(row.cpm_rate).toLocaleString('ko-KR')}원</td>
                       <td>{Number(row.min_payout).toLocaleString('ko-KR')}원</td>
                       <td>{Number(row.max_payout).toLocaleString('ko-KR')}원</td>
@@ -143,7 +135,7 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
         {leaderboard.length > 0 && (
           <section className="app-section" aria-labelledby="leaderboard-title">
             <h2 id="leaderboard-title">Top clippers</h2>
-            <p className="app-muted">참여 크리에이터 평균 수익 {(totalEarned / Math.max(1, leaderboard.length)).toLocaleString('ko-KR')}원</p>
+            <p className="app-muted">참여 크리에이터 평균 수익 {averageEarning.toLocaleString('ko-KR')}원</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
               {leaderboard.map((entry) => (
                 <div key={entry.creatorId} style={{ border: '1px solid #333', borderRadius: 12, padding: 16 }}>

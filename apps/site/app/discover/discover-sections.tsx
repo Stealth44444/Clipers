@@ -2,18 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { extractYouTubeVideoId } from '@clipers/db';
+import { extractYouTubeVideoId, platformLabels } from '@clipers/db';
 import type { CampaignCard, TopClip } from './page';
-
-const PLATFORM_LABEL: Record<string, string> = {
-  youtube_shorts: '유튜브 쇼츠',
-  tiktok: '틱톡',
-  instagram_reels: '릴스',
-  facebook: '페이스북',
-  x: 'X',
-  naver_clip: '네이버 클립',
-  kakao_shorts: '카카오 쇼츠',
-};
 
 function formatRate(card: CampaignCard): string {
   if (!card.rate_range) return '요율 미정';
@@ -95,7 +85,7 @@ export function DiscoverGrid({ campaigns, topClips }: { campaigns: CampaignCard[
               <div style={{ padding: 14 }}>
                 <p className="app-muted">{campaign.brand_name}</p>
                 <h3 style={{ margin: '4px 0', fontSize: 16 }}>{campaign.title}</h3>
-                <p className="app-muted">{campaign.allowed_platforms.map((platform) => PLATFORM_LABEL[platform] ?? platform).join(', ')}</p>
+                <p className="app-muted">{platformLabels(campaign.allowed_platforms)}</p>
                 <p className="app-muted">{formatRate(campaign)}</p>
               </div>
             </Link>

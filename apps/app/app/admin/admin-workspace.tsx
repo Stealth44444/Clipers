@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getOverdueItems, getViewSpikeFlags, resolveDispute, reviewManualViewReport } from '@clipers/db';
+import { getOverdueItems, getViewSpikeFlags, platformLabel, rejectClip, resolveDispute, reviewManualViewReport } from '@clipers/db';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import SettlementPanel from './settlement-panel';
 import WorkspaceShell from '../workspace-shell';
@@ -248,27 +248,25 @@ export default function AdminWorkspace() {
   }
 
   async function reviewClip(clipId: string, status: 'approved' | 'rejected') {
-    const rejectionReason = rejectionReasons[clipId]?.trim() ?? '';
-    if (status === 'rejected' && !rejectionReason) {
-      setError('클립을 반려하려면 사유를 입력해야 합니다.');
-      return;
-    }
-
     setUpdatingId(clipId);
     setError('');
     setMessage('');
-    const { error: updateError } = await getSupabaseBrowserClient()
-      .from('clips')
-      .update({
-        status,
-        rejection_reason: status === 'rejected' ? rejectionReason : null,
-        reviewed_at: new Date().toISOString(),
-        reviewed_by: userId,
-      })
-      .eq('id', clipId);
 
-    if (updateError) {
-      setError(updateError.message);
+    const supabase = getSupabaseBrowserClient();
+    let failure: string | null = null;
+    if (status === 'rejected') {
+      const result = await rejectClip(supabase, clipId, rejectionReasons[clipId] ?? '', userId);
+      if (!result.ok) failure = result.message;
+    } else {
+      const { error: updateError } = await supabase
+        .from('clips')
+        .update({ status: 'approved', rejection_reason: null, reviewed_at: new Date().toISOString(), reviewed_by: userId })
+        .eq('id', clipId);
+      if (updateError) failure = updateError.message;
+    }
+
+    if (failure) {
+      setError(failure);
     } else {
       setMessage(status === 'approved' ? '클립을 승인했습니다.' : '사유와 함께 클립을 반려했습니다.');
       await loadQueue();
@@ -440,7 +438,7 @@ export default function AdminWorkspace() {
                         {overdue ? 'SLA 초과 · ' : ''}{new Date(clip.sla_deadline).toLocaleString('ko-KR')}
                       </td>
                       <td>{clip.campaign?.title ?? '캠페인'}<br /><span className="app-muted">{clip.creator?.display_name ?? '크리에이터'}</span></td>
-                      <td>{clip.platform}</td>
+                      <td>{platformLabel(clip.platform)}</td>
                       <td><a href={clip.url} rel="noreferrer" target="_blank">클립 열기</a></td>
                       <td>
                         <textarea

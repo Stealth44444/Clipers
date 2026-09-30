@@ -1,58 +1,51 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
-const ROLE_ROUTE_PREFIX: Record<string, string> = {
+const WORKSPACE_BY_ROLE: Record<string, string> = {
   brand: '/brand',
   creator: '/creator',
   admin: '/admin',
 };
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+  let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get: (name: string) => request.cookies.get(name)?.value,
-        set: (name: string, value: string, options: CookieOptions) =>
-          response.cookies.set(name, value, options),
-        remove: (name: string, options: CookieOptions) =>
-          response.cookies.set(name, '', { ...options, maxAge: 0 }),
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet: { name: string; value: string; options: CookieOptions }[]) => {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+        },
       },
     }
   );
 
+  // getUser() revalidates the JWT with Supabase Auth; getSession() trusts the cookie as-is.
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const matchedRole = Object.entries(ROLE_ROUTE_PREFIX).find(([, prefix]) =>
+  const requiredRole = Object.entries(WORKSPACE_BY_ROLE).find(([, prefix]) =>
     request.nextUrl.pathname.startsWith(prefix)
-  );
+  )?.[0];
+  if (!requiredRole) return response;
 
-  if (!matchedRole) {
-    return response;
+  if (!user) {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('next', request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  const [requiredRole] = matchedRole;
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+  if (profile?.role === requiredRole) return response;
 
-  if (!session) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', session.user.id)
-    .single();
-
-  if (profile?.role !== requiredRole) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-
-  return response;
+  const ownWorkspace = profile?.role ? WORKSPACE_BY_ROLE[profile.role] : undefined;
+  return NextResponse.redirect(new URL(ownWorkspace ?? '/login', request.url));
 }
 
 export const config = {

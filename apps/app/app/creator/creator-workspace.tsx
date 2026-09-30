@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { extractYouTubeVideoId, fileDispute, fileManualViewReport } from '@clipers/db';
+import { extractYouTubeVideoId, fileDispute, fileManualViewReport, platformLabel, platformLabels } from '@clipers/db';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import WorkspaceShell from '../workspace-shell';
 
@@ -347,11 +347,11 @@ export default function CreatorWorkspace() {
                     <td>
                       {platformRates
                         .filter((rate) => rate.campaign_id === campaign.id)
-                        .map((rate) => `${rate.platform}: ${Number(rate.cpm_rate).toLocaleString('ko-KR')}원`)
+                        .map((rate) => `${platformLabel(rate.platform)}: ${Number(rate.cpm_rate).toLocaleString('ko-KR')}원`)
                         .join(', ') || '—'}
                     </td>
                     <td>{campaign.review_sla_hours}시간</td>
-                    <td>{campaign.allowed_platforms.join(', ')}</td>
+                    <td>{platformLabels(campaign.allowed_platforms)}</td>
                     <td>
                       <button
                         className="app-button"
@@ -415,7 +415,7 @@ export default function CreatorWorkspace() {
                 <select onChange={(event) => setPlatform(event.target.value)} required value={platform}>
                   <option value="">플랫폼 선택</option>
                   {(selectedCampaign?.allowed_platforms ?? []).map((allowedPlatform) => (
-                    <option key={allowedPlatform} value={allowedPlatform}>{allowedPlatform}</option>
+                    <option key={allowedPlatform} value={allowedPlatform}>{platformLabel(allowedPlatform)}</option>
                   ))}
                 </select>
               </label>
@@ -452,7 +452,7 @@ export default function CreatorWorkspace() {
                   return (
                     <tr key={clip.id}>
                       <td>{clip.campaign?.title ?? '캠페인'}</td>
-                      <td>{clip.platform}</td>
+                      <td>{platformLabel(clip.platform)}</td>
                       <td><a href={clip.url} rel="noreferrer" target="_blank">열기</a></td>
                       <td className={statusClass(clip.status)}>{clipStatus[clip.status] ?? clip.status}</td>
                       <td>{new Date(clip.sla_deadline).toLocaleString('ko-KR')}</td>

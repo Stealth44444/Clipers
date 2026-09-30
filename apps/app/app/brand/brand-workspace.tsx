@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { PLATFORMS } from '@clipers/db';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import WorkspaceShell from '../workspace-shell';
 
@@ -19,16 +20,6 @@ type Settlement = {
   campaign_id: string;
   amount: number | string;
 };
-
-const PLATFORM_OPTIONS = [
-  { value: 'youtube_shorts', label: '유튜브 쇼츠' },
-  { value: 'tiktok', label: '틱톡' },
-  { value: 'instagram_reels', label: '릴스' },
-  { value: 'facebook', label: '페이스북' },
-  { value: 'x', label: 'X' },
-  { value: 'naver_clip', label: '네이버 클립' },
-  { value: 'kakao_shorts', label: '카카오 쇼츠' },
-];
 
 const CAMPAIGN_STATUS_LABEL: Record<string, string> = {
   draft: '입금 대기',
@@ -280,7 +271,7 @@ export default function BrandWorkspace() {
             <div>
               <p className="app-muted" style={{ marginBottom: 8 }}>허용 플랫폼 및 플랫폼별 요율</p>
               <div style={{ display: 'grid', gap: 12 }}>
-                {PLATFORM_OPTIONS.map((option) => {
+                {PLATFORMS.map((option) => {
                   const checked = platforms.includes(option.value);
                   const rate = platformRates[option.value] ?? { cpmRate: '', minPayout: '', maxPayout: '' };
                   return (

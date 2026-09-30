@@ -41,10 +41,14 @@ a {
 }
 
 .app-wordmark {
-  color: var(--brand-primary);
-  font-size: 20px;
-  font-weight: 700;
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-wordmark img {
+  display: block;
+  height: 24px;
+  width: auto;
 }
 
 .app-global-nav {
