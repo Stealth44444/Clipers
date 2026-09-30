@@ -1,12 +1,4 @@
-export type ViewSnapshotPoint = {
-  capturedAt: Date | string;
-  viewCount: number;
-};
-
-export type ClipSnapshotSeries = {
-  clipId: string;
-  snapshots: ViewSnapshotPoint[];
-};
+import type { ClipSnapshotSeries } from './anomalyDetection';
 
 export type DailyViewsPoint = {
   date: string;
