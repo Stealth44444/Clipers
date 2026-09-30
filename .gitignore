@@ -6,3 +6,5 @@ dist
 .env.local
 supabase/.branches
 supabase/.temp
+
+*.tsbuildinfo

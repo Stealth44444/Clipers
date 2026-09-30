@@ -1,0 +1,104 @@
+/*
+ * Scales below are ported from Frosted UI (https://github.com/whopio/frosted-ui),
+ * Copyright (c) 2023 WorkOS, Copyright (c) 2023 Whop — MIT License.
+ * Brand scale is derived from the official Clipers logo fill #58B982.
+ */
+:root {
+  color-scheme: dark;
+
+  --gray-1: #111111;
+  --gray-2: #191919;
+  --gray-3: #222222;
+  --gray-4: #2a2a2a;
+  --gray-5: #313131;
+  --gray-6: #3a3a3a;
+  --gray-7: #484848;
+  --gray-8: #606060;
+  --gray-9: #6e6e6e;
+  --gray-10: #7b7b7b;
+  --gray-11: #b4b4b4;
+  --gray-12: #eeeeee;
+  --gray-a2: rgba(255, 255, 255, 0.04);
+  --gray-a3: rgba(255, 255, 255, 0.07);
+  --gray-a4: rgba(255, 255, 255, 0.106);
+  --gray-a5: rgba(255, 255, 255, 0.14);
+
+  --brand-3: #13291d;
+  --brand-4: #173524;
+  --brand-6: #245538;
+  --brand-8: #3c8a5c;
+  --brand-9: #58b982;
+  --brand-10: #63c58d;
+  --brand-11: #7fd6a4;
+  --brand-12: #c8f0d8;
+  --brand-a2: rgba(88, 185, 130, 0.07);
+  --brand-a3: rgba(88, 185, 130, 0.12);
+  --brand-a4: rgba(88, 185, 130, 0.2);
+  --brand-contrast: #06140c;
+  --brand-gradient: linear-gradient(90deg, #4fae78 0%, #6fcb98 100%);
+
+  --amber-9: #ffc53d;
+  --amber-11: #ffca16;
+  --amber-a3: rgba(255, 197, 61, 0.12);
+  --tomato-9: #e54d2e;
+  --tomato-11: #ff977d;
+  --tomato-a3: rgba(229, 77, 46, 0.14);
+  --sky-9: #7ce2fe;
+  --sky-11: #75c7f0;
+  --sky-a3: rgba(124, 226, 254, 0.12);
+  --violet-9: #6e56cf;
+  --violet-11: #baa7ff;
+  --violet-a3: rgba(110, 86, 207, 0.18);
+
+  --color-background: var(--gray-1);
+  --color-panel: var(--gray-2);
+  --color-field: var(--gray-3);
+  --color-text: var(--gray-12);
+  --color-text-muted: var(--gray-11);
+  --color-text-subtle: var(--gray-10);
+  --color-border: var(--gray-a3);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
+
+  --radius-1: 3px;
+  --radius-2: 4px;
+  --radius-3: 6px;
+  --radius-4: 8px;
+  --radius-5: 12px;
+  --radius-6: 16px;
+  --radius-full: 9999px;
+
+  --font-size-0: 10px;
+  --font-size-1: 12px;
+  --font-size-2: 14px;
+  --font-size-3: 16px;
+  --font-size-4: 18px;
+  --font-size-5: 20px;
+  --font-size-6: 24px;
+  --font-size-7: 28px;
+  --font-size-8: 32px;
+  --font-size-9: 40px;
+  --font-body: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", system-ui, sans-serif;
+  --font-heading: var(--font-body);
+
+  /* Aliases kept for legacy app-* styles until phases 3-6 replace them. */
+  --bg-primary: var(--color-background);
+  --bg-panel: var(--color-panel);
+  --text-primary: var(--color-text);
+  --border-stroke: var(--gray-a4);
+  --border-width: 1px;
+  --brand-primary: var(--brand-9);
+  --brand-primary-dark: #479a6b;
+  --action-primary: var(--brand-9);
+  --status-positive: #f5a524;
+  --radius-button: var(--radius-4);
+  --avatar-ring-width: 1.6px;
+}

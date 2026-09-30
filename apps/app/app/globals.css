@@ -1,406 +1,63 @@
-@import '@clipers/ui/src/tokens.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import '@clipers/ui/src/styles/index.css';
 
-body {
-  margin: 0;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.app-page {
-  min-height: 100vh;
-  background: var(--bg-primary);
-}
-
-.app-shell {
-  width: min(1120px, 100% - 48px);
-  margin: 0 auto;
-  padding: 28px 0 64px;
-}
-
-.app-global-header {
-  position: sticky;
-  z-index: 20;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  box-sizing: border-box;
-  border-bottom: var(--border-width) solid var(--border-stroke);
-  padding: 0 24px;
-  background: var(--bg-primary);
-}
-
-.app-wordmark {
-  display: inline-flex;
-  align-items: center;
-}
-
-.app-wordmark img {
-  display: block;
-  height: 24px;
-  width: auto;
-}
-
-.app-global-nav {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  color: #ddd;
-  font-size: 14px;
-}
-
-.app-global-header > a:last-child,
-.app-link-button {
-  color: var(--brand-primary);
-}
-
-.app-workspace-body {
-  display: grid;
-  min-height: calc(100vh - 56px);
-  grid-template-columns: 280px minmax(0, 1fr);
-}
-
-.app-sidebar {
-  position: sticky;
-  top: 56px;
-  box-sizing: border-box;
-  height: calc(100vh - 56px);
-  overflow-y: auto;
-  border-right: var(--border-width) solid var(--border-stroke);
-  padding: 28px 20px;
-}
-
-.app-sidebar h2 {
-  margin: 0 0 24px;
-  font-family: var(--font-heading);
-  font-size: 18px;
-}
-
-.app-sidebar-nav {
-  display: grid;
-  gap: 4px;
-}
-
-.app-sidebar-nav a {
-  border-radius: 4px;
-  padding: 10px 12px;
-  color: #c4c4c4;
-  font-size: 14px;
-}
-
-.app-sidebar-nav a:hover,
-.app-sidebar-nav a:focus-visible {
-  background: var(--bg-panel);
-  color: var(--text-primary);
-}
-
-.app-main-content {
-  min-width: 0;
-}
-
-.app-heading {
-  padding: 44px 0 32px;
-}
-
-.app-eyebrow {
-  margin: 0 0 10px;
-  color: var(--brand-primary);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
+/* Legacy page styles — removed as phases 2-5 rebuild each screen on @clipers/ui components. */
+.app-page { min-height: 100vh; background: var(--color-background); }
+.app-shell { width: min(1080px, 100% - 48px); margin: 0 auto; padding: var(--space-6) 0 var(--space-9); }
+.app-wordmark { display: inline-flex; align-items: center; }
+.app-wordmark img { display: block; height: 24px; width: auto; }
+.app-heading { padding: var(--space-5) 0 var(--space-6); }
+.app-eyebrow { margin: 0 0 10px; color: var(--brand-11); font-size: 12px; font-weight: 700; text-transform: uppercase; }
 .app-heading h1,
-.app-auth-panel h1 {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: 32px;
-  line-height: 1.2;
-}
-
-.app-muted {
-  color: #aaa;
-}
-
-.app-section {
-  padding: 28px 0;
-  border-top: var(--border-width) solid var(--border-stroke);
-}
-
-.app-section h2 {
-  margin: 0 0 18px;
-  font-size: 18px;
-}
-
-.app-table-wrap {
-  overflow-x: auto;
-  border-top: var(--border-width) solid var(--border-stroke);
-  border-bottom: var(--border-width) solid var(--border-stroke);
-}
-
-.app-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
+.app-auth-panel h1 { font-size: var(--font-size-8); font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
+.app-muted { color: var(--color-text-muted); }
+.app-section { padding: var(--space-6) 0; border-top: 1px solid var(--color-border); }
+.app-section h2 { margin: 0 0 18px; font-size: var(--font-size-4); }
+.app-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-6); background: var(--color-panel); }
+.app-table { width: 100%; border-collapse: collapse; text-align: left; }
 .app-table th,
-.app-table td {
-  padding: 14px 12px;
-  border-bottom: var(--border-width) solid var(--border-stroke);
-  vertical-align: middle;
-}
-
-.app-table th {
-  color: #aaa;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.app-table td {
-  font-size: 14px;
-}
-
-.app-table tr:last-child td {
-  border-bottom: 0;
-}
-
-.app-status {
-  white-space: nowrap;
-}
-
-.app-status-positive {
-  color: var(--status-positive);
-}
-
-.app-status-requested {
-  color: var(--brand-primary);
-}
-
-.app-status-neutral {
-  color: #aaa;
-}
-
+.app-table td { padding: 14px 12px; border-bottom: 1px solid var(--color-border); vertical-align: middle; }
+.app-table th { color: var(--color-text-subtle); font-size: 12px; font-weight: 500; white-space: nowrap; }
+.app-table td { font-size: 14px; }
+.app-table tr:last-child td { border-bottom: 0; }
+.app-status { white-space: nowrap; }
+.app-status-positive { color: var(--brand-11); }
+.app-status-requested { color: var(--amber-11); }
+.app-status-neutral { color: var(--color-text-muted); }
 .app-status-negative,
 .app-status-overdue,
-.app-error {
-  color: #ff8b6b;
-}
-
-.app-form {
-  display: grid;
-  gap: 16px;
-  max-width: 520px;
-}
-
-.app-form label {
-  display: grid;
-  gap: 8px;
-  color: #ddd;
-  font-size: 14px;
-}
-
+.app-error { color: var(--tomato-11); }
+.app-form { display: grid; gap: 16px; max-width: 520px; }
+.app-form label { display: grid; gap: 8px; color: var(--color-text-muted); font-size: 14px; }
 .app-form input,
 .app-form select,
 .app-form textarea,
-.app-table textarea {
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #454545;
-  border-radius: 6px;
-  padding: 11px 12px;
-  background: #181818;
-  color: var(--text-primary);
-}
-
+.app-table textarea,
+.app-table input { width: 100%; border: 1px solid transparent; border-radius: var(--radius-5); padding: 11px 12px; background: var(--color-field); color: var(--color-text); }
 .app-form textarea,
-.app-table textarea {
-  min-height: 84px;
-  resize: vertical;
-}
-
-.app-button {
-  display: inline-flex;
-  min-height: 40px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #565656;
-  border-radius: var(--radius-button);
-  padding: 0 14px;
-  background: transparent;
-  color: var(--text-primary);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.app-button-primary {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary);
-  color: #07150e;
-  font-weight: 700;
-}
-
-.app-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.app-action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.app-notice {
-  margin: 14px 0;
-  color: var(--brand-primary);
-}
-
-.app-stat-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1px;
-  border: var(--border-width) solid var(--border-stroke);
-  background: var(--border-stroke);
-}
-
-.app-stat-tile {
-  padding: 18px 20px;
-  background: var(--bg-panel);
-}
-
-.app-stat-tile .app-stat-label {
-  margin: 0 0 8px;
-  color: #aaa;
-  font-size: 12px;
-}
-
-.app-stat-tile .app-stat-value {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: 24px;
-}
-
-.app-auth-page {
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  box-sizing: border-box;
-}
-
-.app-auth-panel {
-  width: min(440px, 100%);
-}
-
-.app-auth-panel > .app-wordmark {
-  display: inline-block;
-  margin-bottom: 44px;
-}
-
-.app-auth-panel .app-form {
-  margin-top: 28px;
-}
-
-.app-auth-panel .app-button {
-  width: 100%;
-}
-
-.app-auth-switch {
-  margin-top: 24px;
-  color: #aaa;
-  font-size: 14px;
-}
-
-.app-link-button {
-  border: 0;
-  padding: 0;
-  background: none;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.app-message {
-  color: var(--brand-primary);
-}
+.app-table textarea { min-height: 84px; resize: vertical; }
+.app-button { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-full); padding: 0 16px; background: var(--gray-4); color: var(--color-text); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.app-button:hover { background: var(--gray-5); }
+.app-button-primary { background: var(--brand-gradient); color: var(--brand-contrast); }
+.app-button:disabled { cursor: not-allowed; opacity: 0.45; }
+.app-action-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.app-notice { margin: 14px 0; color: var(--brand-11); }
+.app-stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); }
+.app-stat-tile { padding: 18px 20px; border: 1px solid var(--color-border); border-radius: var(--radius-5); background: var(--color-panel); }
+.app-stat-tile .app-stat-label { margin: 0 0 8px; color: var(--color-text-muted); font-size: 12px; }
+.app-stat-tile .app-stat-value { margin: 0; font-size: var(--font-size-6); font-weight: 650; }
+.app-auth-page { display: grid; place-items: center; padding: 24px; }
+.app-auth-panel { width: min(440px, 100%); }
+.app-auth-panel > .app-wordmark { display: inline-block; margin-bottom: 44px; }
+.app-auth-panel .app-form { margin-top: 28px; }
+.app-auth-panel .app-button { width: 100%; }
+.app-auth-switch { margin-top: 24px; color: var(--color-text-muted); font-size: 14px; }
+.app-link-button { border: 0; padding: 0; background: none; color: var(--brand-11); cursor: pointer; font-weight: 700; }
+.app-message { color: var(--brand-11); }
 
 @media (max-width: 640px) {
-  .app-global-header {
-    gap: 14px;
-    padding: 0 16px;
-  }
-
-  .app-global-nav {
-    gap: 12px;
-    font-size: 12px;
-  }
-
-  .app-workspace-body {
-    display: block;
-  }
-
-  .app-sidebar {
-    position: static;
-    width: 100%;
-    height: auto;
-    border-right: 0;
-    border-bottom: var(--border-width) solid var(--border-stroke);
-    padding: 12px 16px;
-  }
-
-  .app-sidebar h2,
-  .app-sidebar .app-eyebrow {
-    display: none;
-  }
-
-  .app-sidebar-nav {
-    display: flex;
-    overflow-x: auto;
-    gap: 4px;
-  }
-
-  .app-sidebar-nav a {
-    flex: 0 0 auto;
-  }
-
-  .app-shell {
-    width: min(100% - 32px, 1120px);
-    padding-top: 16px;
-  }
-
-  .app-heading {
-    padding: 32px 0 24px;
-  }
-
+  .app-shell { width: min(100% - 32px, 1080px); padding-top: var(--space-4); }
   .app-heading h1,
-  .app-auth-panel h1 {
-    font-size: 26px;
-  }
-
+  .app-auth-panel h1 { font-size: 26px; }
   .app-table th,
-  .app-table td {
-    padding: 12px 9px;
-  }
+  .app-table td { padding: 12px 9px; }
 }
