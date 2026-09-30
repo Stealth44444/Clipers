@@ -6,7 +6,6 @@
 .app-wordmark { display: inline-flex; align-items: center; }
 .app-wordmark img { display: block; height: 24px; width: auto; }
 .app-heading { padding: var(--space-5) 0 var(--space-6); }
-.app-eyebrow { margin: 0 0 10px; color: var(--brand-11); font-size: 12px; font-weight: 700; text-transform: uppercase; }
 .app-heading h1,
 .app-auth-panel h1 { font-size: var(--font-size-8); font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
 .app-muted { color: var(--color-text-muted); }

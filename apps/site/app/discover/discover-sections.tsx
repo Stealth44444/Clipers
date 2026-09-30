@@ -31,7 +31,7 @@ export function DiscoverGrid({ campaigns, topClips }: { campaigns: CampaignCard[
     <>
       {heroCampaigns.length > 0 && (
         <section className="app-section" aria-labelledby="hero-title">
-          <h2 id="hero-title" className="app-muted" style={{ fontSize: 12, textTransform: 'uppercase' }}>Featured</h2>
+          <h2 id="hero-title">추천 캠페인</h2>
           <div style={{ display: 'flex', gap: 16, overflowX: 'auto' }}>
             {heroCampaigns.map((campaign) => (
               <Link

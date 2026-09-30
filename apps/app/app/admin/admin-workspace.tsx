@@ -333,7 +333,6 @@ export default function AdminWorkspace() {
     <WorkspaceShell role="admin">
       <div className="app-shell">
         <div className="app-heading">
-          <p className="app-eyebrow">PILOT OPERATIONS</p>
           <h1>검수 대기열</h1>
           <p className="app-muted">지원서를 검토하고 제출된 클립의 SLA와 검수 결과를 관리합니다.</p>
         </div>

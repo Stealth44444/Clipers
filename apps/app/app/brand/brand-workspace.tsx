@@ -217,7 +217,6 @@ export default function BrandWorkspace() {
     <WorkspaceShell role="brand">
       <div className="app-shell">
         <div className="app-heading">
-          <p className="app-eyebrow">BRAND WORKSPACE</p>
           <h1>캠페인 만들기</h1>
           <p className="app-muted">캠페인을 만들고 예산을 입금하면 운영팀 확인 후 라이브로 전환됩니다.</p>
         </div>

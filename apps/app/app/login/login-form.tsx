@@ -71,7 +71,6 @@ export default function LoginForm() {
         <a className="app-wordmark" href="/">
           <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
         </a>
-        <p className="app-eyebrow">PILOT CAMPAIGN WORKSPACE</p>
         <h1 id="auth-title">
           {mode === 'sign-in' ? '다시 오셨네요' : signUpRole === 'brand' ? '브랜드로 시작하기' : '크리에이터로 시작하기'}
         </h1>

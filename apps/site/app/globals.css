@@ -53,11 +53,10 @@
 }
 
 .app-eyebrow {
-  margin: 0 0 10px;
-  color: var(--brand-primary);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
+  margin: 0 0 8px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+  font-weight: 500;
 }
 
 .app-heading h1 {

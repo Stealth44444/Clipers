@@ -305,7 +305,6 @@ export default function CreatorWorkspace() {
     <WorkspaceShell role="creator">
       <div className="app-shell">
         <div className="app-heading">
-          <p className="app-eyebrow">CREATOR WORKSPACE</p>
           <h1>캠페인과 제출 현황</h1>
           <p className="app-muted">캠페인에 지원하고 게시한 클립 URL을 제출하세요.</p>
         </div>

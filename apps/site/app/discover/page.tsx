@@ -108,7 +108,6 @@ export default async function DiscoverPage() {
       </header>
       <div className="app-shell">
         <div className="app-heading">
-          <p className="app-eyebrow">DISCOVER CAMPAIGNS</p>
           <h1>지금 참여할 수 있는 캠페인</h1>
           <p className="app-muted">예산을 건 캠페인에 클립을 제출하고 검증된 조회수만큼 정산받으세요.</p>
         </div>
