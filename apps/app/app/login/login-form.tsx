@@ -69,7 +69,7 @@ export default function LoginForm() {
     <main className="app-page app-auth-page">
       <section className="app-auth-panel" aria-labelledby="auth-title">
         <a className="app-wordmark" href="/">
-          <img alt="Clipers" src="/brand/clipers-wordmark.svg" />
+          <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
         </a>
         <p className="app-eyebrow">PILOT CAMPAIGN WORKSPACE</p>
         <h1 id="auth-title">

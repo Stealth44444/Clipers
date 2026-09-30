@@ -86,7 +86,7 @@ export default function WorkspaceShell({ role, children }: { role: WorkspaceRole
     <AppShell
       logo={
         <Link className="cl-topbar__logo" href={`/${role}`}>
-          <img alt="Clipers" src="/brand/clipers-wordmark.svg" />
+          <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
         </Link>
       }
       sidebar={<Sidebar activePath={pathname} LinkComponent={Link} sections={NAVIGATION[role]} />}

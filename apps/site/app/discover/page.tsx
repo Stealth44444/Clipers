@@ -99,7 +99,7 @@ export default async function DiscoverPage() {
   return (
     <main className="app-page">
       <header className="app-global-header">
-        <Link className="app-wordmark" href="/"><img alt="Clipers" src="/brand/clipers-wordmark.svg" /></Link>
+        <Link className="app-wordmark" href="/"><img alt="Clipers" src="/logo/clipers-wordmark.svg" /></Link>
         <nav className="app-global-nav" aria-label="서비스">
           <Link href="/for-creators">크리에이터</Link>
           <Link href="/for-brands">브랜드</Link>
