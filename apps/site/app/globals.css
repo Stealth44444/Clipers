@@ -1,0 +1,9 @@
+@import '@clipers/ui/src/tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
