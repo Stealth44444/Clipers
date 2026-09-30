@@ -9,9 +9,14 @@ type Campaign = {
   id: string;
   title: string;
   category: string;
-  cpm_rate: number | string;
   review_sla_hours: number;
   allowed_platforms: string[];
+};
+
+type PlatformRateRow = {
+  campaign_id: string;
+  platform: string;
+  cpm_rate: number | string;
 };
 
 type Application = {
@@ -85,6 +90,7 @@ function statusClass(status: string): string {
 export default function CreatorWorkspace() {
   const [userId, setUserId] = useState('');
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [platformRates, setPlatformRates] = useState<PlatformRateRow[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [clips, setClips] = useState<Clip[]>([]);
   const [disputes, setDisputes] = useState<Dispute[]>([]);
@@ -114,13 +120,16 @@ export default function CreatorWorkspace() {
       }
 
       setUserId(userData.user.id);
-      const [campaignResult, applicationResult, clipResult, disputeResult, manualViewReportResult, settlementResult] = await Promise.all([
+      const [campaignResult, platformRateResult, applicationResult, clipResult, disputeResult, manualViewReportResult, settlementResult] = await Promise.all([
         supabase
           .from('campaigns')
-          .select('id,title,category,cpm_rate,review_sla_hours,allowed_platforms')
+          .select('id,title,category,review_sla_hours,allowed_platforms')
           .eq('track', 'self_serve')
           .eq('status', 'live')
           .order('created_at', { ascending: false }),
+        supabase
+          .from('campaign_platform_rates')
+          .select('campaign_id,platform,cpm_rate'),
         supabase
           .from('campaign_applications')
           .select('id,campaign_id,status,campaign:campaigns!campaign_applications_campaign_id_fkey(title)')
@@ -147,6 +156,7 @@ export default function CreatorWorkspace() {
       ]);
 
       if (campaignResult.error) throw campaignResult.error;
+      if (platformRateResult.error) throw platformRateResult.error;
       if (applicationResult.error) throw applicationResult.error;
       if (clipResult.error) throw clipResult.error;
       if (disputeResult.error) throw disputeResult.error;
@@ -154,6 +164,7 @@ export default function CreatorWorkspace() {
       if (settlementResult.error) throw settlementResult.error;
 
       setCampaigns((campaignResult.data ?? []) as Campaign[]);
+      setPlatformRates((platformRateResult.data ?? []) as PlatformRateRow[]);
       setApplications((applicationResult.data ?? []) as Application[]);
       setClips((clipResult.data ?? []) as Clip[]);
       setDisputes((disputeResult.data ?? []) as Dispute[]);
@@ -333,7 +344,12 @@ export default function CreatorWorkspace() {
                   <tr key={campaign.id}>
                     <td>{campaign.title}</td>
                     <td>{campaign.category}</td>
-                    <td>{Number(campaign.cpm_rate).toLocaleString('ko-KR')}원 / 1,000뷰</td>
+                    <td>
+                      {platformRates
+                        .filter((rate) => rate.campaign_id === campaign.id)
+                        .map((rate) => `${rate.platform}: ${Number(rate.cpm_rate).toLocaleString('ko-KR')}원`)
+                        .join(', ') || '—'}
+                    </td>
                     <td>{campaign.review_sla_hours}시간</td>
                     <td>{campaign.allowed_platforms.join(', ')}</td>
                     <td>
