@@ -53,6 +53,9 @@ export default function BrandWorkspace() {
   const [category, setCategory] = useState('');
   const [totalBudget, setTotalBudget] = useState('');
   const [reviewSlaHours, setReviewSlaHours] = useState('');
+  const [contentRequirements, setContentRequirements] = useState('');
+  const [referenceUrl, setReferenceUrl] = useState('');
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [platformRates, setPlatformRates] = useState<Record<string, { cpmRate: string; minPayout: string; maxPayout: string }>>({});
   const [loading, setLoading] = useState(true);
@@ -157,12 +160,33 @@ export default function BrandWorkspace() {
       );
       if (ratesError) throw ratesError;
 
+      if (bannerFile) {
+        const path = `${userId}/${(campaignRow as { id: string }).id}`;
+        const { error: uploadError } = await supabase.storage.from('campaign-banners').upload(path, bannerFile, { upsert: true });
+        if (uploadError) throw uploadError;
+        const { data: publicUrlData } = supabase.storage.from('campaign-banners').getPublicUrl(path);
+        const { error: updateError } = await supabase
+          .from('campaigns')
+          .update({ cover_image_url: publicUrlData.publicUrl, content_requirements: contentRequirements.trim() || null, reference_url: referenceUrl.trim() || null })
+          .eq('id', (campaignRow as { id: string }).id);
+        if (updateError) throw updateError;
+      } else if (contentRequirements.trim() || referenceUrl.trim()) {
+        const { error: updateError } = await supabase
+          .from('campaigns')
+          .update({ content_requirements: contentRequirements.trim() || null, reference_url: referenceUrl.trim() || null })
+          .eq('id', (campaignRow as { id: string }).id);
+        if (updateError) throw updateError;
+      }
+
       setTitle('');
       setCategory('');
       setTotalBudget('');
       setReviewSlaHours('');
       setPlatforms([]);
       setPlatformRates({});
+      setContentRequirements('');
+      setReferenceUrl('');
+      setBannerFile(null);
       setMessage('캠페인을 생성했습니다. 아래 계좌이체 안내에 따라 입금 후 "입금 완료" 버튼을 눌러주세요.');
       await loadWorkspace();
     } catch (submitError) {
@@ -236,6 +260,22 @@ export default function BrandWorkspace() {
             <label>
               검수 SLA (시간)
               <input min={1} onChange={(event) => setReviewSlaHours(event.target.value)} required type="number" value={reviewSlaHours} />
+            </label>
+            <label>
+              배너 이미지
+              <input
+                accept="image/*"
+                onChange={(event) => setBannerFile(event.target.files?.[0] ?? null)}
+                type="file"
+              />
+            </label>
+            <label>
+              콘텐츠 요구사항 (선택)
+              <textarea onChange={(event) => setContentRequirements(event.target.value)} value={contentRequirements} />
+            </label>
+            <label>
+              참고 자료 링크 (선택)
+              <input onChange={(event) => setReferenceUrl(event.target.value)} type="url" value={referenceUrl} />
             </label>
             <div>
               <p className="app-muted" style={{ marginBottom: 8 }}>허용 플랫폼 및 플랫폼별 요율</p>
