@@ -5,6 +5,8 @@
 
   /* 텍스트 */
   --text-primary: #FFFFFF;
+  --font-heading: "Pretendard", system-ui, sans-serif;
+  --font-body: "Inter", "Pretendard", -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
 
   /* 구분선 */
   --border-stroke: rgba(255, 255, 255, 0.106);
