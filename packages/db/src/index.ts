@@ -12,3 +12,5 @@ export * from './services/dispute';
 export * from './services/manualViewReport';
 export * from './services/slackNotifier';
 export * from './services/platformRate';
+export * from './services/viewsRollup';
+export * from './services/leaderboard';
