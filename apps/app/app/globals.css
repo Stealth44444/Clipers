@@ -4,7 +4,7 @@
 .app-page { min-height: 100vh; background: var(--color-background); }
 .app-shell { width: min(1080px, 100% - 48px); margin: 0 auto; padding: var(--space-6) 0 var(--space-9); }
 .app-wordmark { display: inline-flex; align-items: center; }
-.app-wordmark img { display: block; height: 24px; width: auto; }
+.app-wordmark img { display: block; height: var(--logo-height); width: auto; }
 .app-heading { padding: var(--space-5) 0 var(--space-6); }
 .app-heading h1,
 .app-auth-panel h1 { font-size: var(--font-size-7); }

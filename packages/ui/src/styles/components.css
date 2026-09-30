@@ -25,7 +25,7 @@
 }
 
 .cl-topbar__logo { display: inline-flex; align-items: center; }
-.cl-topbar__logo img { display: block; height: 22px; width: auto; }
+.cl-topbar__logo img { display: block; height: var(--logo-height); width: auto; }
 .cl-topbar__end { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
 
 .cl-shell__body { display: grid; grid-template-columns: 264px minmax(0, 1fr); }
@@ -73,6 +73,7 @@
 .cl-sidebar__footer { margin-top: auto; }
 
 @media (max-width: 768px) {
+  :root { --logo-height: 28px; }
   .cl-topbar { padding: 0 var(--space-4); }
   .cl-menu-toggle { display: inline-flex; }
   .cl-shell__body { grid-template-columns: minmax(0, 1fr); }
@@ -557,7 +558,7 @@
 .cl-auth { display: grid; min-height: 100vh; place-items: center; padding: var(--space-6) var(--space-4); }
 .cl-auth__card { display: grid; gap: var(--space-5); width: min(400px, 100%); }
 .cl-auth__logo { display: inline-flex; }
-.cl-auth__logo img { display: block; height: 22px; width: auto; }
+.cl-auth__logo img { display: block; height: var(--logo-height-lg); width: auto; }
 .cl-auth__title { font-size: var(--font-size-6); }
 .cl-auth__subtitle { margin-top: var(--space-1); color: var(--color-text-muted); }
 .cl-auth__form { display: grid; gap: var(--space-4); }
@@ -569,7 +570,7 @@
 /* ---------- step flow (onboarding) ---------- */
 .cl-flow { display: flex; min-height: 100vh; flex-direction: column; }
 .cl-flow__header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); height: 60px; padding: 0 var(--space-5); }
-.cl-flow__header img { display: block; height: 22px; width: auto; }
+.cl-flow__header img { display: block; height: var(--logo-height); width: auto; }
 .cl-flow__progress { width: min(560px, 100% - 32px); margin: 0 auto; }
 .cl-flow__body { display: grid; flex: 1 0 auto; align-content: start; gap: var(--space-5); width: min(560px, 100% - 32px); margin: 0 auto; padding: var(--space-7) 0 var(--space-6); }
 .cl-flow__title { font-size: var(--font-size-6); }
@@ -587,3 +588,7 @@
 .cl-chip-group { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .cl-flow__hint { color: var(--color-text-subtle); font-size: var(--font-size-2); font-variant-numeric: tabular-nums; }
 .cl-page-plain { display: grid; min-height: 100vh; place-items: center; padding: var(--space-6) var(--space-4); }
+.cl-chip-section { display: grid; gap: var(--space-2); }
+.cl-chip-section__title { color: var(--color-text-muted); font-size: var(--font-size-2); font-weight: 500; letter-spacing: var(--tracking-body); }
+.cl-chip svg { flex: 0 0 auto; color: var(--color-text-subtle); }
+.cl-chip[aria-pressed="true"] svg { color: currentColor; }

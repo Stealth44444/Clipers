@@ -22,16 +22,17 @@ import {
 } from 'lucide-react';
 import {
   EXPERIENCE_OPTIONS,
-  INTERESTS,
   MAX_INTERESTS,
   ON_CAMERA_OPTIONS,
   canContinueOnboarding,
   emptyOnboardingAnswers,
+  interestsByGroup,
   onboardingSteps,
   toggleInterest,
   type OnboardingAnswers,
 } from '@clipers/db';
 import { Badge, Button, Chip, List, ListRow, OptionCard, ProgressBar, Switch } from '@clipers/ui';
+import { INTEREST_ICONS } from '@/lib/interest-icons';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 const ICON = { size: 18 };
@@ -153,24 +154,31 @@ export default function OnboardingFlow() {
             description={`최대 ${MAX_INTERESTS}개까지 고를 수 있어요. 맞는 캠페인을 추천하는 데 써요.`}
             title="어떤 분야에 관심 있으세요?"
           >
-            <div aria-label="관심 분야" className="cl-chip-group" role="group">
-              {INTERESTS.map((interest) => {
-                const selected = answers.interests.includes(interest.id);
-                return (
-                  <Chip
-                    disabled={!selected && answers.interests.length >= MAX_INTERESTS}
-                    key={interest.id}
-                    onToggle={() => update({ interests: toggleInterest(answers.interests, interest.id) })}
-                    selected={selected}
-                  >
-                    {interest.label}
-                  </Chip>
-                );
-              })}
-            </div>
-            <p className="cl-flow__hint">
+            <p className="cl-flow__hint" aria-live="polite">
               {answers.interests.length}/{MAX_INTERESTS} 선택
             </p>
+            {interestsByGroup().map((group) => (
+              <section aria-label={group.label} className="cl-chip-section" key={group.id}>
+                <h2 className="cl-chip-section__title">{group.label}</h2>
+                <div className="cl-chip-group">
+                  {group.interests.map((interest) => {
+                    const Icon = INTEREST_ICONS[interest.id];
+                    const selected = answers.interests.includes(interest.id);
+                    return (
+                      <Chip
+                        disabled={!selected && answers.interests.length >= MAX_INTERESTS}
+                        icon={<Icon size={16} />}
+                        key={interest.id}
+                        onToggle={() => update({ interests: toggleInterest(answers.interests, interest.id) })}
+                        selected={selected}
+                      >
+                        {interest.label}
+                      </Chip>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
           </Step>
         )}
 

@@ -95,6 +95,11 @@
   --shadow-popover: 0 0 0 1px var(--gray-a4), 0 12px 32px rgba(0, 0, 0, 0.5);
   --focus-ring: 0 0 0 3px var(--brand-a4);
 
+  /* The wordmark's lettering is only ~53% of its height (the symbol sets the full height),
+     so size it by the text: 32px renders the lettering at roughly a 17px heading. */
+  --logo-height: 32px;
+  --logo-height-lg: 36px;
+
   /* Aliases kept for legacy app-* styles until phases 3-6 replace them. */
   --bg-primary: var(--color-background);
   --bg-panel: var(--color-panel);
