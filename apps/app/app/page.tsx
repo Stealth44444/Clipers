@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+
 export default function AppHomePage() {
-  return <main>Clipers App</main>;
+  redirect('/login');
 }
