@@ -1,0 +1,9 @@
+{
+  "name": "@clipers/config",
+  "version": "0.0.0",
+  "private": true,
+  "main": "eslint-preset.js",
+  "devDependencies": {
+    "eslint": "^9.11.0"
+  }
+}
