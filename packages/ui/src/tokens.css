@@ -14,13 +14,13 @@
   --border-stroke: rgba(255, 255, 255, 0.106);
   --border-width: 0.8px;
 
-  /* 브랜드/CTA -- Frosted UI dark --green-11과 정확히 일치(확인됨). Whop 자체도 success 시맨틱 기본색이
-     이 green 패밀리라 브랜드색과 충돌 위험이 있음 -- 아래 --status-positive를 앰버로 분리한 이유. */
-  --brand-primary: #3DD68C;
-  --brand-primary-dark: #2FAE72;
+  /* 브랜드/CTA -- 공식 로고 심볼 fill(packages/ui/brand/clipers-mark.svg)과 동일. 이전 값 #3DD68C는
+     로고 확정 전 Frosted green-11에서 빌려온 임시값이었음. 브랜드색이 그린 계열이라 상태색은 앰버로 분리. */
+  --brand-primary: #58B982;
+  --brand-primary-dark: #479A6B;
 
   /* 인터랙티브 UI */
-  --action-primary: #3DD68C;
+  --action-primary: #58B982;
 
   /* 상태 -- 브랜드색과 구분되는 앰버 톤 */
   --status-positive: #F5A524;

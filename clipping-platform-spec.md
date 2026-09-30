@@ -40,11 +40,11 @@
   --border-width: 0.8px;
 
   /* 브랜드/CTA — 민트/그린 계열 (요청 반영) */
-  --brand-primary: #3DD68C;     /* rgb(61, 214, 140) — 로고·마케팅 CTA 전용. Whop Content Rewards 앱 내부에서 실제 관측된 그린 톤을 기준값으로 채택 */
-  --brand-primary-dark: #2FAE72; /* 호버/액티브 상태용 다크 배리언트 */
+  --brand-primary: #58B982;     /* 공식 로고 심볼 fill (packages/ui/brand/). 2026-10-01 로고 확정으로 이전 임시값 #3DD68C(Whop 관측 그린)에서 교체 */
+  --brand-primary-dark: #479A6B; /* 호버/액티브 상태용 다크 배리언트 */
 
   /* 인터랙티브 UI (버튼 등 실사용 액션) — 민트 계열 유지 또는 보색 액센트 */
-  --action-primary: #3DD68C;    /* Whop처럼 브랜드색과 액션색을 분리할지, 통일할지는 디자인 확정 단계에서 결정. 기본값은 통일(민트 단일 아이덴티티) */
+  --action-primary: #58B982;    /* 브랜드색과 통일(단일 그린 아이덴티티) */
 
   /* 상태 */
   --status-positive: #30A46C;   /* rgb(48, 164, 108) — 성공/포지티브 지표. 브랜드 그린과 톤 유사하므로 상태색은 별도 웜톤(주황/황색 계열)으로 차별화 검토 필요 — 안 그러면 "성공"과 "브랜드"가 시각적으로 구분 안 됨 */
@@ -60,13 +60,13 @@
 | 용도 | 폰트 | 크기 | 굵기 |
 |---|---|---|---|
 | 헤딩(H1) | 커스텀 디스플레이 폰트 + `system-ui` fallback | 56px | 500 (medium, bold 아님) |
-| 본문/버튼/UI | `Inter` + 표준 시스템 폰트 스택 fallback | 16px | 400 |
+| 본문/버튼/UI | `Pretendard` + 시스템 폰트 스택 (Whop 공식 Frosted UI 기본 스택에 Inter 없음 — 2026-09-30 소스 확인) | 16px | 400 |
 
 ```css
 --font-heading: "[프로젝트 전용 폰트]", "Pretendard", system-ui, sans-serif;
---font-body: "Inter", "Pretendard", -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
+--font-body: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", system-ui, sans-serif;
 ```
-> 한글 지원이 필수이므로 Inter 단독이 아니라 Pretendard 등 한글 대응 폰트를 본문/헤딩 모두에 fallback으로 반드시 포함할 것.
+> 한글 지원이 필수이므로 Pretendard를 본문/헤딩 모두 최우선으로 둔다(국내 레퍼런스 y-vision.co.kr도 Pretendard Variable 사용 확인).
 
 ### 2.3 컴포넌트 스펙
 
