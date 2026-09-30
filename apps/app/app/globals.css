@@ -4,6 +4,264 @@
 @tailwind utilities;
 
 body {
+  margin: 0;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.app-shell {
+  width: min(1120px, 100% - 48px);
+  margin: 0 auto;
+  padding: 28px 0 64px;
+}
+
+.app-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  border-bottom: 1px solid var(--border-stroke);
+}
+
+.app-wordmark {
+  color: var(--brand-primary);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.app-topbar a:last-child,
+.app-link-button {
+  color: var(--brand-primary);
+}
+
+.app-heading {
+  padding: 44px 0 32px;
+}
+
+.app-eyebrow {
+  margin: 0 0 10px;
+  color: var(--brand-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.app-heading h1,
+.app-auth-panel h1 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.app-muted {
+  color: #aaa;
+}
+
+.app-section {
+  padding: 28px 0;
+  border-top: 1px solid var(--border-stroke);
+}
+
+.app-section h2 {
+  margin: 0 0 18px;
+  font-size: 18px;
+}
+
+.app-table-wrap {
+  overflow-x: auto;
+  border-top: 1px solid var(--border-stroke);
+  border-bottom: 1px solid var(--border-stroke);
+}
+
+.app-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.app-table th,
+.app-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border-stroke);
+  vertical-align: middle;
+}
+
+.app-table th {
+  color: #aaa;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.app-table td {
+  font-size: 14px;
+}
+
+.app-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.app-status {
+  color: var(--brand-primary);
+  white-space: nowrap;
+}
+
+.app-status-overdue,
+.app-error {
+  color: #ff8b6b;
+}
+
+.app-form {
+  display: grid;
+  gap: 16px;
+  max-width: 520px;
+}
+
+.app-form label {
+  display: grid;
+  gap: 8px;
+  color: #ddd;
+  font-size: 14px;
+}
+
+.app-form input,
+.app-form select,
+.app-form textarea,
+.app-table textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #454545;
+  border-radius: 6px;
+  padding: 11px 12px;
+  background: #181818;
+  color: var(--text-primary);
+}
+
+.app-form textarea,
+.app-table textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.app-button {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #565656;
+  border-radius: var(--radius-button);
+  padding: 0 14px;
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.app-button-primary {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  color: #07150e;
+  font-weight: 700;
+}
+
+.app-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.app-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.app-notice {
+  margin: 14px 0;
+  color: var(--brand-primary);
+}
+
+.app-auth-page {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.app-auth-panel {
+  width: min(440px, 100%);
+}
+
+.app-auth-panel > .app-wordmark {
+  display: inline-block;
+  margin-bottom: 44px;
+}
+
+.app-auth-panel .app-form {
+  margin-top: 28px;
+}
+
+.app-auth-panel .app-button {
+  width: 100%;
+}
+
+.app-auth-switch {
+  margin-top: 24px;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.app-link-button {
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.app-message {
+  color: var(--brand-primary);
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 32px, 1120px);
+    padding-top: 16px;
+  }
+
+  .app-heading {
+    padding: 32px 0 24px;
+  }
+
+  .app-heading h1,
+  .app-auth-panel h1 {
+    font-size: 26px;
+  }
+
+  .app-table th,
+  .app-table td {
+    padding: 12px 9px;
+  }
 }

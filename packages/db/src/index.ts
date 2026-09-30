@@ -3,3 +3,4 @@ export * from './services/errors';
 export * from './services/budget';
 export * from './services/sla';
 export * from './services/rejectClip';
+export * from './services/youtubeViews';
