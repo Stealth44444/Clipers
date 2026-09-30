@@ -1,0 +1,26 @@
+:root {
+  /* 배경 */
+  --bg-primary: #111111;
+  --bg-panel: #0A0A0A;
+
+  /* 텍스트 */
+  --text-primary: #FFFFFF;
+
+  /* 구분선 */
+  --border-stroke: rgba(255, 255, 255, 0.106);
+  --border-width: 0.8px;
+
+  /* 브랜드/CTA */
+  --brand-primary: #3DD68C;
+  --brand-primary-dark: #2FAE72;
+
+  /* 인터랙티브 UI */
+  --action-primary: #3DD68C;
+
+  /* 상태 -- 브랜드색과 구분되는 앰버 톤 */
+  --status-positive: #F5A524;
+
+  /* 컴포넌트 */
+  --radius-button: 8px;
+  --avatar-ring-width: 1.6px;
+}
