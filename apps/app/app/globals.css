@@ -7,12 +7,12 @@
 .app-wordmark img { display: block; height: 24px; width: auto; }
 .app-heading { padding: var(--space-5) 0 var(--space-6); }
 .app-heading h1,
-.app-auth-panel h1 { font-size: var(--font-size-8); font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
+.app-auth-panel h1 { font-size: var(--font-size-7); }
 .app-muted { color: var(--color-text-muted); }
 .app-section { padding: var(--space-6) 0; border-top: 1px solid var(--color-border); }
 .app-section h2 { margin: 0 0 18px; font-size: var(--font-size-4); }
-.app-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-6); background: var(--color-panel); }
-.app-table { width: 100%; border-collapse: collapse; text-align: left; }
+.app-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-5); background: var(--color-panel); }
+.app-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; text-align: left; }
 .app-table th,
 .app-table td { padding: 14px 12px; border-bottom: 1px solid var(--color-border); vertical-align: middle; }
 .app-table th { color: var(--color-text-subtle); font-size: 12px; font-weight: 500; white-space: nowrap; }
@@ -31,26 +31,27 @@
 .app-form select,
 .app-form textarea,
 .app-table textarea,
-.app-table input { width: 100%; border: 1px solid transparent; border-radius: var(--radius-5); padding: 11px 12px; background: var(--color-field); color: var(--color-text); }
+.app-table input { width: 100%; border: 1px solid var(--gray-a4); border-radius: var(--radius-4); padding: 9px 12px; background: var(--color-field); color: var(--color-text); }
 .app-form textarea,
 .app-table textarea { min-height: 84px; resize: vertical; }
-.app-button { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-full); padding: 0 16px; background: var(--gray-4); color: var(--color-text); font-weight: 600; cursor: pointer; white-space: nowrap; }
+.app-button { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-4); padding: 0 14px; background: var(--gray-4); box-shadow: inset 0 0 0 1px var(--gray-a4), var(--shadow-control); color: var(--color-text); font-weight: 550; cursor: pointer; white-space: nowrap; }
 .app-button:hover { background: var(--gray-5); }
-.app-button-primary { background: var(--brand-gradient); color: var(--brand-contrast); }
+.app-button-primary { background: var(--brand-9); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 1px 2px rgba(0, 0, 0, 0.35); color: var(--brand-contrast); }
+.app-button-primary:hover { background: var(--brand-10); }
 .app-button:disabled { cursor: not-allowed; opacity: 0.45; }
 .app-action-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .app-notice { margin: 14px 0; color: var(--brand-11); }
 .app-stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); }
 .app-stat-tile { padding: 18px 20px; border: 1px solid var(--color-border); border-radius: var(--radius-5); background: var(--color-panel); }
 .app-stat-tile .app-stat-label { margin: 0 0 8px; color: var(--color-text-muted); font-size: 12px; }
-.app-stat-tile .app-stat-value { margin: 0; font-size: var(--font-size-6); font-weight: 650; }
+.app-stat-tile .app-stat-value { margin: 0; font-size: var(--font-size-6); font-weight: 600; font-variant-numeric: tabular-nums; }
 .app-auth-page { display: grid; place-items: center; padding: 24px; }
 .app-auth-panel { width: min(440px, 100%); }
 .app-auth-panel > .app-wordmark { display: inline-block; margin-bottom: 44px; }
 .app-auth-panel .app-form { margin-top: 28px; }
 .app-auth-panel .app-button { width: 100%; }
 .app-auth-switch { margin-top: 24px; color: var(--color-text-muted); font-size: 14px; }
-.app-link-button { border: 0; padding: 0; background: none; color: var(--brand-11); cursor: pointer; font-weight: 700; }
+.app-link-button { border: 0; padding: 0; background: none; color: var(--brand-11); cursor: pointer; font-weight: 500; }
 .app-message { color: var(--brand-11); }
 
 @media (max-width: 640px) {

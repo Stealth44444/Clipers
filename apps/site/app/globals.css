@@ -132,7 +132,7 @@
   border-color: var(--brand-primary);
   background: var(--brand-primary);
   color: #07150e;
-  font-weight: 700;
+  font-weight: 550;
 }
 
 @media (max-width: 640px) {
