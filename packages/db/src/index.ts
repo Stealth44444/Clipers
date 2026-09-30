@@ -1,5 +1,6 @@
 export { createSupabaseClient } from './client';
 export * from './platforms';
+export * from './onboarding';
 export * from './services/errors';
 export * from './services/escalation';
 export * from './services/sla';

@@ -30,24 +30,41 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const requiredRole = Object.entries(WORKSPACE_BY_ROLE).find(([, prefix]) =>
-    request.nextUrl.pathname.startsWith(prefix)
-  )?.[0];
-  if (!requiredRole) return response;
+  // Redirects must carry any auth cookies Supabase refreshed above.
+  const redirectTo = (url: URL) => {
+    const redirect = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  };
+
+  const { pathname } = request.nextUrl;
+  const isOnboarding = pathname === '/onboarding' || pathname.startsWith('/onboarding/');
+  const requiredRole = Object.entries(WORKSPACE_BY_ROLE).find(([, prefix]) => pathname.startsWith(prefix))?.[0];
+  if (!requiredRole && !isOnboarding) return response;
 
   if (!user) {
     const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('next', request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
+    loginUrl.searchParams.set('next', pathname);
+    return redirectTo(loginUrl);
   }
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, onboarding_completed_at')
+    .eq('id', user.id)
+    .single();
+  const ownWorkspace = profile?.role ? WORKSPACE_BY_ROLE[profile.role] : undefined;
+  const needsOnboarding = !!profile && profile.role !== 'admin' && !profile.onboarding_completed_at;
+
+  if (isOnboarding) {
+    return needsOnboarding ? response : redirectTo(new URL(ownWorkspace ?? '/login', request.url));
+  }
+  if (needsOnboarding) return redirectTo(new URL('/onboarding', request.url));
   if (profile?.role === requiredRole) return response;
 
-  const ownWorkspace = profile?.role ? WORKSPACE_BY_ROLE[profile.role] : undefined;
-  return NextResponse.redirect(new URL(ownWorkspace ?? '/login', request.url));
+  return redirectTo(new URL(ownWorkspace ?? '/login', request.url));
 }
 
 export const config = {
-  matcher: ['/brand/:path*', '/creator/:path*', '/admin/:path*'],
+  matcher: ['/brand/:path*', '/creator/:path*', '/admin/:path*', '/onboarding/:path*'],
 };

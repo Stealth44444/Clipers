@@ -1,24 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button, Field, Input } from '@clipers/ui';
+import { authErrorMessage } from '@/lib/auth';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 type FormMode = 'sign-in' | 'sign-up';
-type SignUpRole = 'creator' | 'brand';
 
-export default function LoginForm() {
+const WORKSPACE_BY_ROLE: Record<string, string> = { admin: '/admin', brand: '/brand', creator: '/creator' };
+
+export default function LoginForm({ next, callbackFailed }: { next: string | null; callbackFailed: boolean }) {
   const router = useRouter();
   const [mode, setMode] = useState<FormMode>('sign-in');
-  const [signUpRole, setSignUpRole] = useState<SignUpRole>('creator');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(callbackFailed ? '인증 링크가 만료되었거나 올바르지 않습니다. 다시 로그인해 주세요.' : '');
   const [submitting, setSubmitting] = useState(false);
+  const isSignUp = mode === 'sign-up';
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage('');
     setError('');
@@ -27,136 +30,113 @@ export default function LoginForm() {
     try {
       const supabase = getSupabaseBrowserClient();
 
-      if (mode === 'sign-up') {
+      if (isSignUp) {
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: { name: displayName.trim(), requested_role: signUpRole },
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=/${signUpRole === 'brand' ? 'brand' : 'creator'}`,
+            data: { name: displayName.trim() },
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
           },
         });
-
         if (signUpError) throw signUpError;
         if (!data.session) {
-          setMessage('가입 확인 메일을 보냈습니다. 메일의 링크를 열어 가입을 완료해 주세요.');
+          setMessage(`${email}로 인증 메일을 보냈습니다. 메일의 링크를 열면 가입이 완료됩니다.`);
           return;
         }
-      } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-        if (signInError) throw signInError;
+        router.replace('/onboarding');
+        router.refresh();
+        return;
       }
 
-      const { data: userData } = await supabase.auth.getUser();
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userData.user?.id)
-        .maybeSingle();
-      const destination =
-        profile?.role === 'admin' ? '/admin' : profile?.role === 'brand' ? '/brand' : '/creator';
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw signInError;
 
+      // Middleware reroutes to onboarding or the right workspace when `next` doesn't fit this account.
+      let destination = next;
+      if (!destination) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
+        destination = WORKSPACE_BY_ROLE[profile?.role ?? 'creator'];
+      }
       router.replace(destination);
       router.refresh();
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : '요청을 처리하지 못했습니다.');
+      setError(authErrorMessage(submitError));
     } finally {
       setSubmitting(false);
     }
   }
 
+  function switchMode() {
+    setMode(isSignUp ? 'sign-in' : 'sign-up');
+    setMessage('');
+    setError('');
+  }
+
   return (
-    <main className="app-page app-auth-page">
-      <section className="app-auth-panel" aria-labelledby="auth-title">
-        <a className="app-wordmark" href="/">
+    <main className="cl-auth">
+      <section aria-labelledby="auth-title" className="cl-auth__card">
+        <a className="cl-auth__logo" href="/">
           <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
         </a>
-        <h1 id="auth-title">
-          {mode === 'sign-in' ? '다시 오셨네요' : signUpRole === 'brand' ? '브랜드로 시작하기' : '크리에이터로 시작하기'}
-        </h1>
-        <p className="app-muted">
-          {mode === 'sign-in'
-            ? '계정에 로그인해 작업을 이어가세요.'
-            : signUpRole === 'brand'
-              ? '가입 후 캠페인을 개설할 수 있습니다.'
-              : '가입 후 공개 캠페인에 지원할 수 있습니다.'}
-        </p>
 
-        <form className="app-form" onSubmit={handleSubmit}>
-          {mode === 'sign-up' && (
-            <div className="app-action-row" role="radiogroup" aria-label="가입 유형">
-              <label>
-                <input
-                  checked={signUpRole === 'creator'}
-                  onChange={() => setSignUpRole('creator')}
-                  type="radio"
-                  value="creator"
-                />
-                {' '}크리에이터로 가입
-              </label>
-              <label>
-                <input
-                  checked={signUpRole === 'brand'}
-                  onChange={() => setSignUpRole('brand')}
-                  type="radio"
-                  value="brand"
-                />
-                {' '}브랜드로 가입
-              </label>
-            </div>
-          )}
-          {mode === 'sign-up' && (
-            <label>
-              이름
-              <input
+        <div>
+          <h1 className="cl-auth__title" id="auth-title">
+            {isSignUp ? '계정 만들기' : '로그인'}
+          </h1>
+          <p className="cl-auth__subtitle">
+            {isSignUp ? '가입 후 크리에이터 또는 브랜드로 시작할 수 있어요.' : 'Clipers 계정으로 계속하세요.'}
+          </p>
+        </div>
+
+        <form className="cl-auth__form" onSubmit={handleSubmit}>
+          {isSignUp && (
+            <Field htmlFor="auth-name" label="이름">
+              <Input
                 autoComplete="name"
+                id="auth-name"
                 onChange={(event) => setDisplayName(event.target.value)}
+                placeholder="활동명 또는 브랜드명"
                 required
                 value={displayName}
               />
-            </label>
+            </Field>
           )}
-          <label>
-            이메일
-            <input
+          <Field htmlFor="auth-email" label="이메일">
+            <Input
               autoComplete="email"
+              id="auth-email"
               onChange={(event) => setEmail(event.target.value)}
+              placeholder="name@example.com"
               required
               type="email"
               value={email}
             />
-          </label>
-          <label>
-            비밀번호
-            <input
-              autoComplete={mode === 'sign-in' ? 'current-password' : 'new-password'}
+          </Field>
+          <Field hint={isSignUp ? '8자 이상 입력해 주세요.' : undefined} htmlFor="auth-password" label="비밀번호">
+            <Input
+              autoComplete={isSignUp ? 'new-password' : 'current-password'}
+              id="auth-password"
               minLength={8}
               onChange={(event) => setPassword(event.target.value)}
               required
               type="password"
               value={password}
             />
-          </label>
-          <button className="app-button app-button-primary" disabled={submitting} type="submit">
-            {submitting ? '처리 중...' : mode === 'sign-in' ? '로그인' : '계정 만들기'}
-          </button>
+          </Field>
+
+          {error && <p className="cl-alert cl-tone-tomato" role="alert">{error}</p>}
+          {message && <p className="cl-alert cl-tone-brand" role="status">{message}</p>}
+
+          <Button block disabled={submitting} size="lg" type="submit" variant="primary">
+            {submitting ? '처리 중…' : isSignUp ? '계정 만들기' : '로그인'}
+          </Button>
         </form>
 
-        {message && <p className="app-message" role="status">{message}</p>}
-        {error && <p className="app-error" role="alert">{error}</p>}
-
-        <p className="app-auth-switch">
-          {mode === 'sign-in' ? '처음이신가요?' : '이미 계정이 있으신가요?'}{' '}
-          <button
-            className="app-link-button"
-            onClick={() => {
-              setMode(mode === 'sign-in' ? 'sign-up' : 'sign-in');
-              setMessage('');
-              setError('');
-            }}
-            type="button"
-          >
-            {mode === 'sign-in' ? '회원가입' : '로그인'}
+        <p className="cl-auth__footer">
+          {isSignUp ? '이미 계정이 있으신가요?' : '처음이신가요?'}{' '}
+          <button className="cl-link" onClick={switchMode} type="button">
+            {isSignUp ? '로그인' : '계정 만들기'}
           </button>
         </p>
       </section>

@@ -21,13 +21,13 @@
 **토큰** — Frosted UI에서 확인한 실제 값을 그대로 사용:
 - 간격 `--space-1..9` = 4, 8, 12, 16, 24, 32, 40, 48, 64px
 - 라운드 `--radius-1..6` = 3, 4, 6, 8, 12, 16px, `--radius-full` = 9999px
-- 타이포 `--font-size-0..9` = 10~40px, 행간 스케일 동일 이식. 폰트는 Pretendard 우선(기존 결정 유지)
+- 타이포 `--font-size-0..9` = 10~40px. 폰트는 Pretendard Variable(Inter 기반 라틴 + 본고딕 기반 한글, Apple SD 산돌고딕 Neo 대체용으로 설계) — 한국어 서비스에서 macOS 시스템 폰트와 가장 가까운 인상
 - 그레이(다크) `--gray-1..12` = `#111111` … `#eeeeee` (Frosted dark gray 스케일 그대로)
-- 브랜드 그린 스케일: 공식 로고 `#58B982`를 9단계로 두고 파생(solid/hover/text/alpha). 주 CTA는 Whop처럼 그라디언트
+- 브랜드 그린 스케일: 공식 로고 `#58B982`를 9단계로 두고 파생(solid/hover/text/alpha). 주 CTA는 단색 + 얇은 상단 하이라이트(macOS 버튼 질감), 그라디언트는 쓰지 않는다
 - 시맨틱: 성공=브랜드 그린, 경고/대기=Frosted amber, 위험=Frosted tomato, 정보=Frosted sky. 스탯 아이콘 틴트(그린/스카이/바이올렛/앰버)는 Whop 수익 화면 배색을 따름
 
 **컴포넌트** (`packages/ui/src/components`, 스타일은 `cl-` 접두 클래스로 `packages/ui/src/styles/*.css`에 둔다)
-- 기본: `Button`(primary 그라디언트 pill / secondary 어두운 pill / ghost, 비활성 상태), `IconButton`, `Badge`, `Avatar`, `Card`, `ProgressBar`
+- 기본: `Button`(8px 라운드 사각형 — primary 단색 / secondary 회색 + 1px 베젤 / ghost, 비활성 상태), `IconButton`, `Badge`, `Avatar`, `Card`, `ProgressBar`
 - 입력: `Field`(라벨 + 글자수 카운터 + 오류), `Input`, `Textarea`, `Select`, `Switch`, `Chip`(멀티선택), `OptionCard`(아이콘 원 + 우상단 라디오, 선택 시 브랜드색), `Dropzone`
 - 데이터: `StatCard`(컬러 원형 아이콘 + 큰 숫자 + 라벨, 강조형은 그라디언트 틴트), `Tabs`(카운트 붙은 pill 세그먼트), `DataTable`, `EmptyState`(컬러 원 아이콘 + 제목 + 설명), `Timeline`(세로선 + 점 + 우측 합계), `Checklist`(완료 원 아이콘, `n of m` 카운터 + 진행바, 현재 단계 강조), `SummaryList`(키-값 행), `LineChart`(SVG, 격자선·축 라벨·마지막 날짜 강조)
 - 오버레이: `Dialog`(네이티브 `<dialog>` 기반)
@@ -42,6 +42,13 @@
 - UI 카피는 한국어로 쓴다. 영문 슬로건성 라벨("WORKSPACE", "Featured" 등)을 붙이지 않는다. 고유명사(Clipers, YouTube 등)만 영문을 유지한다.
 - 제목 위에 위치를 알려 주는 보조 라벨을 두지 않는다. 위치는 사이드바 활성 항목과 제목이 알려 준다.
 
+**질감 규칙 (Apple·Notion·Slack식 절제)**
+- 굵기는 400/500/600만 쓴다(버튼 550). 700 이상 금지.
+- 한글 본문 자간 -0.006em, 제목 -0.022em, `word-break: keep-all`. 숫자(금액·조회수·표)는 `tabular-nums`.
+- 장식용 그라디언트·글로우·네온·큰 그림자 금지. 그림자는 컨트롤의 1px 베젤과 팝오버에만.
+- 상단바·팝오버는 반투명 + 배경 블러(macOS vibrancy). 포커스는 3px 브랜드 알파 링.
+- 탭은 세그먼트 컨트롤, 설정·동의 항목은 그룹 리스트(`List`/`ListRow`), 태그성 선택만 pill(`Chip`).
+
 ## 3. 앱 셸과 인증
 
 - **상단바**: 좌측 로고(`clipers-wordmark.svg`), 우측 — 크리에이터는 잔액 pill(정산대기+지급요청 합계), 공통으로 사용자 아바타 메뉴(역할 표시, 로그아웃)
@@ -50,8 +57,8 @@
 
 ## 4. 온보딩
 
-- **역할 선택**("무엇을 하고 싶으세요?"): "수익 창출 시작하기"(추천 배지, 크리에이터) / "캠페인 개설하기"(브랜드). 기존 가입 시 역할 라디오를 대체한다 — 역할은 여기서 확정되므로 `handle_new_user`는 기본 `creator`로 생성하고, 브랜드 선택 시 역할을 바꿔야 한다. `prevent_profile_role_escalation` 트리거가 본인 역할 변경을 막으므로, **온보딩 완료 전 1회에 한해 creator→brand 전환만 허용**하는 SECURITY DEFINER 함수를 둔다(admin으로의 전환은 여전히 불가).
-- **크리에이터 단계**: 수익 방식 안내(클리핑/음원/UGC — 저희 카테고리 기준) → 관심 분야 칩(최대 3개) → 카메라 노출 여부(2×2 카드) → 활동 단계(2×2 카드) → 약관·개인정보 동의(링크 카드 + 토글) → 크리에이터 홈. 상단 진행바 + 뒤로가기.
+- **역할 선택**("무엇을 하고 싶으세요?"): "수익 창출 시작하기"(추천 배지, 크리에이터) / "캠페인 개설하기"(브랜드). 기존 가입 시 역할 라디오를 대체한다 — 역할은 여기서 확정되므로 `handle_new_user`는 기본 `creator`로 생성하고, 브랜드 선택 시 역할을 바꿔야 한다. `prevent_profile_role_escalation` 트리거가 본인 역할 변경을 막으므로, **온보딩 완료 전 1회에 한해 creator↔brand 선택을 허용**하는 SECURITY DEFINER 함수 `complete_onboarding()`을 둔다(admin으로의 전환은 불가). 역할 가드 트리거는 `onboarding_completed_at`·`terms_agreed_at` 직접 수정도 막는다. 기존 계정은 온보딩 완료로 백필(약관 동의일은 비움).
+- **크리에이터 단계**: 수익 방식 안내(클리핑 / UGC / 검수와 정산 — `campaign_content_type` 기준) → 관심 분야 칩(최대 3개) → 카메라 노출 여부(2×2 카드) → 활동 단계(2×2 카드) → 약관·개인정보 동의(링크 카드 + 토글) → 크리에이터 홈. 상단 진행바 + 뒤로가기.
 - **브랜드**: 약관 동의 → 브랜드 홈(체크리스트)
 - **데이터**: `profiles`에 `onboarding_completed_at`, `interests text[]`, `on_camera text`, `experience_level text`, `terms_agreed_at` 추가. 온보딩 미완료 사용자가 워크스페이스에 접근하면 미들웨어가 `/onboarding`으로 보낸다.
 - **약관/개인정보 페이지**: 문구가 아직 없으므로 `/terms`, `/privacy`를 "준비 중" 안내 페이지로 둔다(법률 검토 후 교체 — 명시적 미완 항목).
