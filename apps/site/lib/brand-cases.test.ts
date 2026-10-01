@@ -1,14 +1,9 @@
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { BRAND_CASES, CLIP_POSTERS, caseThumbnails } from './brand-cases';
-import type { ShowcaseVideo } from './youtube-showcase';
+import { BRAND_CASES, CASE_CLIPS, clipMedia } from './brand-cases';
 
-const video = (id: string): ShowcaseVideo => ({
-  id,
-  campaign: '',
-  channel: '',
-  channelId: '',
-  thumbnail: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
-});
+const publicDir = path.resolve(__dirname, '../public');
 
 describe('BRAND_CASES', () => {
   it('has the three cases in order with five clips each', () => {
@@ -23,27 +18,23 @@ describe('BRAND_CASES', () => {
     }
   });
 
-  it('draws thumbnails from the matching showcase kind, with fitting fallback posters', () => {
-    expect(BRAND_CASES.map((item) => item.showcase)).toEqual(['ugc', 'music', 'clipping']);
-    expect(BRAND_CASES[0].posters[0]).toBe(CLIP_POSTERS.beauty);
-    expect(BRAND_CASES[2].posters[0]).toBe(CLIP_POSTERS.drive);
+  it('plays every clip exactly once across the cases', () => {
+    const used = BRAND_CASES.flatMap((item) => item.clips.map((clip) => clip.clip));
+    expect([...used].sort()).toEqual([...CASE_CLIPS].sort());
+  });
+
+  it('gives the launch case the fashion and car clips and the channel case the game highlights', () => {
+    expect(BRAND_CASES[0].clips.every((clip) => /^(fashion|car)-/.test(clip.clip))).toBe(true);
+    expect(BRAND_CASES[2].clips.every((clip) => clip.clip.startsWith('hoops'))).toBe(true);
   });
 });
 
-describe('caseThumbnails', () => {
-  const posters = [CLIP_POSTERS.beauty, CLIP_POSTERS.pet];
-
-  it('puts real thumbnails first and fills the rest with the case posters', () => {
-    expect(caseThumbnails([video('a'), video('b')], 5, posters)).toEqual([
-      'https://i.ytimg.com/vi/a/maxresdefault.jpg',
-      'https://i.ytimg.com/vi/b/maxresdefault.jpg',
-      CLIP_POSTERS.beauty,
-      CLIP_POSTERS.pet,
-      CLIP_POSTERS.beauty,
-    ]);
-  });
-
-  it('uses only the case posters without videos', () => {
-    expect(caseThumbnails(undefined, 3, posters)).toEqual([CLIP_POSTERS.beauty, CLIP_POSTERS.pet, CLIP_POSTERS.beauty]);
+describe('clipMedia', () => {
+  it('points at a video and poster that ship with the site', () => {
+    for (const clip of CASE_CLIPS) {
+      const { src, poster } = clipMedia(clip);
+      expect(existsSync(path.join(publicDir, src))).toBe(true);
+      expect(existsSync(path.join(publicDir, poster))).toBe(true);
+    }
   });
 });

@@ -1,14 +1,14 @@
 'use client';
 
-import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import { ChartLine, Film, House, Megaphone, MonitorPlay, Music, Package, Users } from 'lucide-react';
 import { Avatar, PlatformIcon, StatusDot, formatCompactNumber } from '@clipers/ui';
 import { useDemoFrame } from '@/components/brand/use-demo-frame';
-import { BRAND_CASES, caseThumbnails, type BrandCase } from '@/lib/brand-cases';
-import type { ShowcaseKind, ShowcaseVideo } from '@/lib/youtube-showcase';
+import { BRAND_CASES, clipMedia, type BrandCase } from '@/lib/brand-cases';
 
 // Spec §4.5, after the reference's product tour: icon tabs over a progress track, then the brand app's 제출 영상
-// screen for that case. Tabs advance every 6 seconds while on screen; a click jumps.
+// screen for that case. Tabs advance every 6 seconds while on screen; a click jumps. Each tile plays its own vertical
+// clip while the demo moves; otherwise (off screen, reduced motion) it rests on the poster.
 
 const ICONS: Record<BrandCase['id'], ReactNode> = {
   launch: <Package size={24} />,
@@ -23,12 +23,18 @@ const NAV = [
   { label: '크리에이터', icon: <Users size={15} /> },
   { label: '분석', icon: <ChartLine size={15} /> },
 ];
-const TILES = 5;
 
-export default function UseCases({ videos = {} }: { videos?: Partial<Record<ShowcaseKind, ShowcaseVideo[]>> }) {
+export default function UseCases() {
   const { ref, index, moving, go } = useDemoFrame<BrandCase['id'], HTMLElement>(FRAMES);
+  const grid = useRef<HTMLUListElement>(null);
   const active = BRAND_CASES[index];
-  const thumbnails = caseThumbnails(videos[active.showcase], TILES, active.posters);
+
+  useEffect(() => {
+    grid.current?.querySelectorAll('video').forEach((video) => {
+      if (moving) video.play().catch(() => {});
+      else video.pause();
+    });
+  }, [moving, index]);
 
   return (
     <section aria-labelledby="cases-title" className="cl-landing-section cl-cases" ref={ref}>
@@ -105,10 +111,10 @@ export default function UseCases({ videos = {} }: { videos?: Partial<Record<Show
                   승인<b>{active.counts.approved}</b>
                 </span>
               </p>
-              <ul className="cl-cases__grid">
+              <ul className="cl-cases__grid" ref={grid}>
                 {active.clips.map((clip, position) => (
-                  <li key={`${active.id}-${position}`} style={{ animationDelay: `${position * 60}ms` }}>
-                    <img alt="" className="cl-cases__thumb" referrerPolicy="no-referrer" src={thumbnails[position]} />
+                  <li key={clip.clip} style={{ animationDelay: `${position * 60}ms` }}>
+                    <video className="cl-cases__thumb" loop muted playsInline preload="metadata" {...clipMedia(clip.clip)} />
                     <span className="cl-cases__who">
                       <Avatar name={clip.creator} size="sm" />
                       <span>{clip.creator}</span>

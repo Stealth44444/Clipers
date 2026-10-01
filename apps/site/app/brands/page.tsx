@@ -12,14 +12,11 @@ import ViewsStory from '@/components/brand/views-story';
 import LandingChrome, { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import LogoWall from '@/components/logo-wall';
 import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
-import { loadShowcaseVideos } from '@/lib/youtube-showcase';
 
 // Brand landing. Design: docs/superpowers/specs/2026-10-01-brand-page-redesign-design.md.
 // Order follows what a buyer asks: will it waste money → how is it different → how much work → does it fit us →
 // can we control it → are the views real → how do we start. The brand rate is never shown, and no visual pairs a
 // won amount with views (that pair would reveal it).
-
-export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: '브랜드 · Clipers — 조회수가 난 만큼만 예산을 쓰는 숏폼 캠페인',
@@ -27,9 +24,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/brands' },
 };
 
-export default async function BrandsPage() {
-  const showcaseVideos = await loadShowcaseVideos();
-
+export default function BrandsPage() {
   return (
     <LandingChrome cta="캠페인 시작하기" path="/brands">
       <HorizonHero signUpHref={SIGN_UP} />
@@ -41,7 +36,7 @@ export default async function BrandsPage() {
 
       <CompareTable />
       <SolutionCards />
-      <UseCases videos={showcaseVideos} />
+      <UseCases />
       <ControlsBento />
       <VerifyFlow />
       <StartCard />
