@@ -75,7 +75,7 @@ export default async function HomePage() {
             <br />
             조회수만큼 받으세요
           </h1>
-          <p className="cl-landing-hero__lead">알리고 싶은 영상이 있는 곳과 크리에이터를 이어 드려요. 숏폼으로 만들어 올리면, 새 채널이어도 조회수만큼 받아요.</p>
+          <p className="cl-landing-hero__lead">숏폼을 올리면 조회수만큼 돈이 돼요. 새 채널이어도, 수익창출 전이어도요.</p>
           <div className="cl-landing-hero__actions">
             <ButtonLink href={SIGN_UP} size="lg" variant="primary">
               무료로 시작하기
