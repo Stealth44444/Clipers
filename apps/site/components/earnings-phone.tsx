@@ -176,7 +176,6 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
                     </span>
                     <span className="cl-short__action">
                       <Send size={19} />
-                      공유
                     </span>
                   </div>
                   <div className="cl-short__info">
