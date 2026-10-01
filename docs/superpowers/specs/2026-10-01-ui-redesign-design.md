@@ -28,7 +28,7 @@
 - 시맨틱: 성공=브랜드 그린, 경고/대기=Frosted amber, 위험=Frosted tomato, 정보=Frosted sky. 스탯 아이콘 틴트(그린/스카이/바이올렛/앰버)는 Whop 수익 화면 배색을 따름
 
 **컴포넌트** (`packages/ui/src/components`, 스타일은 `cl-` 접두 클래스로 `packages/ui/src/styles/*.css`에 둔다)
-- 기본: `Button`(pill — primary는 Content Rewards식 촉감형: 상단 라디얼 하이라이트 + 하단 어두운 립 / secondary 회색 + 1px 베젤 / ghost, 비활성 상태), `IconButton`, `Badge`, `Avatar`, `Card`, `ProgressBar`
+- 기본: `Button`(모서리가 둥근 네모 — sm 6px / md 8px / lg 12px, 알약형은 `pill` 옵션으로 상단바·마케팅 헤더 CTA에만. primary는 Content Rewards식 촉감형: 상단 라디얼 하이라이트 + 하단 어두운 립 / secondary 회색 + 1px 베젤 / ghost, 비활성 상태), `IconButton`, `Badge`, `Avatar`, `Card`, `ProgressBar`
 - 입력: `Field`(라벨 + 글자수 카운터 + 오류), `Input`, `Textarea`, `Select`, `Switch`, `Chip`(멀티선택), `OptionCard`(아이콘 원 + 우상단 라디오, 선택 시 브랜드색), `Dropzone`
 - 데이터: `StatCard`(컬러 원형 아이콘 + 큰 숫자 + 라벨, 강조형은 그라디언트 틴트), `Tabs`(카운트 붙은 pill 세그먼트), `DataTable`, `EmptyState`(컬러 원 아이콘 + 제목 + 설명), `Timeline`(세로선 + 점 + 우측 합계), `Checklist`(완료 원 아이콘, `n of m` 카운터 + 진행바, 현재 단계 강조), `SummaryList`(키-값 행), `LineChart`(SVG, 격자선·축 라벨·마지막 날짜 강조)
 - 오버레이: `Dialog`(네이티브 `<dialog>` 기반)

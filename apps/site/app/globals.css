@@ -118,7 +118,7 @@
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-4);
   padding: 0 16px;
   background: var(--gray-4);
   color: var(--text-primary);
