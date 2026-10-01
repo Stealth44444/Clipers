@@ -33,7 +33,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
   return (
     <SiteShell activeGroup={activeGroup?.id}>
       <div className="cl-sky">
-        <Starfield className="cl-sky__canvas" />
+        <Starfield className="cl-sky__canvas" count={700} speed={0.45} trail={0.6} twinkle={0.25} />
       </div>
       <Page>
         <section className="cl-market-hero">

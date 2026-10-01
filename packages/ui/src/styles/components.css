@@ -761,10 +761,8 @@
 }
 
 /* ---------- platform marks ---------- */
-.cl-platforms { display: inline-flex; align-items: center; gap: 4px; }
-.cl-platforms__item { display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-full); background: var(--gray-4); color: var(--color-text); }
-.cl-platforms--md .cl-platforms__item { width: 30px; height: 30px; }
-.cl-platforms--sm .cl-platforms__item { width: 24px; height: 24px; }
+.cl-platforms { display: inline-flex; align-items: center; gap: 8px; }
+.cl-platform-icon { display: block; flex: 0 0 auto; object-fit: contain; }
 
 /* ---------- minimal chart ---------- */
 .cl-chart--minimal .cl-chart__grid { stroke: var(--gray-a2); }

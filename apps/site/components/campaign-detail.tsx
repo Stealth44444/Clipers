@@ -38,7 +38,7 @@ export default function CampaignDetail({ campaign }: { campaign: Detail }) {
           return (
             <div className="cl-rate" key={platform}>
               <p className="cl-rate__head">
-                <PlatformIcon platform={platform} size={15} />
+                <PlatformIcon platform={platform} size={18} />
                 {platformLabel(platform)}
               </p>
               <dl className="cl-rate__cells">

@@ -21,7 +21,7 @@ export default function CampaignCard({ campaign }: { campaign: MarketCampaign })
         <div className="cl-ccard__row">
           <span aria-label={`플랫폼 ${campaign.platforms.length}개`} className="cl-ccard__platforms" role="img">
             {campaign.platforms.map((platform) => (
-              <PlatformIcon key={platform} platform={platform} size={14} />
+              <PlatformIcon key={platform} platform={platform} size={16} />
             ))}
           </span>
           <span className="cl-ccard__rate">

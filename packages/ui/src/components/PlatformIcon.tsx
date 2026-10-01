@@ -1,36 +1,19 @@
-import { siFacebook, siInstagram, siKakaotalk, siNaver, siTiktok, siX, siYoutube, type SimpleIcon } from 'simple-icons';
 import { cx } from '../lib/cx';
 
-// Official brand marks from Simple Icons (CC0). Keys are the platform values stored on campaigns and clips.
-// Placeholder until the brand-supplied platform PNGs arrive; swap the render below for those images then.
-const ICONS: Record<string, SimpleIcon> = {
-  youtube_shorts: siYoutube,
-  tiktok: siTiktok,
-  instagram_reels: siInstagram,
-  facebook: siFacebook,
-  x: siX,
-  naver_clip: siNaver,
-  kakao_shorts: siKakaotalk,
-};
+// Brand-supplied platform logos, normalised to 96px squares (masters in packages/ui/brand/platforms) and served
+// from each app's /platforms folder. Keys are the platform values stored on campaigns and clips.
+const KNOWN = new Set(['youtube_shorts', 'tiktok', 'instagram_reels', 'facebook', 'x', 'naver_clip', 'kakao_shorts']);
 
 export function PlatformIcon({ platform, size = 16 }: { platform: string; size?: number }) {
-  const icon = ICONS[platform];
-  if (!icon) return null;
-  return (
-    <svg aria-hidden fill="currentColor" height={size} role="img" viewBox="0 0 24 24" width={size}>
-      <path d={icon.path} />
-    </svg>
-  );
+  if (!KNOWN.has(platform)) return null;
+  return <img alt="" className="cl-platform-icon" height={size} src={`/platforms/${platform}.png`} width={size} />;
 }
 
-/** Circular platform marks, as on Whop campaign cards. */
 export function PlatformIcons({ platforms, label, size = 'md' }: { platforms: string[]; label?: string; size?: 'sm' | 'md' }) {
   return (
     <span aria-label={label} className={cx('cl-platforms', `cl-platforms--${size}`)} role={label ? 'img' : undefined}>
       {platforms.map((platform) => (
-        <span className="cl-platforms__item" key={platform} title={platform}>
-          <PlatformIcon platform={platform} size={size === 'sm' ? 13 : 15} />
-        </span>
+        <PlatformIcon key={platform} platform={platform} size={size === 'sm' ? 16 : 20} />
       ))}
     </span>
   );
