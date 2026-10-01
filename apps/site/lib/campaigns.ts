@@ -1,6 +1,4 @@
 import {
-  budgetUsage,
-  campaignPricing,
   cumulativeCountByDay,
   fetchAllRows,
   fetchAllRowsIn,
@@ -12,6 +10,8 @@ import {
 import { getSupabaseServerClient } from './supabase-server';
 
 // Public marketplace data. Anonymous RLS only exposes live self-serve campaigns and their approved clips.
+// The brand's budget and rate are not readable here: campaign_payout_limits() gives each campaign's creator payout
+// limit (what creators can be paid in total), and the market shows that, never the brand's money.
 
 export type MarketCampaign = {
   id: string;
@@ -23,9 +23,10 @@ export type MarketCampaign = {
   brandName: string;
   /** Creator rate per 1,000 views (what creators are told). */
   creatorCpm: number;
-  totalBudget: number;
-  spentBudget: number;
-  remainingBudget: number;
+  /** Total creators can be paid on this campaign. */
+  payoutLimit: number;
+  payoutPaid: number;
+  payoutRemaining: number;
   usageRatio: number;
   participantCount: number;
   createdAt: string;
@@ -38,19 +39,16 @@ type CampaignRow = {
   content_type: string;
   cover_image_url: string | null;
   allowed_platforms: string[];
-  total_budget: number;
-  brand_cpm: number;
   creator_cpm: number;
   created_at: string;
   brand: { display_name: string } | null;
 };
 
 const CAMPAIGN_FIELDS =
-  'id, title, category, content_type, cover_image_url, allowed_platforms, total_budget, brand_cpm, creator_cpm, created_at, brand:profiles!campaigns_brand_id_fkey(display_name)';
+  'id, title, category, content_type, cover_image_url, allowed_platforms, creator_cpm, created_at, brand:profiles!campaigns_brand_id_fkey(display_name)';
 
-function toMarketCampaign(row: CampaignRow, creatorPaid: number, participantCount: number): MarketCampaign {
-  const totalBudget = Number(row.total_budget);
-  const usage = budgetUsage(totalBudget, creatorPaid, campaignPricing(row));
+function toMarketCampaign(row: CampaignRow, payoutLimit: number, creatorPaid: number, participantCount: number): MarketCampaign {
+  const payoutPaid = Math.min(payoutLimit, creatorPaid);
   return {
     id: row.id,
     title: row.title,
@@ -60,13 +58,19 @@ function toMarketCampaign(row: CampaignRow, creatorPaid: number, participantCoun
     platforms: row.allowed_platforms,
     brandName: row.brand?.display_name ?? '브랜드',
     creatorCpm: Number(row.creator_cpm),
-    totalBudget,
-    spentBudget: usage.spent,
-    remainingBudget: usage.remaining,
-    usageRatio: usage.ratio,
+    payoutLimit,
+    payoutPaid,
+    payoutRemaining: Math.max(0, payoutLimit - payoutPaid),
+    usageRatio: payoutLimit > 0 ? payoutPaid / payoutLimit : 0,
     participantCount,
     createdAt: row.created_at,
   };
+}
+
+async function payoutLimitsByCampaign(campaignIds: string[]): Promise<Map<string, number>> {
+  if (campaignIds.length === 0) return new Map();
+  const { data } = await getSupabaseServerClient().rpc('campaign_payout_limits', { p_campaign_ids: campaignIds });
+  return new Map(((data ?? []) as { campaign_id: string; payout_limit: number | string }[]).map((row) => [row.campaign_id, Number(row.payout_limit)]));
 }
 
 async function participantsByCampaign(campaignIds: string[]): Promise<Map<string, number>> {
@@ -100,8 +104,8 @@ export async function loadLiveCampaigns(): Promise<MarketCampaign[]> {
     .order('created_at', { ascending: false });
   const rows = (data ?? []) as unknown as CampaignRow[];
   const ids = rows.map((row) => row.id);
-  const [paid, participants] = await Promise.all([creatorPaidByCampaign(ids), participantsByCampaign(ids)]);
-  return rows.map((row) => toMarketCampaign(row, paid.get(row.id) ?? 0, participants.get(row.id) ?? 0));
+  const [limits, paid, participants] = await Promise.all([payoutLimitsByCampaign(ids), creatorPaidByCampaign(ids), participantsByCampaign(ids)]);
+  return rows.map((row) => toMarketCampaign(row, limits.get(row.id) ?? 0, paid.get(row.id) ?? 0, participants.get(row.id) ?? 0));
 }
 
 export type TopClip = { id: string; url: string; campaignTitle: string; viewCount: number };
@@ -170,7 +174,8 @@ export async function loadCampaignDetail(id: string): Promise<CampaignDetail | n
     review_sla_hours: number;
   };
 
-  const [rates, participants, settlements, approvedClips] = await Promise.all([
+  const [limits, rates, participants, settlements, approvedClips] = await Promise.all([
+    payoutLimitsByCampaign([id]),
     supabase.from('campaign_platform_rates').select('platform, max_payout').eq('campaign_id', id),
     participantsByCampaign([id]),
     fetchAllRows((from, to) =>
@@ -209,7 +214,7 @@ export async function loadCampaignDetail(id: string): Promise<CampaignDetail | n
   const activity = trend.map((point, index) => ({ date: point.date, views: point.cumulative, submissions: submissions[index] }));
 
   return {
-    ...toMarketCampaign(row, creatorPaid, participants.get(id) ?? 0),
+    ...toMarketCampaign(row, limits.get(id) ?? 0, creatorPaid, participants.get(id) ?? 0),
     description: row.description,
     requirements: row.content_requirements,
     referenceLinks: row.reference_links ?? [],

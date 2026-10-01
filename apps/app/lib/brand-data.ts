@@ -1,5 +1,6 @@
 import { cache } from 'react';
 import { budgetUsage, campaignPricing, expectedViews, fetchAllRowsIn } from '@clipers/db';
+import { loadCampaignFinances } from './campaign-finances';
 import { getSession } from './session';
 
 export type BrandCampaign = {
@@ -26,14 +27,15 @@ export const getBrandCampaigns = cache(async (): Promise<BrandCampaign[]> => {
   const { supabase, user } = await getSession();
   const { data: rows } = await supabase
     .from('campaigns')
-    .select('id, title, status, category, content_type, total_budget, brand_cpm, creator_cpm, cover_image_url, allowed_platforms, created_at')
+    .select('id, title, status, category, content_type, cover_image_url, allowed_platforms, created_at')
     .eq('brand_id', user.id)
     .order('created_at', { ascending: false });
   const campaigns = rows ?? [];
   if (campaigns.length === 0) return [];
 
   const ids = campaigns.map((campaign) => campaign.id);
-  const [settlements, clips] = await Promise.all([
+  const [finances, settlements, clips] = await Promise.all([
+    loadCampaignFinances(supabase, ids),
     fetchAllRowsIn(ids, (slice) => (from, to) =>
       supabase.from('settlements').select('campaign_id, amount, verified_views').in('campaign_id', slice).order('id').range(from, to)
     ),
@@ -50,8 +52,9 @@ export const getBrandCampaigns = cache(async (): Promise<BrandCampaign[]> => {
   for (const row of clips) clipCounts.set(row.campaign_id, (clipCounts.get(row.campaign_id) ?? 0) + 1);
 
   return campaigns.map((campaign) => {
-    const pricing = campaignPricing(campaign);
-    const totalBudget = Number(campaign.total_budget);
+    const finance = finances.get(campaign.id) ?? { total_budget: 0, brand_cpm: 0, creator_cpm: 0 };
+    const pricing = campaignPricing(finance);
+    const totalBudget = finance.total_budget;
     const usage = budgetUsage(totalBudget, paid.get(campaign.id) ?? 0, pricing);
     return {
       id: campaign.id,

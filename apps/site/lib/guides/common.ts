@@ -4,7 +4,7 @@ import { MIN_BUDGET, MIN_VIEWS, REVIEW_HOURS, WITHDRAW_FROM } from './facts';
 
 export const CAVEATS = [
   `조회수가 나와야 받고, 영상 하나의 조회수가 ${MIN_VIEWS}를 넘어야 정산이 시작돼요.`,
-  '영상 하나로 받을 수 있는 최대 금액은 캠페인마다 다르고, 예산이 다 쓰이면 캠페인이 끝나요.',
+  '영상 하나로 받을 수 있는 최대 금액은 캠페인마다 다르고, 캠페인 지급 한도에 다다르면 캠페인이 끝나요.',
 ];
 
 export const START_STEPS = [

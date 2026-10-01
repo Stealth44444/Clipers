@@ -61,11 +61,11 @@ export default function MockCampaignCard({ campaign, video, rate = 800 }: { camp
       <div className="cl-ccard__footer">
         <div className="cl-ccard__row">
           <span className="cl-ccard__budget">
-            남은 예산 <strong>{formatCompactKRW(campaign.remaining)}</strong> / {formatCompactKRW(campaign.total)}
+            남은 지급 한도 <strong>{formatCompactKRW(campaign.remaining)}</strong> / {formatCompactKRW(campaign.total)}
           </span>
           <span className="cl-ccard__participants">참여 {campaign.participants}명</span>
         </div>
-        <ProgressBar label="예산 사용률" value={1 - campaign.remaining / campaign.total} />
+        <ProgressBar label="지급 한도 사용률" value={1 - campaign.remaining / campaign.total} />
       </div>
     </div>
   );

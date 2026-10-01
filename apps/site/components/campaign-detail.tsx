@@ -61,11 +61,11 @@ export default function CampaignDetail({ campaign }: { campaign: Detail }) {
 
       <section className="cl-detail__split">
         <div className="cl-panel">
-          <p className="cl-panel__label">예산</p>
+          <p className="cl-panel__label">지급 한도</p>
           <p className="cl-budget-figure">
-            {formatCompactKRW(campaign.remainingBudget)} <span className="cl-meta">남음 · 총 {formatCompactKRW(campaign.totalBudget)}</span>
+            {formatCompactKRW(campaign.payoutRemaining)} <span className="cl-meta">남음 · 총 {formatCompactKRW(campaign.payoutLimit)}</span>
           </p>
-          <ProgressBar label="예산 사용률" value={campaign.usageRatio} />
+          <ProgressBar label="지급 한도 사용률" value={campaign.usageRatio} />
         </div>
         <div className="cl-panel">
           <p className="cl-panel__label">검수</p>

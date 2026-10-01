@@ -3,6 +3,7 @@ import { ClipboardCheck, Landmark, MessageSquareWarning, UserCheck } from 'lucid
 import { campaignEconomics, campaignPricing, fetchAllRows, fetchAllRowsIn, getViewSpikeFlags } from '@clipers/db';
 import { Badge, DataTable, Page, PageHeader, ProgressBar, SectionHeader, Stack, StatCard, StatGrid, formatKRW } from '@clipers/ui';
 import { getAdminQueueCounts } from '@/lib/admin-data';
+import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
 import { loadSnapshotsByClip } from '@/lib/snapshots';
 import { CAMPAIGN_STATUS, statusDisplay } from '@/lib/status';
@@ -11,9 +12,6 @@ type CampaignRow = {
   id: string;
   title: string;
   status: string;
-  total_budget: number;
-  brand_cpm: number;
-  creator_cpm: number;
   brand: { display_name: string } | null;
 };
 type FlaggedClip = { id: string; url: string; campaign: { title: string } | null; creator: { display_name: string } | null };
@@ -26,7 +24,7 @@ export default async function AdminOverviewPage() {
   const [campaignResult, approvedClipResult] = await Promise.all([
     supabase
       .from('campaigns')
-      .select('id, title, status, total_budget, brand_cpm, creator_cpm, brand:profiles!campaigns_brand_id_fkey(display_name)')
+      .select('id, title, status, brand:profiles!campaigns_brand_id_fkey(display_name)')
       .in('status', ['pending_escrow', 'live', 'paused', 'closed'])
       .order('created_at', { ascending: false }),
     fetchAllRows((from, to) =>
@@ -40,15 +38,19 @@ export default async function AdminOverviewPage() {
   ]);
   const campaigns = (campaignResult.data ?? []) as unknown as CampaignRow[];
 
-  const settlementRows = await fetchAllRowsIn(campaigns.map((campaign) => campaign.id), (ids) => (from, to) =>
-    supabase.from('settlements').select('campaign_id, amount').in('campaign_id', ids).order('id').range(from, to)
-  );
+  const [finances, settlementRows] = await Promise.all([
+    loadCampaignFinances(supabase, campaigns.map((campaign) => campaign.id)),
+    fetchAllRowsIn(campaigns.map((campaign) => campaign.id), (ids) => (from, to) =>
+      supabase.from('settlements').select('campaign_id, amount').in('campaign_id', ids).order('id').range(from, to)
+    ),
+  ]);
   const paidByCampaign = new Map<string, number>();
   for (const row of settlementRows) paidByCampaign.set(row.campaign_id, (paidByCampaign.get(row.campaign_id) ?? 0) + Number(row.amount));
 
   const rows = campaigns.map((campaign) => {
-    const totalBudget = Number(campaign.total_budget);
-    const economics = campaignEconomics(totalBudget, paidByCampaign.get(campaign.id) ?? 0, campaignPricing(campaign));
+    const finance = finances.get(campaign.id) ?? { total_budget: 0, brand_cpm: 0, creator_cpm: 0 };
+    const totalBudget = finance.total_budget;
+    const economics = campaignEconomics(totalBudget, paidByCampaign.get(campaign.id) ?? 0, campaignPricing(finance));
     return { ...campaign, totalBudget, ...economics, ratio: totalBudget > 0 ? economics.spent / totalBudget : 0 };
   });
   const revenue = rows.reduce((sum, row) => sum + row.platformRevenue, 0);

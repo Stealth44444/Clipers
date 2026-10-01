@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl('/')),
   title: { default: 'Clipers — 조회수로 정산받는 숏폼 캠페인 플랫폼', template: '%s' },
   description:
-    '브랜드는 예산을 걸고, 크리에이터는 숏폼을 올리고, 검증된 조회수만큼 정산되는 클리핑 캠페인 플랫폼. 유튜브 쇼츠·틱톡·릴스 등 국내 숏폼 플랫폼 지원.',
+    '크리에이터가 숏폼을 올리면 검증된 조회수만큼 Clipers가 지급하는 클리핑 캠페인 플랫폼. 유튜브 쇼츠·틱톡·릴스 등 국내 숏폼 플랫폼 지원.',
   applicationName: 'Clipers',
   openGraph: { type: 'website', siteName: 'Clipers', locale: 'ko_KR' },
   twitter: { card: 'summary_large_image' },

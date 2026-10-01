@@ -27,7 +27,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   const guide = guideBySlug((await params).slug);
   if (!guide) notFound();
   const advertiser = guide.audience === 'advertiser';
-  const campaigns = advertiser ? [] : (await loadLiveCampaigns()).sort((left, right) => right.remainingBudget - left.remainingBudget).slice(0, 3);
+  const campaigns = advertiser ? [] : (await loadLiveCampaigns()).sort((left, right) => right.payoutRemaining - left.payoutRemaining).slice(0, 3);
   return (
     <LandingChrome cta={advertiser ? '캠페인 시작하기' : '무료로 시작하기'} path={advertiser ? '/brands' : '/guides'}>
       <GuideArticle campaigns={campaigns} guide={guide} />

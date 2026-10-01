@@ -27,7 +27,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
     if (!query) return true;
     return [campaign.title, campaign.category, campaign.brandName].some((field) => field.toLowerCase().includes(query));
   });
-  const featured = !query && !activeGroup ? [...all].sort((left, right) => right.remainingBudget - left.remainingBudget).slice(0, 5) : [];
+  const featured = !query && !activeGroup ? [...all].sort((left, right) => right.payoutRemaining - left.payoutRemaining).slice(0, 5) : [];
   const topClips = !query ? await loadTopClips(campaigns.map((campaign) => campaign.id)) : [];
 
   return (
@@ -48,7 +48,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
 
         <Stack>
           {featured.length > 0 && (
-            <Rail description="남은 예산이 많은 캠페인부터 보여요." title="추천 캠페인">
+            <Rail description="남은 지급 한도가 많은 캠페인부터 보여요." title="추천 캠페인">
               {featured.map((campaign) => (
                 <CampaignCard campaign={campaign} key={campaign.id} />
               ))}

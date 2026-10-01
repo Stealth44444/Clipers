@@ -18,6 +18,7 @@ import {
   formatKRW,
 } from '@clipers/ui';
 import { getBrandCampaigns } from '@/lib/brand-data';
+import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
 import { CAMPAIGN_STATUS, CLIP_STATUS, CONTENT_TYPE_LABEL, statusDisplay } from '@/lib/status';
 import DepositButton from './deposit-button';
@@ -31,7 +32,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
   const { supabase, user } = await getSession();
   const { data: campaign } = await supabase
     .from('campaigns')
-    .select('id, title, status, description, content_requirements, reference_links, review_sla_hours, brand_cpm, creator_cpm, total_budget, allowed_platforms, category, content_type')
+    .select('id, title, status, description, content_requirements, reference_links, review_sla_hours, allowed_platforms, category, content_type')
     .eq('id', id)
     .eq('brand_id', user.id)
     .maybeSingle();
@@ -47,7 +48,9 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
       .order('submitted_at', { ascending: false }),
   ]);
 
-  const pricing = campaignPricing(campaign);
+  const finance = (await loadCampaignFinances(supabase, [id])).get(id);
+  if (!finance) notFound();
+  const pricing = campaignPricing(finance);
   const clipCap = rates.data?.[0] ? creatorPayoutToClipCap(Number(rates.data[0].max_payout), pricing) : null;
   const status = statusDisplay(CAMPAIGN_STATUS, campaign.status);
   const clipRows = (clips.data ?? []) as unknown as ClipRow[];

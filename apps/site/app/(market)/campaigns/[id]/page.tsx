@@ -13,7 +13,7 @@ export const revalidate = 60;
 type Params = { params: Promise<{ id: string }> };
 
 function summary(campaign: NonNullable<Awaited<ReturnType<typeof loadCampaignDetail>>>): string {
-  return `${campaign.brandName}의 ${campaign.category} 숏폼 캠페인. ${platformLabels(campaign.platforms)}에 영상을 올리면 검증된 조회수 1천 회당 ${formatKRW(campaign.creatorCpm)}을 받아요. 남은 예산 ${formatKRW(campaign.remainingBudget)}.`;
+  return `${campaign.brandName}의 ${campaign.category} 숏폼 캠페인. ${platformLabels(campaign.platforms)}에 영상을 올리면 검증된 조회수 1천 회당 ${formatKRW(campaign.creatorCpm)}을 받아요. 남은 지급 한도 ${formatKRW(campaign.payoutRemaining)}.`;
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {

@@ -33,11 +33,11 @@ export default function CampaignCard({ campaign }: { campaign: MarketCampaign })
       <div className="cl-ccard__footer">
         <div className="cl-ccard__row">
           <span className="cl-ccard__budget">
-            남은 예산 <strong>{formatCompactKRW(campaign.remainingBudget)}</strong> / {formatCompactKRW(campaign.totalBudget)}
+            남은 지급 한도 <strong>{formatCompactKRW(campaign.payoutRemaining)}</strong> / {formatCompactKRW(campaign.payoutLimit)}
           </span>
           <span className="cl-ccard__participants">참여 {campaign.participantCount}명</span>
         </div>
-        <ProgressBar label={`${campaign.title} 예산 사용률`} value={campaign.usageRatio} />
+        <ProgressBar label={`${campaign.title} 지급 한도 사용률`} value={campaign.usageRatio} />
       </div>
     </Link>
   );

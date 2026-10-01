@@ -26,6 +26,11 @@ describe('pricing defaults', () => {
     expect(sql).toContain(`creator_cpm numeric(12, 2) not null default ${DEFAULT_PRICING.creatorCpm}`);
     expect(sql).toContain(`total_budget >= ${MIN_CAMPAIGN_BUDGET}`);
   });
+
+  it('give the public market the same payout limit as creatorPayoutCap', () => {
+    // campaign_payout_limits(): floor(total_budget * creator_cpm / brand_cpm), as creatorPayoutCap below.
+    expect(migrations()).toContain('floor(c.total_budget * c.creator_cpm / c.brand_cpm)');
+  });
 });
 
 describe('expectedViews', () => {

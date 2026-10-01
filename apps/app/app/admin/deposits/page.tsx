@@ -1,19 +1,22 @@
 import Link from 'next/link';
 import { Landmark } from 'lucide-react';
 import { Card, DataTable, EmptyState, Page, PageHeader, formatKRW } from '@clipers/ui';
+import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
 import { ConfirmDepositAction } from '../review-actions';
 
-type Row = { id: string; title: string; total_budget: number; created_at: string; brand: { display_name: string } | null };
+type Row = { id: string; title: string; created_at: string; brand: { display_name: string } | null; total_budget: number };
 
 export default async function AdminDepositsPage() {
   const { supabase, user } = await getSession();
   const { data } = await supabase
     .from('campaigns')
-    .select('id, title, total_budget, created_at, brand:profiles!campaigns_brand_id_fkey(display_name)')
+    .select('id, title, created_at, brand:profiles!campaigns_brand_id_fkey(display_name)')
     .eq('status', 'pending_escrow')
     .order('created_at', { ascending: true });
-  const rows = (data ?? []) as unknown as Row[];
+  const campaigns = (data ?? []) as unknown as Omit<Row, 'total_budget'>[];
+  const finances = await loadCampaignFinances(supabase, campaigns.map((campaign) => campaign.id));
+  const rows: Row[] = campaigns.map((campaign) => ({ ...campaign, total_budget: finances.get(campaign.id)?.total_budget ?? 0 }));
 
   return (
     <Page>

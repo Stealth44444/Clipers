@@ -26,8 +26,9 @@ type ApprovedClip = {
   creator_id: string;
   platform: string;
   reviewed_at: string | null;
-  campaign: { total_budget: number | string; brand_cpm: number | string; creator_cpm: number | string } | null;
 };
+
+type FinanceRow = { campaign_id: string; total_budget: number | string; brand_cpm: number | string; creator_cpm: number | string };
 
 type RateRow = { campaign_id: string; platform: string; cpm_rate: number | string; max_payout: number | string };
 type SnapshotRow = { clip_id: string; view_count: number | string; captured_at: string };
@@ -37,7 +38,7 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
   const clips = (await fetchAllRows((from, to) =>
     supabase
       .from('clips')
-      .select('id, campaign_id, creator_id, platform, reviewed_at, campaign:campaigns!clips_campaign_id_fkey(total_budget, brand_cpm, creator_cpm)')
+      .select('id, campaign_id, creator_id, platform, reviewed_at')
       .eq('status', 'approved')
       .order('id')
       .range(from, to)
@@ -46,7 +47,11 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
 
   const campaignIds = [...new Set(clips.map((clip) => clip.campaign_id))];
   const clipIds = clips.map((clip) => clip.id);
-  const [rateRows, snapshots, settled] = await Promise.all([
+  // Budgets and brand rates are not readable through campaigns; campaign_finances serves admins and the service role.
+  const [financeRows, rateRows, snapshots, settled] = await Promise.all([
+    fetchAllRowsIn(campaignIds, (ids) => (from, to) =>
+      supabase.from('campaign_finances').select('campaign_id, total_budget, brand_cpm, creator_cpm').in('campaign_id', ids).order('campaign_id').range(from, to)
+    ) as Promise<FinanceRow[]>,
     fetchAllRowsIn(campaignIds, (ids) => (from, to) =>
       supabase.from('campaign_platform_rates').select('campaign_id, platform, cpm_rate, max_payout').in('campaign_id', ids).order('campaign_id').order('platform').range(from, to)
     ) as Promise<RateRow[]>,
@@ -64,6 +69,7 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
     ) as Promise<SettledRow[]>,
   ]);
 
+  const finances = new Map(financeRows.map((row) => [row.campaign_id, row]));
   const ratesByCampaign = new Map<string, PlatformRate[]>();
   for (const row of rateRows) {
     const rates = ratesByCampaign.get(row.campaign_id) ?? [];
@@ -85,7 +91,8 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
 
   const inputs = clips.flatMap((clip): WeeklySettlementInput[] => {
     const rate = findPlatformRate(ratesByCampaign.get(clip.campaign_id) ?? [], clip.platform);
-    if (!clip.campaign || !rate || settledThisWeek.has(clip.id)) return [];
+    const finance = finances.get(clip.campaign_id);
+    if (!finance || !rate || settledThisWeek.has(clip.id)) return [];
     return [
       {
         clipId: clip.id,
@@ -95,7 +102,7 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
         cpmRate: rate.cpmRate,
         perClipCap: rate.maxPayout,
         // Creators can only be paid the creator-rate share of the brand's budget.
-        campaignBudget: creatorPayoutCap(Number(clip.campaign.total_budget), campaignPricing(clip.campaign)),
+        campaignBudget: creatorPayoutCap(Number(finance.total_budget), campaignPricing(finance)),
         previouslySettledClipAmount: sum(earlier.filter((row) => row.clip_id === clip.id)),
         previouslySettledCampaignAmount: sum(spentBefore.filter((row) => row.campaign_id === clip.campaign_id)),
         snapshots: snapshotsByClip.get(clip.id) ?? [],

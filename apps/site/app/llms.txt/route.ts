@@ -31,7 +31,7 @@ export async function GET() {
     '',
     '## 클리핑과 캠페인',
     '- 클리핑(clipping): 캠페인이 정해 준 영상(방송, 신제품 영상, 게임 플레이 등)을 내 방식대로 자르고, 자막을 넣고, 순서를 바꿔 숏폼으로 편집해 올리는 일입니다. 찍지 않아도 편집만으로 참여할 수 있습니다.',
-    '- 캠페인: 브랜드나 아티스트, 크리에이터가 예산을 걸고 여는 숏폼 제작 요청입니다. 참여한 크리에이터들이 각자 올린 영상의 조회수만큼 이 예산을 나눠 받고, 예산이 다 쓰이면 캠페인이 끝납니다.',
+    '- 캠페인: 브랜드나 아티스트, 크리에이터가 Clipers에 맡긴 숏폼 제작 의뢰입니다. 참여한 크리에이터는 올린 영상의 검증된 조회수만큼 Clipers에서 받고, 캠페인 지급 한도에 도달하면 캠페인이 끝납니다.',
     '- 클리핑 캠페인은 원작자가 사용을 허락한 영상만 다룹니다.',
     '',
     '## 캠페인 종류',
@@ -89,7 +89,7 @@ export async function GET() {
     ...(campaigns.length > 0
       ? campaigns.map(
           (campaign) =>
-            `- [${campaign.title}](${siteUrl(`/campaigns/${campaign.id}`)}): ${campaign.brandName} · ${campaign.category} · 1천 회당 ${formatKRW(campaign.creatorCpm)} · 남은 예산 ${formatKRW(campaign.remainingBudget)}`
+            `- [${campaign.title}](${siteUrl(`/campaigns/${campaign.id}`)}): ${campaign.brandName} · ${campaign.category} · 1천 회당 ${formatKRW(campaign.creatorCpm)} · 남은 지급 한도 ${formatKRW(campaign.payoutRemaining)}`
         )
       : ['- 현재 진행 중인 캠페인이 없습니다.']),
     '',
