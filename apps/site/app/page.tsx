@@ -12,6 +12,7 @@ import LogoWall from '@/components/logo-wall';
 import NotificationStack from '@/components/notification-stack';
 import RotatingHeadline from '@/components/rotating-headline';
 import { loadLiveCampaigns } from '@/lib/campaigns';
+import { CREATOR_FAQ } from '@/lib/creator-faq';
 import { loadShowcaseVideos } from '@/lib/youtube-showcase';
 
 // Creator landing (the front door; brands have /brands). Design: docs/superpowers/specs/2026-10-01-creator-page-messaging-design.md.
@@ -25,29 +26,6 @@ export const metadata: Metadata = {
   description: '구독자 수와 상관없이 캠페인에 참여하고, 올린 숏폼의 조회수만큼 정산받으세요. 가입과 지원은 무료예요.',
   alternates: { canonical: '/' },
 };
-
-const rateExample = `예를 들어 1천 회당 ${formatKRW(DEFAULT_PRICING.creatorCpm)}인 캠페인이라면, 조회수 10만 회에 ${formatKRW(DEFAULT_PRICING.creatorCpm * 100)}이에요.`;
-
-const FAQ = [
-  { q: '클리핑이 뭔가요?', a: '캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리는 일이에요. 올린 영상의 조회수만큼 정산돼요.' },
-  {
-    q: '구독자가 적거나 새 채널이어도 되나요?',
-    a: '네. 구독자 수나 수익창출 여부와 상관없이 누구나 지원할 수 있어요. 캠페인마다 운영팀이 지원을 확인한 뒤 승인해요.',
-  },
-  { q: '남의 영상을 올려도 괜찮은가요?', a: '클리핑 캠페인은 원작자가 사용을 허락한 영상만 다뤄요. 캠페인에 적힌 요구사항에 맞춰 편집해 주세요.' },
-  { q: '가입비나 지원 비용이 있나요?', a: '없어요. 가입과 캠페인 지원은 무료예요.' },
-  {
-    q: '얼마를 받나요?',
-    a: `캠페인마다 조회수 1천 회당 받는 금액이 먼저 공개돼요. 검수를 통과한 영상의 검증된 조회수에 그 금액을 곱해 정산돼요. ${rateExample}`,
-  },
-  {
-    q: '조회수가 얼마나 나와야 정산되나요?',
-    a: '영상 하나의 조회수가 1,000회를 넘으면 그전 조회수까지 모두 정산되고, 이후 늘어난 조회수도 매주 이어서 정산돼요.',
-  },
-  { q: '언제 돈을 받을 수 있나요?', a: '정산된 금액이 3,000원 이상이면 지급을 요청할 수 있어요.' },
-  { q: '어떤 플랫폼에 올리면 되나요?', a: '유튜브 쇼츠, 틱톡, 인스타그램 릴스, 페이스북, X, 네이버 클립, 카카오 숏폼이에요. 캠페인마다 올릴 수 있는 플랫폼이 정해져 있어요.' },
-  { q: '조회수는 어떻게 확인하나요?', a: '유튜브는 조회수를 자동으로 가져오고, 다른 플랫폼은 화면 캡처를 제출하면 운영팀이 확인해요.' },
-];
 
 // Below this many live campaigns the rail looks empty, so the section stays hidden (one desktop row of cards).
 const MIN_LANDING_CAMPAIGNS = 4;
@@ -239,7 +217,7 @@ export default async function HomePage() {
       </section>
 
 
-      <LandingFaq items={FAQ} path="/" />
+      <LandingFaq items={CREATOR_FAQ} path="/" />
 
       <section className="cl-closing">
         <div aria-hidden className="cl-hero-mesh cl-hero-mesh--closing">
