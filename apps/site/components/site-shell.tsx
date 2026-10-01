@@ -45,7 +45,7 @@ export default function SiteShell({ activeGroup, children }: { activeGroup?: str
           <ButtonLink href={appUrl('/login')} size="sm" variant="ghost">
             로그인
           </ButtonLink>
-          <ButtonLink href={appUrl('/login?mode=sign-up')} pill size="sm" variant="primary">
+          <ButtonLink href={appUrl('/login?mode=sign-up')} size="sm" variant="primary">
             시작하기
           </ButtonLink>
         </>

@@ -27,7 +27,7 @@ export default function CampaignDetail({ campaign }: { campaign: Detail }) {
 
       <div className="cl-detail__bar">
         <PlatformIcons label={`플랫폼 ${campaign.platforms.length}개`} platforms={campaign.platforms} />
-        <ButtonLink href={applyUrl} pill variant="primary">
+        <ButtonLink href={applyUrl} variant="primary">
           지원하기
         </ButtonLink>
       </div>

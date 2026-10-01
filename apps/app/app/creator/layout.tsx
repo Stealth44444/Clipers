@@ -19,7 +19,7 @@ export default async function CreatorLayout({ children }: { children: ReactNode 
       displayName={profile.display_name}
       role="creator"
       topbarExtra={
-        <Link aria-label={`받을 금액 ${formatKRW(balance)}`} className="cl-balance-pill" href="/creator/earnings">
+        <Link aria-label={`받을 금액 ${formatKRW(balance)}`} className="cl-balance" href="/creator/earnings">
           <Wallet size={15} />
           {formatKRW(balance)}
         </Link>

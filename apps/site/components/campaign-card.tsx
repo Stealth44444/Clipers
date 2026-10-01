@@ -2,23 +2,12 @@ import Link from 'next/link';
 import { Avatar, PlatformIcon, ProgressBar, formatCompactKRW, formatKRW, relativeTimeKo } from '@clipers/ui';
 import type { MarketCampaign } from '@/lib/campaigns';
 
-/** Rate and platforms ride on the cover as glass chips; the body keeps only brand, title and budget. */
+/** The cover stays clean; brand, title, platforms, rate and budget read top to bottom in the body. */
 export default function CampaignCard({ campaign }: { campaign: MarketCampaign }) {
   return (
     <Link className="cl-ccard" href={`/campaigns/${campaign.id}`} scroll={false}>
       <div className="cl-ccard__cover">
         {campaign.coverImageUrl && <img alt="" className="cl-ccard__image" src={campaign.coverImageUrl} />}
-        <span className="cl-ccard__rate">
-          <strong>{formatKRW(campaign.creatorCpm)}</strong> / 1천 회
-        </span>
-        <span aria-label={`플랫폼 ${campaign.platforms.length}개`} className="cl-ccard__platforms" role="img">
-          {campaign.platforms.slice(0, 4).map((platform) => (
-            <span className="cl-ccard__platform" key={platform}>
-              <PlatformIcon platform={platform} size={12} />
-            </span>
-          ))}
-          {campaign.platforms.length > 4 && <span className="cl-ccard__platform cl-ccard__more">+{campaign.platforms.length - 4}</span>}
-        </span>
       </div>
 
       <div className="cl-ccard__body">
@@ -29,14 +18,24 @@ export default function CampaignCard({ campaign }: { campaign: MarketCampaign })
           <span>{relativeTimeKo(new Date(campaign.createdAt))}</span>
         </p>
         <h3 className="cl-ccard__title">{campaign.title}</h3>
+        <div className="cl-ccard__row">
+          <span aria-label={`플랫폼 ${campaign.platforms.length}개`} className="cl-ccard__platforms" role="img">
+            {campaign.platforms.map((platform) => (
+              <PlatformIcon key={platform} platform={platform} size={14} />
+            ))}
+          </span>
+          <span className="cl-ccard__rate">
+            1천 회당 <strong>{formatKRW(campaign.creatorCpm)}</strong>
+          </span>
+        </div>
       </div>
 
       <div className="cl-ccard__footer">
-        <div className="cl-ccard__figures">
-          <span>
-            남은 예산 <strong>{formatCompactKRW(campaign.remainingBudget)}</strong>
+        <div className="cl-ccard__row">
+          <span className="cl-ccard__budget">
+            남은 예산 <strong>{formatCompactKRW(campaign.remainingBudget)}</strong> / {formatCompactKRW(campaign.totalBudget)}
           </span>
-          <span>참여 {campaign.participantCount}명</span>
+          <span className="cl-ccard__participants">참여 {campaign.participantCount}명</span>
         </div>
         <ProgressBar label={`${campaign.title} 예산 사용률`} value={campaign.usageRatio} />
       </div>

@@ -11,7 +11,7 @@ export default async function BrandLayout({ children }: { children: ReactNode })
       displayName={profile.display_name}
       role="brand"
       topbarExtra={
-        <ButtonLink href="/brand/campaigns/new" icon={<Plus size={16} />} pill size="sm" variant="primary">
+        <ButtonLink href="/brand/campaigns/new" icon={<Plus size={16} />} size="sm" variant="primary">
           캠페인 만들기
         </ButtonLink>
       }

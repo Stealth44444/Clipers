@@ -4,19 +4,19 @@ import { cx } from '../lib/cx';
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
-type ButtonStyleOptions = { variant?: ButtonVariant; size?: ButtonSize; block?: boolean; pill?: boolean; className?: string };
+type ButtonStyleOptions = { variant?: ButtonVariant; size?: ButtonSize; block?: boolean; className?: string };
 
-export function buttonClass({ variant = 'secondary', size = 'md', block, pill, className }: ButtonStyleOptions = {}): string {
-  return cx('cl-button', `cl-button--${variant}`, `cl-button--${size}`, block && 'cl-button--block', pill && 'cl-button--pill', className);
+export function buttonClass({ variant = 'secondary', size = 'md', block, className }: ButtonStyleOptions = {}): string {
+  return cx('cl-button', `cl-button--${variant}`, `cl-button--${size}`, block && 'cl-button--block', className);
 }
 
 type ButtonContentProps = { icon?: ReactNode; iconEnd?: ReactNode };
 
 export type ButtonProps = ButtonStyleOptions & ButtonContentProps & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export function Button({ variant, size, block, pill, className, icon, iconEnd, children, type = 'button', ...rest }: ButtonProps) {
+export function Button({ variant, size, block, className, icon, iconEnd, children, type = 'button', ...rest }: ButtonProps) {
   return (
-    <button type={type} className={buttonClass({ variant, size, block, pill, className })} {...rest}>
+    <button type={type} className={buttonClass({ variant, size, block, className })} {...rest}>
       {icon}
       {children}
       {iconEnd}
@@ -26,9 +26,9 @@ export function Button({ variant, size, block, pill, className, icon, iconEnd, c
 
 export type ButtonLinkProps = ButtonStyleOptions & ButtonContentProps & AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 
-export function ButtonLink({ variant, size, block, pill, className, icon, iconEnd, children, ...rest }: ButtonLinkProps) {
+export function ButtonLink({ variant, size, block, className, icon, iconEnd, children, ...rest }: ButtonLinkProps) {
   return (
-    <a className={buttonClass({ variant, size, block, pill, className })} {...rest}>
+    <a className={buttonClass({ variant, size, block, className })} {...rest}>
       {icon}
       {children}
       {iconEnd}
