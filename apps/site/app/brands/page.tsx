@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { PLATFORMS } from '@clipers/db';
 import { Avatar, ButtonLink, DeviceFrame, MeshGradient, PlatformIcon, ProgressBar, StatusDot, buttonClass } from '@clipers/ui';
 import BrandLiveWindow from '@/components/brand-live-window';
@@ -364,6 +365,9 @@ export default function BrandsPage() {
       </section>
 
       <LandingFaq items={ADVERTISER_FAQ} path="/brands" />
+      <p className="cl-faq-more">
+        업종별 활용법은 <Link href="/guides#advertiser">광고주 가이드</Link>에서 볼 수 있어요.
+      </p>
 
       <section className="cl-landing-cta">
         <h2>다음 캠페인을 Clipers에서 시작하세요</h2>

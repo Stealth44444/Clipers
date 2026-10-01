@@ -175,6 +175,17 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
           publisher: { '@type': 'Organization', name: 'Clipers', url: siteUrl('/') },
         }}
       />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: '가이드', item: siteUrl('/guides') },
+            { '@type': 'ListItem', position: 2, name: advertiser ? '광고주 가이드' : '크리에이터 가이드', item: siteUrl(`/guides#${guide.audience}`) },
+            { '@type': 'ListItem', position: 3, name: guide.title, item: siteUrl(path) },
+          ],
+        }}
+      />
     </>
   );
 }

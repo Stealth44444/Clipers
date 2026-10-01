@@ -1597,3 +1597,8 @@
 .cl-guide__counterpart { margin-top: var(--space-7); padding: var(--space-4) var(--space-5); border-radius: 12px; background: var(--color-panel); color: var(--color-text-muted); font-size: var(--font-size-3); }
 .cl-guide__counterpart a { color: var(--color-text); font-weight: 600; }
 .cl-guide__counterpart a:hover { text-decoration: underline; }
+
+/* One line under a landing FAQ that points into the guides */
+.cl-faq-more { margin: calc(var(--space-6) * -1) auto var(--space-8); color: var(--color-text-muted); font-size: var(--font-size-3); text-align: center; }
+.cl-faq-more a { color: var(--color-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.cl-clipping__copy > .cl-link { justify-self: start; font-weight: 500; }

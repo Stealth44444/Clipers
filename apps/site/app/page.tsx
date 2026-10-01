@@ -105,6 +105,9 @@ export default async function HomePage() {
             </div>
             <ProgressBar value={1 - POOL.remaining / POOL.total} />
           </div>
+          <Link className="cl-link" href="/guides/what-is-clipping">
+            클리핑 부업 더 알아보기
+          </Link>
         </div>
         <ClippingStage rate={rate} />
       </section>
@@ -218,6 +221,9 @@ export default async function HomePage() {
 
 
       <LandingFaq items={CREATOR_FAQ} path="/" />
+      <p className="cl-faq-more">
+        더 궁금한 점은 <Link href="/guides#creator">크리에이터 가이드</Link>에서 찾아보세요.
+      </p>
 
       <section className="cl-closing">
         <div aria-hidden className="cl-hero-mesh cl-hero-mesh--closing">
