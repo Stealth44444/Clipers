@@ -1303,13 +1303,11 @@
 .cl-kinds__stage { position: sticky; top: 64px; width: min(1160px, 100% - 40px); height: calc(100vh - 64px); margin: 0 auto; }
 .cl-kinds__icon { flex: 0 0 auto; margin-top: 0.3em; color: var(--color-text); }
 /* Closing card */
-.cl-cta-card { display: grid; justify-items: start; gap: var(--space-5); width: min(1160px, 100% - 40px); margin: 40px auto 96px; padding: clamp(40px, 7vw, 88px); border-radius: 32px; background: linear-gradient(180deg, var(--color-panel) 0%, #e3f2d9 55%, #b9e3c7 100%); }
-.cl-cta-card h2 { font-size: clamp(34px, 5vw, 56px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.1; }
-.cl-cta-card__lead { max-width: 460px; color: var(--color-text-muted); font-size: var(--font-size-4); line-height: 1.6; }
-.cl-cta-card__facts { display: grid; grid-template-columns: repeat(2, max-content); gap: var(--space-4) var(--space-8); margin: var(--space-2) 0; padding: 0; color: var(--color-text-muted); font-size: var(--font-size-3); list-style: none; }
-.cl-cta-card__facts li { display: inline-flex; align-items: center; gap: var(--space-2); }
-.cl-cta-card__facts svg { color: var(--brand-11); }
-.cl-cta-card__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-3); }
+.cl-cta-card { display: grid; justify-items: center; gap: var(--space-5); text-align: center; width: min(1160px, 100% - 40px); margin: 40px auto 96px; padding: clamp(40px, 7vw, 88px); border-radius: 32px; background: linear-gradient(180deg, var(--color-panel) 0%, #e3f2d9 55%, #b9e3c7 100%); }
+.cl-cta-card h2 { font-size: clamp(30px, 5vw, 56px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.15; text-wrap: balance; }
+.cl-cta-card__line { display: block; text-wrap: balance; }
+.cl-cta-card__lead { max-width: 520px; color: var(--color-text-muted); font-size: var(--font-size-4); line-height: 1.6; }
+.cl-cta-card__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-3); }
 @media (max-width: 960px) {
   .cl-bento5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cl-bento5__card--tall { grid-column: span 2; grid-row: auto; }
@@ -1319,7 +1317,6 @@
 @media (max-width: 640px) {
   .cl-bento5 { grid-template-columns: minmax(0, 1fr); }
   .cl-bento5__card--tall { grid-column: auto; }
-  .cl-cta-card__facts { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
 }

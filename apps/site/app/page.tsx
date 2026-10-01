@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ChevronRight, Eye, ScanSearch, UserRound } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { DEFAULT_PRICING, MIN_PAYOUT_VIEWS } from '@clipers/db';
 import { Avatar, ButtonLink, MeshGradient, ProgressBar, Rail, StatusDot, buttonClass, formatCompactKRW, formatKRW } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
@@ -104,8 +104,8 @@ export default async function HomePage() {
             클리핑은 캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리는 일이에요. 자르고, 자막을 넣고, 순서를 바꾸는 것까지 자유예요.
           </p>
           <p className="cl-clipping__lead">
-            캠페인은 영상을 알리고 싶은 쪽이 예산을 걸고 여는 요청이에요. 참여한 크리에이터들이 각자 올린 영상의 조회수만큼 이 예산을 나눠 받고, 예산이 다
-            쓰이면 캠페인이 끝나요.
+            캠페인은 브랜드나 아티스트, 크리에이터가 예산을 걸고 여는 숏폼 제작 요청이에요. 참여한 크리에이터들이 각자 올린 영상의 조회수만큼 이 예산을 나눠
+            받고, 예산이 다 쓰이면 캠페인이 끝나요.
           </p>
           <div aria-hidden className="cl-clipping__pool">
             <div className="cl-clipping__pool-row">
@@ -239,22 +239,9 @@ export default async function HomePage() {
 
       <section className="cl-cta-card">
         <h2>
-          수익창출을 기다리지 말고,
-          <br />
-          오늘부터 받으세요
+          <span className="cl-cta-card__line">수익창출을 기다리지 말고,</span> <span className="cl-cta-card__line">오늘부터 받으세요</span>
         </h2>
         <p className="cl-cta-card__lead">가입과 지원은 무료예요. 새 채널로도 지금 바로 시작할 수 있어요.</p>
-        <ul className="cl-cta-card__facts">
-          <li>
-            <UserRound aria-hidden size={18} /> 구독자 조건 없음
-          </li>
-          <li>
-            <Eye aria-hidden size={18} /> 조회수 1,000회부터 정산
-          </li>
-          <li>
-            <ScanSearch aria-hidden size={18} /> 48시간 안에 검수
-          </li>
-        </ul>
         <div className="cl-cta-card__actions">
           <ButtonLink href={SIGN_UP} size="lg" variant="primary">
             무료로 시작하기
