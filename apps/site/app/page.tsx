@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ChevronRight, Coins, Eye, ScanSearch, TrendingUp, Wallet } from 'lucide-react';
+import { ChevronRight, Eye, ScanSearch, Wallet } from 'lucide-react';
 import { DEFAULT_PRICING, MIN_PAYOUT_VIEWS } from '@clipers/db';
 import { ButtonLink, MeshGradient, Rail, StatusDot, buttonClass, formatKRW } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
@@ -8,6 +8,7 @@ import CampaignTypes from '@/components/campaign-types';
 import EarningsPhone from '@/components/earnings-phone';
 import LandingChrome, { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import LogoWall from '@/components/logo-wall';
+import NotificationStack from '@/components/notification-stack';
 import { loadLiveCampaigns } from '@/lib/campaigns';
 
 // Creator landing (the front door; brands have /brands). Copy draft: docs/superpowers/specs/2026-10-01-landing-copy-draft.md.
@@ -36,14 +37,6 @@ const FAQ = [
 
 
 
-
-// Figures drifting through the "투명하게" card (illustrative).
-const STATS = [
-  { label: '이번 달 정산', value: formatKRW(38_560), icon: <Wallet size={15} />, tone: 'brand' },
-  { label: '검증 조회수', value: '48,200회', icon: <Eye size={15} />, tone: 'neutral' },
-  { label: '1천 회당', value: formatKRW(800), icon: <Coins size={15} />, tone: 'neutral' },
-  { label: '지난주 대비', value: '+18.4%', icon: <TrendingUp size={15} />, tone: 'brand' },
-];
 
 const BARS = [0.12, 0.22, 0.36, 0.52, 0.7, 0.92];
 
@@ -172,23 +165,7 @@ export default async function HomePage() {
 
           <article className="cl-bento5__card">
             <div aria-hidden className="cl-bento5__visual">
-              <div className="cl-mock-chips">
-                <div className="cl-mock-chips__track">
-                  {[0, 1].map((copy) => (
-                    <div className="cl-mock-chips__set" key={copy}>
-                      {STATS.map((stat) => (
-                        <span className="cl-stat" data-tone={stat.tone} key={stat.label}>
-                          <i>{stat.icon}</i>
-                          <span>
-                            <small>{stat.label}</small>
-                            <b>{stat.value}</b>
-                          </span>
-                        </span>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <NotificationStack />
             </div>
             <h3>투명하게</h3>
             <p>조회수와 정산 금액, 지급 내역을 한곳에서 확인해요.</p>
