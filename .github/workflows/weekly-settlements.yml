@@ -1,0 +1,30 @@
+name: Weekly settlements
+
+on:
+  schedule:
+    # Mondays 02:00 UTC (11:00 KST), after the daily YouTube snapshot sync at 01:00 UTC.
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Request weekly settlements
+        env:
+          APP_URL: ${{ secrets.CLIPERS_APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$APP_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "::notice::Configure CLIPERS_APP_URL and CRON_SECRET repository secrets to enable settlements."
+            exit 0
+          fi
+
+          curl --fail-with-body --silent --show-error \
+            --request GET \
+            --header "Authorization: Bearer ${CRON_SECRET}" \
+            "${APP_URL%/}/api/cron/weekly-settlements"

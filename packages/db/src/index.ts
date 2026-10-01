@@ -20,3 +20,4 @@ export * from './services/viewsRollup';
 export * from './services/leaderboard';
 export * from './services/creatorStats';
 export * from './services/brandStats';
+export * from './services/weeklySettlementRun';

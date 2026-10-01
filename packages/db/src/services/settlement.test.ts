@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   calculateWeeklySettlementDrafts,
   getPreviousWeekPeriod,
+  settlementPeriodFor,
+  settlementPeriodsToRun,
   type WeeklySettlementInput,
 } from './settlement';
 
@@ -34,6 +36,34 @@ describe('getPreviousWeekPeriod', () => {
     expect(PERIOD.period).toBe('2026-09-21');
     expect(PERIOD.startAt.toISOString()).toBe('2026-09-20T15:00:00.000Z');
     expect(PERIOD.endAt.toISOString()).toBe('2026-09-27T15:00:00.000Z');
+  });
+});
+
+describe('settlementPeriodFor', () => {
+  it('builds the same week getPreviousWeekPeriod does', () => {
+    expect(settlementPeriodFor('2026-09-21')).toEqual(PERIOD);
+  });
+});
+
+describe('settlementPeriodsToRun', () => {
+  const now = new Date('2026-10-14T03:00:00.000Z'); // Wednesday; last completed week starts 2026-10-05
+
+  it('runs only last week when nothing has been settled yet', () => {
+    expect(settlementPeriodsToRun(null, now).map((period) => period.period)).toEqual(['2026-10-05']);
+  });
+
+  it('catches up every missed week, oldest first', () => {
+    expect(settlementPeriodsToRun('2026-09-21', now).map((period) => period.period)).toEqual(['2026-09-28', '2026-10-05']);
+  });
+
+  it('has nothing to do once last week is settled', () => {
+    expect(settlementPeriodsToRun('2026-10-05', now)).toEqual([]);
+  });
+
+  it('works through a long gap twelve weeks at a time, oldest first', () => {
+    const periods = settlementPeriodsToRun('2026-01-05', now);
+    expect(periods).toHaveLength(12);
+    expect(periods[0].period).toBe('2026-01-12');
   });
 });
 

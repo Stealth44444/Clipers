@@ -110,7 +110,10 @@ export default async function AdminSettlementsPage() {
         </section>
 
         <section>
-          <SectionHeader description="정산을 만들면 크리에이터의 받을 금액에 더해져요." title="주간 정산" />
+          <SectionHeader
+            description="매주 월요일 오전 11시에 지난주 정산이 자동으로 만들어져요. 빠진 주가 있으면 '밀린 정산 산출'로 오래된 주부터 채워요."
+            title="주간 정산"
+          />
           <SettlementPanel />
         </section>
       </Stack>

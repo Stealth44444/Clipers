@@ -57,6 +57,34 @@ export function getPreviousWeekPeriod(now: Date = new Date()): SettlementPeriod 
   };
 }
 
+/** The Monday-to-Monday Korea-time week that starts on `monday` (YYYY-MM-DD). */
+export function settlementPeriodFor(monday: string): SettlementPeriod {
+  const start = Date.parse(`${monday}T00:00:00.000Z`);
+  return {
+    period: monday,
+    startAt: new Date(start - KOREA_OFFSET_MS),
+    endAt: new Date(start + 7 * DAY_MS - KOREA_OFFSET_MS),
+  };
+}
+
+// Weeks settled per catch-up; a longer gap is worked through oldest first over several runs.
+const MAX_CATCH_UP_WEEKS = 12;
+
+/**
+ * Completed weeks still to settle, oldest first: every week after the last one settled, up to last week.
+ * Weeks run in order because each week's growth starts where the previous settled week ended.
+ */
+export function settlementPeriodsToRun(lastRunPeriod: string | null, now: Date = new Date()): SettlementPeriod[] {
+  const latest = getPreviousWeekPeriod(now);
+  if (!lastRunPeriod) return [latest];
+
+  const periods: SettlementPeriod[] = [];
+  for (let start = Date.parse(`${lastRunPeriod}T00:00:00.000Z`) + 7 * DAY_MS; start <= Date.parse(`${latest.period}T00:00:00.000Z`); start += 7 * DAY_MS) {
+    periods.push(settlementPeriodFor(new Date(start).toISOString().slice(0, 10)));
+  }
+  return periods.slice(0, MAX_CATCH_UP_WEEKS);
+}
+
 export function calculateWeeklySettlementDrafts(
   inputs: WeeklySettlementInput[],
   period: SettlementPeriod
