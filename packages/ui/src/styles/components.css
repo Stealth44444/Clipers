@@ -977,6 +977,7 @@
 
 .cl-mac-notice { position: absolute; top: 56px; right: 14px; z-index: 4; display: flex; gap: var(--space-3); width: min(300px, calc(100% - 28px)); padding: 10px 12px; border-radius: 16px; background: rgba(46, 46, 46, 0.72); color: #fff; box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 12px 32px rgba(0, 0, 0, 0.45); -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px); animation: cl-notice-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
 .cl-mac-notice img { width: 32px; height: 32px; flex: 0 0 auto; padding: 4px; border-radius: 8px; background: #111; }
+.cl-mac-notice > div { flex: 1 1 auto; min-width: 0; }
 .cl-mac-notice__title { display: flex; justify-content: space-between; gap: var(--space-2); font-size: 12px; font-weight: 600; }
 .cl-mac-notice__title span { color: rgba(255, 255, 255, 0.5); font-weight: 400; }
 .cl-mac-notice__body { color: rgba(255, 255, 255, 0.82); font-size: 12px; line-height: 1.4; }

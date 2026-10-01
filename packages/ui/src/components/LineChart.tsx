@@ -1,11 +1,11 @@
 'use client';
 
-import { useId, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { buildLineChart, smoothLinePath, type ChartPoint } from '../lib/chart';
 import { cx } from '../lib/cx';
 import { formatCompactNumber } from '../lib/format';
 
-const WIDTH = 720;
+const DEFAULT_WIDTH = 720;
 const HEIGHT = 240;
 
 export type LineChartPoint = ChartPoint & {
@@ -27,14 +27,28 @@ export function LineChart({ points, label, variant = 'axes', unit = '' }: {
 }) {
   const gradientId = useId();
   const svgRef = useRef<SVGSVGElement>(null);
+  const figureRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState<number | null>(null);
+  // The viewBox follows the rendered width (1 unit = 1px), so axis labels never shrink with narrow containers.
+  const [width, setWidth] = useState(DEFAULT_WIDTH);
+
+  useEffect(() => {
+    const figure = figureRef.current;
+    if (!figure) return;
+    const observer = new ResizeObserver(([entry]) => {
+      const next = Math.round(entry.contentRect.width);
+      if (next > 0) setWidth(next);
+    });
+    observer.observe(figure);
+    return () => observer.disconnect();
+  }, []);
 
   const minimal = variant === 'minimal';
   const left = minimal ? 8 : 44;
   const right = minimal ? 8 : 0;
   const top = minimal ? 28 : 0;
   const bottom = minimal ? 8 : 28;
-  const plotWidth = WIDTH - left - right;
+  const plotWidth = width - left - right;
   const plotHeight = HEIGHT - top - bottom;
   const chart = buildLineChart(points, plotWidth, plotHeight);
   const line = smoothLinePath(chart.coords);
@@ -49,7 +63,7 @@ export function LineChart({ points, label, variant = 'axes', unit = '' }: {
     const svg = svgRef.current;
     if (!svg || chart.coords.length === 0) return null;
     const rect = svg.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * WIDTH - left;
+    const x = ((event.clientX - rect.left) / rect.width) * width - left;
     let best = 0;
     chart.coords.forEach((coord, index) => {
       if (Math.abs(coord.x - x) < Math.abs(chart.coords[best].x - x)) best = index;
@@ -72,6 +86,7 @@ export function LineChart({ points, label, variant = 'axes', unit = '' }: {
       className={cx('cl-chart', minimal && 'cl-chart--minimal')}
       onBlur={() => setActive(null)}
       onKeyDown={onKeyDown}
+      ref={figureRef}
       role="img"
       tabIndex={chart.coords.length > 0 ? 0 : undefined}
     >
@@ -79,7 +94,7 @@ export function LineChart({ points, label, variant = 'axes', unit = '' }: {
         onPointerLeave={() => setActive(null)}
         onPointerMove={(event) => setActive(nearestIndex(event))}
         ref={svgRef}
-        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+        viewBox={`0 0 ${width} ${HEIGHT}`}
       >
         <defs>
           <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
@@ -91,7 +106,7 @@ export function LineChart({ points, label, variant = 'axes', unit = '' }: {
         {!minimal &&
           chart.yTicks.map((tick) => (
             <g key={tick.value}>
-              <line className="cl-chart__grid" x1={left} x2={WIDTH} y1={tick.y} y2={tick.y} />
+              <line className="cl-chart__grid" x1={left} x2={width} y1={tick.y} y2={tick.y} />
               <text className="cl-chart__axis" dominantBaseline="middle" textAnchor="end" x={left - 8} y={tick.y}>
                 {formatCompactNumber(tick.value)}
               </text>
@@ -129,8 +144,8 @@ export function LineChart({ points, label, variant = 'axes', unit = '' }: {
 
       {hovered && (
         <div
-          className={cx('cl-chart__tooltip', (left + hovered.coord.x) / WIDTH > 0.7 && 'cl-chart__tooltip--left')}
-          style={{ left: `${((left + hovered.coord.x) / WIDTH) * 100}%`, top: `${((top + hovered.coord.y) / HEIGHT) * 100}%` }}
+          className={cx('cl-chart__tooltip', (left + hovered.coord.x) / width > 0.7 && 'cl-chart__tooltip--left')}
+          style={{ left: `${((left + hovered.coord.x) / width) * 100}%`, top: `${((top + hovered.coord.y) / HEIGHT) * 100}%` }}
         >
           <span className="cl-chart__tooltip-label">{hovered.point.detail ?? hovered.point.label}</span>
           <span className="cl-chart__tooltip-value">
