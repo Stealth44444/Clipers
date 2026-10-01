@@ -96,15 +96,15 @@ export default function OnboardingFlow() {
           <Step description="캠페인마다 조회수 1,000회당 지급액(CPM)이 정해져 있어요." title="이렇게 수익을 만들어요">
             <List>
               <ListRow
-                description="브랜드나 아티스트가 제공한 영상을 짧게 편집해 올려요."
+                description="캠페인이 정해 준 영상을 내 방식대로 편집해 올려요."
                 icon={<Scissors {...ICON} />}
                 title="클리핑"
                 tone="brand"
               />
               <ListRow
-                description="제품이나 서비스를 직접 소개하는 영상을 만들어요."
+                description="제품이나 서비스를 내 스타일대로 소개하는 영상을 찍어요."
                 icon={<Clapperboard {...ICON} />}
-                title="UGC"
+                title="소개"
                 tone="sky"
               />
               <ListRow

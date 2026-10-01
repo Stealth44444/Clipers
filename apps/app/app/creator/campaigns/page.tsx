@@ -16,7 +16,7 @@ import {
 } from '@clipers/ui';
 import { getSession } from '@/lib/session';
 import { cpmRangeLabel } from '@/lib/rates';
-import { APPLICATION_STATUS, CONTENT_TYPE_LABEL, statusDisplay } from '@/lib/status';
+import { APPLICATION_STATUS, CREATOR_CONTENT_TYPE_LABEL, statusDisplay } from '@/lib/status';
 import { siteUrl } from '@/lib/urls';
 import ApplyButton from './apply-button';
 import SubmitClipDialog from './submit-clip-dialog';
@@ -122,7 +122,7 @@ export default async function CreatorCampaignsPage() {
                     }
                     image={campaign.cover_image_url}
                     key={campaign.id}
-                    meta={`${campaign.category} · ${CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}`}
+                    meta={`${campaign.category} · ${CREATOR_CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}`}
                     title={campaign.title}
                   >
                     {rate && <p className="cl-number cl-emphasis">{rate}</p>}

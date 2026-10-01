@@ -21,6 +21,8 @@ export const SETTLEMENT_STATUS: Record<string, StatusDisplay> = {
 };
 
 export const CONTENT_TYPE_LABEL: Record<string, string> = { clipping: '클리핑', ugc: 'UGC' };
+// Creators see plain words: "UGC" is marketer jargon, and these videos do not need the product to be used.
+export const CREATOR_CONTENT_TYPE_LABEL: Record<string, string> = { clipping: '클리핑', ugc: '소개' };
 
 export function statusDisplay(map: Record<string, StatusDisplay>, status: string): StatusDisplay {
   return map[status] ?? { label: status, tone: 'neutral' };
