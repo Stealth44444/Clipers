@@ -90,14 +90,21 @@ export default async function HomePage() {
       </section>
 
       <section aria-labelledby="clipping-title" className="cl-landing-section cl-clipping">
-        <h2 className="cl-landing-section__title" id="clipping-title">
-          찍지 않아도, 편집만으로
-        </h2>
-        <p className="cl-landing-section__lead">
-          클리핑은 캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리는 일이에요. 스트리머 방송, 신제품 영상, 게임 플레이처럼 쓸 수 있는 영상은
-          캠페인마다 다르고, 자르고 자막을 넣고 순서를 바꾸는 편집은 자유예요.
-        </p>
-        <p className="cl-clipping__note">영상을 더 많은 사람에게 알리고 싶은 쪽이 조회수만큼 비용을 내요. Clipers에서는 이런 요청을 캠페인이라고 불러요.</p>
+        <div className="cl-clipping__copy">
+          <h2 className="cl-clipping__title" id="clipping-title">
+            찍지 않아도,
+            <br />
+            편집만으로
+          </h2>
+          <p className="cl-clipping__lead">
+            클리핑은 캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리는 일이에요. 스트리머 방송, 신제품 영상, 게임 플레이처럼 쓸 수 있는 영상은
+            캠페인마다 다르고, 자르고 자막을 넣고 순서를 바꾸는 편집은 자유예요.
+          </p>
+          <p className="cl-clipping__note">
+            영상을 알리고 싶은 쪽이 예산을 걸고 여는 요청을 캠페인이라고 해요. 크리에이터는 올린 영상의 조회수만큼 이 예산에서 받아요. 그래서 캠페인마다 남은
+            예산이 함께 보여요.
+          </p>
+        </div>
         <ClippingStage rate={rate} />
       </section>
 

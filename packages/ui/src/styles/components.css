@@ -1185,29 +1185,66 @@
   .cl-clip-screen, .cl-clip-screen__progress, .cl-live__feed li { animation: none; }
 }
 
-/* ---------- clipping explainer (creator landing): long video in a macOS window → the same stretch as a short ---------- */
-.cl-clipping .cl-landing-section__lead { max-width: 720px; line-height: 1.65; text-wrap: balance; }
-.cl-clipping__note { margin: calc(var(--space-4) * -1) auto var(--space-7); color: var(--color-text-subtle); font-size: var(--font-size-2); text-align: center; }
-.cl-clip-stage { display: grid; grid-template-columns: minmax(0, 600px) 220px; align-items: center; justify-content: center; gap: 56px; }
-.cl-clip-window { width: 100%; }
-.cl-clip-window__body { display: grid; gap: var(--space-3); padding: var(--space-4); }
-.cl-clip-window__player { aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; background: #000; }
-.cl-clip-window__media { display: block; width: 100%; height: 100%; object-fit: cover; }
-.cl-clip-window__timeline { position: relative; height: 4px; border-radius: 2px; background: var(--gray-a4); }
-.cl-clip-window__range { position: absolute; top: 0; bottom: 0; border-radius: 2px; background: var(--brand-9); }
-.cl-clip-window__playhead { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4); transform: translate(-50%, -50%); }
-.cl-clip-window__meta { display: flex; justify-content: space-between; gap: var(--space-3); color: var(--color-text-subtle); font-size: var(--font-size-1); font-variant-numeric: tabular-nums; }
-.cl-clip-stage__phone { display: grid; justify-items: center; gap: var(--space-4); width: 220px; }
-.cl-clip-stage__result { display: grid; justify-items: center; gap: var(--space-1); }
+/* ---------- clipping explainer (creator landing): copy on the left; a long-form watch page in a macOS window and the
+   clipped stretch as a captioned short on the right. The window stretches to the phone's height so their edges line up. ---------- */
+.cl-clipping { display: grid; grid-template-columns: minmax(0, 320px) auto; align-items: center; justify-content: space-between; gap: 56px; }
+.cl-clipping__copy { display: grid; gap: var(--space-4); }
+.cl-clipping__title { font-size: clamp(30px, 4.4vw, 44px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
+.cl-clipping__lead { color: var(--color-text-muted); font-size: var(--font-size-4); line-height: 1.65; }
+.cl-clipping__note { color: var(--color-text-muted); font-size: var(--font-size-3); line-height: 1.65; }
+.cl-clip-stage { display: grid; grid-template-columns: 520px 220px; grid-template-areas: "window phone" ". result"; gap: var(--space-4) 32px; }
+.cl-clip-window { display: flex; flex-direction: column; grid-area: window; width: 100%; }
+.cl-clip-window__body { display: flex; flex: 1; flex-direction: column; gap: var(--space-3); min-height: 0; padding: var(--space-3); }
+.cl-clip-window__player { position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 10px; background: #000; }
+/* Out of flow so the video's own height never sets the window's; the window takes the phone's height instead. */
+.cl-clip-window__media { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* Long-form player chrome: a progress bar with the clipped stretch marked, then the control row. */
+.cl-yt { position: absolute; right: 0; bottom: 0; left: 0; display: grid; gap: 6px; padding: 28px 12px 8px; background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.62)); color: #fff; }
+.cl-yt__bar { position: relative; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.28); }
+.cl-yt__played { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 2px; background: #ff0033; }
+.cl-yt__range { position: absolute; top: -2px; bottom: -2px; border-radius: 2px; background: var(--brand-9); box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.35); }
+.cl-yt__scrubber { position: absolute; top: 50%; width: 11px; height: 11px; border-radius: 50%; background: #ff0033; transform: translate(-50%, -50%); }
+.cl-yt__controls { display: flex; align-items: center; gap: 14px; height: 22px; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35)); }
+.cl-yt__time { font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.cl-yt__spacer { flex: 1; }
+.cl-yt__meta { display: grid; gap: var(--space-2); }
+.cl-yt__title { overflow: hidden; color: var(--color-text); font-size: var(--font-size-2); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.cl-yt__channel { display: flex; align-items: center; gap: var(--space-2); }
+.cl-yt__channel .cl-avatar { width: 26px; height: 26px; font-size: 11px; }
+.cl-yt__channel-text { display: grid; color: var(--color-text); font-size: var(--font-size-1); font-weight: 600; line-height: 1.3; }
+.cl-yt__channel-text small { color: var(--color-text-subtle); font-size: 11px; font-weight: 400; }
+.cl-yt__subscribe { margin-left: var(--space-2); padding: 5px 12px; border-radius: 8px; background: #f1f1f1; color: #0f0f0f; font-size: 11px; font-weight: 600; }
+
+/* Short-form edit on the phone: a hook line, changing subtitles, and a progress line driven by the loop. */
+.cl-clip-short__hook { position: absolute; top: 15%; right: 6cqw; left: 6cqw; z-index: 1; color: #fff; font-size: 6.4cqw; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; text-align: center; -webkit-text-stroke: 1.4cqw #000; paint-order: stroke fill; }
+.cl-clip-short__hook b { color: #ffe14d; font-weight: 600; }
+.cl-clip-short__subtitle { position: absolute; bottom: 38%; left: 50%; z-index: 1; padding: 1cqw 2.6cqw; border-radius: 1.6cqw; background: rgba(0, 0, 0, 0.62); color: #fff; font-size: 4.6cqw; font-weight: 600; white-space: nowrap; transform: translateX(-50%); animation: cl-clip-subtitle 0.25s ease both; }
+@keyframes cl-clip-subtitle { from { opacity: 0; transform: translate(-50%, 1.5cqw); } }
+.cl-clip-short__progress { position: absolute; bottom: 0; left: 0; z-index: 1; height: 0.9cqw; background: rgba(255, 255, 255, 0.92); }
+
+.cl-clip-stage__phone { grid-area: phone; width: 220px; }
+.cl-clip-stage__result { display: grid; grid-area: result; justify-items: center; gap: var(--space-1); }
 .cl-clip-stage__views { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-muted); font-size: var(--font-size-2); font-variant-numeric: tabular-nums; }
 .cl-clip-stage__payout { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.035em; }
-@media (max-width: 860px) {
-  .cl-clip-stage { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: var(--space-7); }
-  .cl-clip-stage__phone { width: 200px; }
+@media (max-width: 1100px) {
+  .cl-clipping { grid-template-columns: minmax(0, 1fr); justify-items: start; gap: var(--space-7); }
+  .cl-clipping__copy { max-width: 620px; }
+  .cl-clip-stage { justify-self: center; }
+}
+@media (max-width: 800px) {
+  .cl-clip-stage { width: 100%; grid-template-columns: minmax(0, 1fr); grid-template-areas: "window" "phone" "result"; justify-items: center; gap: var(--space-5); }
+  .cl-clip-window__player { flex: none; aspect-ratio: 16 / 9; }
+  .cl-clip-stage__phone { width: 210px; }
+}
+@media (max-width: 480px) {
+  .cl-yt__controls { gap: 10px; }
+  .cl-yt__controls svg:nth-last-child(-n + 2) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cl-clip-window__media { display: none; }
   .cl-clip-window__player { background: #000 url("/media/clips/drive.jpg") center / cover no-repeat; }
+  .cl-clip-short__subtitle { animation: none; }
 }
 
 /* ---------- DeviceFrame: a phone that scales with its width ---------- */
