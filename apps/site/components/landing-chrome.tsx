@@ -55,17 +55,22 @@ export default function LandingChrome({ path, cta, children }: { path: string; c
   );
 }
 
-/** FAQ list plus its FAQPage structured data. */
-export function LandingFaq({ items, path }: { items: { q: string; a: string }[]; path: string }) {
+/**
+ * FAQ list plus its FAQPage structured data. `compact` sits in a guide's reading column: a section-sized heading and
+ * one column, instead of the landing's large title and two columns.
+ */
+export function LandingFaq({ items, path, compact = false }: { items: { q: string; a: string }[]; path: string; compact?: boolean }) {
   // Two independent stacks, so opening an answer only pushes down its own column.
-  const half = Math.ceil(items.length / 2);
-  const columns = [items.slice(0, half), items.slice(half)];
+  const half = compact ? items.length : Math.ceil(items.length / 2);
+  const columns = [items.slice(0, half), items.slice(half)].filter((column) => column.length > 0);
   return (
-    <section aria-labelledby="faq" className="cl-landing-section">
-      <h2 className="cl-landing-section__title" id="faq">
-        자주 묻는 질문
-      </h2>
-      <div className="cl-faq">
+    <section aria-labelledby="faq" className={compact ? 'cl-guide' : 'cl-landing-section'}>
+      <div className={compact ? 'cl-guide__section' : undefined}>
+        <h2 className={compact ? undefined : 'cl-landing-section__title'} id="faq">
+          자주 묻는 질문
+        </h2>
+      </div>
+      <div className="cl-faq" style={compact ? { gridTemplateColumns: 'minmax(0, 1fr)' } : undefined}>
         {columns.map((column, i) => (
           <div className="cl-faq__column" key={i}>
             {column.map((item) => (

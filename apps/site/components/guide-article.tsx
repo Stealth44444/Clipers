@@ -116,7 +116,7 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
         </section>
       )}
 
-      <LandingFaq items={guide.faqIds.map(faqById)} path={path} />
+      <LandingFaq compact items={guide.faqIds.map(faqById)} path={path} />
 
       <nav aria-labelledby="guide-related" className="cl-guide cl-guide__related">
         <h2 id="guide-related">함께 보면 좋은 가이드</h2>
