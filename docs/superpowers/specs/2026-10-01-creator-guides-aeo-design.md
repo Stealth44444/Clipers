@@ -22,7 +22,7 @@
 |---|---|---|---|
 | `earn-before-monetization` | 수익창출 전에도 쇼츠로 돈을 벌 수 있을까요? | 유튜브 수익창출은 구독자 수와 조회수 기준을 채워야 시작돼요. 그 전에도 캠페인에 참여해 숏폼을 올리면 조회수만큼 받을 수 있고, Clipers는 구독자 조건이 없어 새 채널도 참여할 수 있어요. | 수익창출 조건이 어려운 이유(정확한 기준은 유튜브 고객센터 링크), 캠페인 예산을 조회수만큼 나눠 받는 구조, 얼마나 받는지(계산 가이드로 연결) |
 | `what-is-clipping` | 클리핑 부업이란 뭔가요? | 클리핑은 캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리고, 조회수만큼 받는 부업이에요. | 캠페인은 누가 여는지(브랜드·아티스트·크리에이터의 예산), 어떤 편집을 하는지(자르기·자막·"POV:" 같은 훅 문구), 원작자가 허락한 영상만 다룸 |
-| `shorts-earnings-calculator` | 쇼츠 조회수 10만 회면 얼마를 받을까요? | Clipers 캠페인은 1천 회당 금액이 정해져 있어요. 800원이면 1만 회 8,000원, 10만 회 80,000원, 100만 회 800,000원이에요(클립당 최대 금액과 캠페인 예산 안에서). | 계산기(조회수, 1천 회당 금액 기본 800원 → 받을 금액, 1,000회 미만은 0원), 서버에서 그린 조회수별 표(1만·5만·10만·50만·100만), "유튜브 광고 수익(RPM)과는 별개" |
+| `shorts-earnings-calculator` | 쇼츠 조회수 10만 회면 얼마를 받을까요? | Clipers 캠페인은 1천 회당 금액이 정해져 있어요. 800원이면 1만 회 8,000원, 10만 회 80,000원, 100만 회 800,000원이에요(클립당 최대 금액과 캠페인 예산 안에서). | 서버에서 그린 조회수별 표(1천·1만·5만·10만·50만·100만 회, 1천 회 미만은 정산 전이라 0원), 계산 방법(조회수 ÷ 1,000 × 1천 회당 금액), "유튜브 광고 수익(RPM)과는 별개". 계산기는 넣지 않는다 |
 | `faceless-shortform` | 얼굴 안 나오는 숏폼으로도 돈을 벌 수 있나요? | 클리핑 캠페인은 정해진 영상을 편집해 올리기 때문에 얼굴을 드러내지 않아도 돼요. 캡컷 같은 편집 앱만 다룰 줄 알면 시작할 수 있어요. | 얼굴 없이 가능한 형식(클리핑, 요구사항에 따라 제품만 나오는 소개 캠페인), 필요한 것(편집 앱) |
 
 ### 2.2 상황별 (6)
@@ -75,7 +75,7 @@
 9. FAQ(크리에이터 FAQ에서 id로 골라 씀) + `FAQPage` 구조화 데이터
 10. 관련 가이드 3개
 
-- 화면: 크리에이터 페이지와 같은 상단 메뉴·푸터(`LandingChrome`). 본문 폭 약 680px의 차분한 문서형. 장식·아이콘 제목·STEP 카드 없음. 계산 가이드에만 계산기 컴포넌트.
+- 화면: 크리에이터 페이지와 같은 상단 메뉴·푸터(`LandingChrome`). 본문 폭 약 680px의 차분한 문서형. 장식·아이콘 제목·STEP 카드 없음. 계산기 같은 위젯 없음(2026-10-01 결정).
 - 구조화 데이터: 페이지마다 `Article`(headline, description, dateModified, publisher Clipers)과 `FAQPage`.
 - 목록 페이지 `/guides`: 제목 "Clipers 가이드", 네 묶음(시작하기 · 상황별 · 고민별 · 플랫폼별)으로 링크 목록.
 
@@ -83,14 +83,13 @@
 
 | 파일 | 역할 |
 |---|---|
-| `apps/site/lib/guides/types.ts` | `Guide` 타입: `slug`, `group`('topic' \| 'situation' \| 'problem' \| 'platform'), `title`, `description`(메타), `answer`, `sections: { heading, paragraphs, list? }[]`, `faqIds`, `related`, `tool?`('calculator') |
+| `apps/site/lib/guides/types.ts` | `Guide` 타입: `slug`, `group`('topic' \| 'situation' \| 'problem' \| 'platform'), `title`, `description`(메타), `answer`, `sections: { heading, paragraphs, list? }[]`, `faqIds`, `related`, `table?: { views: number }[]`(조회수별 금액 표) |
 | `apps/site/lib/guides/topic.ts` · `situation.ts` · `problem.ts` · `platform.ts` | 묶음별 가이드 데이터 |
 | `apps/site/lib/guides/index.ts` | `GUIDES`, `guideBySlug`, `GUIDE_GROUPS`(묶음 이름·순서) |
 | `apps/site/lib/creator-faq.ts` | 각 항목에 `id` 추가(`what-is-clipping`, `small-channel`, `others-videos`, `fees`, `how-much`, `per-clip-max`, `min-views`, `budget-runs-out`, `when-paid`, `platforms`, `view-check`, `rejected`), `faqById` |
 | `apps/site/app/guides/page.tsx` | 목록 페이지 |
 | `apps/site/app/guides/[slug]/page.tsx` | 가이드 페이지(`generateStaticParams`, `generateMetadata`, `revalidate = 300`) |
 | `apps/site/components/guide-article.tsx` | 공통 틀(서버 컴포넌트) |
-| `apps/site/components/earnings-calculator.tsx` | 계산기(클라이언트 컴포넌트, 크리에이터 단가만 받음) |
 | `apps/site/lib/company.ts` | 회사 정보 상수(대표자 안준성, 사업자등록번호 544-87-03492, 주소 경기도 용인시 수지구 풍덕천로129번길 16-5 에이52호(풍덕천동, 선용빌딩); 상호·문의 이메일은 확정되면 추가) |
 | `apps/site/components/landing-chrome.tsx` | 푸터에 "가이드" 링크와 회사 정보 줄 추가 |
 | `apps/site/app/sitemap.ts` | `/guides`와 가이드 22개 추가 |
@@ -98,7 +97,7 @@
 
 ## 5. 범위 밖 (이후)
 - 하위 프로젝트 B: 광고주(브랜드·방송국·음반사·기획사 등) AEO.
-- 계산 결과 공유 미리보기 이미지, 목표 금액 역계산.
+- 계산기, 계산 결과 공유 미리보기 이미지, 목표 금액 역계산(넣지 않기로 함).
 - 월 1회 AI 언급 측정 루틴(질문 10개를 ChatGPT·Perplexity·제미나이·네이버 큐에 던져 기록).
 - 외부 언급(블로그·커뮤니티 소개 글) — 코드 밖 작업.
 - 도메인(clipers.page) 구매와 `support@` 메일 — 보류. 구매하면 `company.ts`에 이메일 추가.
@@ -111,6 +110,7 @@
 - 타입 검사, `pnpm test`, 사이트 빌드 성공.
 - `/guides`와 가이드 22개가 모두 200으로 열리고, 각 페이지에 `Article`·`FAQPage` 구조화 데이터가 있다.
 - 사이트맵과 llms.txt에 가이드 22개가 모두 있다.
-- 계산 가이드: 999회는 0원, 1,000회는 800원, 100,000회는 80,000원(기본 단가).
+- 조회수별 표(기본 단가): 1,000회 800원, 10,000회 8,000원, 100,000회 80,000원, 1,000,000회 800,000원.
 - 가이드 본문 어디에도 브랜드 단가가 없다(`rg brandCpm apps/site/lib/guides apps/site/components/guide-article.tsx`).
-- 1440px·390px에서 목록·일반 가이드·계산 가이드 화면 확인, 가로 스크롤 없음.
+- 1440px·390px에서 목록·일반 가이드·표가 있는 가이드 화면 확인, 가로 스크롤 없음.
+- 가이드 링크는 푸터에만 둔다(상단 메뉴에는 넣지 않음).
