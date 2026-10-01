@@ -6,6 +6,10 @@ describe('platformLabel', () => {
     expect(platformLabel('naver_clip')).toBe('네이버 클립');
   });
 
+  it('names Kakao by its official name', () => {
+    expect(platformLabel('kakao_shorts')).toBe('카카오 숏폼');
+  });
+
   it('falls back to the raw value for an unknown platform', () => {
     expect(platformLabel('myspace')).toBe('myspace');
   });

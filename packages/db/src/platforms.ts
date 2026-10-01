@@ -5,7 +5,7 @@ export const PLATFORMS = [
   { value: 'facebook', label: '페이스북' },
   { value: 'x', label: 'X' },
   { value: 'naver_clip', label: '네이버 클립' },
-  { value: 'kakao_shorts', label: '카카오 쇼츠' },
+  { value: 'kakao_shorts', label: '카카오 숏폼' },
 ] as const;
 
 export type PlatformValue = (typeof PLATFORMS)[number]['value'];

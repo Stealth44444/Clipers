@@ -14,7 +14,7 @@ const PLATFORMS = [
   { src: '/platforms/facebook.png', label: '페이스북' },
   { src: '/platforms/x.png', label: 'X' },
   { src: '/platforms/naver_clip.png', label: '네이버 클립' },
-  { src: '/platforms/kakao_shorts.png', label: '카카오 쇼츠' },
+  { src: '/platforms/kakao_shorts.png', label: '카카오 숏폼' },
   { src: '/platforms/discord.svg', label: '디스코드' },
 ];
 
