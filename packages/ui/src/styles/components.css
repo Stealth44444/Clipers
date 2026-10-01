@@ -1522,3 +1522,45 @@
 
 /* Short landing copy (up to ~4 lines) reads best with even lines */
 .cl-kinds__text, .cl-landing-hero__lead, .cl-closing__lead, .cl-bento5__card > p, .cl-audience__lead, .cl-landing-section__lead { text-wrap: balance; }
+
+/* ---------- guides (creator AEO): a calm reading column ---------- */
+.cl-guide { width: min(680px, 100% - 40px); margin: 0 auto; padding: 56px 0 24px; }
+.cl-guide__crumbs { color: var(--color-text-subtle); font-size: var(--font-size-2); }
+.cl-guide__crumbs a:hover { color: var(--color-text); }
+.cl-guide__title { margin-top: var(--space-3); font-size: clamp(30px, 4.6vw, 42px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.2; text-wrap: balance; }
+.cl-guide__updated { margin-top: var(--space-3); color: var(--color-text-subtle); font-size: var(--font-size-1); }
+.cl-guide__answer { display: grid; gap: var(--space-2); margin-top: var(--space-6); color: var(--color-text); font-size: 18px; letter-spacing: -0.01em; line-height: 1.75; }
+.cl-guide__section { margin-top: var(--space-8); }
+.cl-guide__section h2 { margin-bottom: var(--space-3); font-size: var(--font-size-6); font-weight: 600; letter-spacing: -0.02em; }
+.cl-guide__section p, .cl-guide__section li { color: var(--color-text-muted); font-size: 17px; line-height: 1.75; }
+.cl-guide__section p + p { margin-top: var(--space-3); }
+.cl-guide__section ul, .cl-guide__section ol { display: grid; gap: var(--space-2); margin: var(--space-3) 0 0; padding-left: 1.3em; }
+.cl-guide__section .cl-link { display: inline-block; margin-top: var(--space-3); }
+.cl-guide__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
+.cl-guide__table { width: 100%; margin-top: var(--space-6); border-collapse: collapse; border-radius: 12px; overflow: hidden; background: var(--color-panel); font-variant-numeric: tabular-nums; }
+.cl-guide__table caption { margin-bottom: var(--space-2); color: var(--color-text-subtle); font-size: var(--font-size-1); text-align: left; caption-side: top; }
+.cl-guide__table th, .cl-guide__table td { padding: var(--space-3) var(--space-4); text-align: left; }
+.cl-guide__table th { color: var(--color-text-subtle); font-size: var(--font-size-1); font-weight: 500; }
+.cl-guide__table tbody tr + tr td { box-shadow: inset 0 1px 0 var(--gray-a3); }
+.cl-guide__table td:last-child { font-weight: 600; }
+.cl-guide-campaigns { width: min(960px, 100% - 40px); margin: 64px auto 0; }
+.cl-guide-campaigns h2 { margin-bottom: var(--space-4); font-size: var(--font-size-6); font-weight: 600; letter-spacing: -0.02em; }
+.cl-guide-campaigns__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+.cl-guide__related { padding-bottom: 96px; }
+.cl-guide__related h2 { margin-bottom: var(--space-3); font-size: var(--font-size-5); font-weight: 600; }
+.cl-guide__related ul { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.cl-guide__related a { display: block; padding: var(--space-3) var(--space-4); border-radius: 12px; background: var(--color-panel); font-size: var(--font-size-3); font-weight: 500; }
+.cl-guide__related a:hover { background: var(--gray-a3); }
+.cl-guides { width: min(760px, 100% - 40px); margin: 0 auto; padding: 56px 0 96px; }
+.cl-guides h1 { font-size: clamp(30px, 4.6vw, 42px); font-weight: 600; letter-spacing: -0.03em; }
+.cl-guides__lead { margin-top: var(--space-3); color: var(--color-text-muted); font-size: 17px; line-height: 1.7; }
+.cl-guides__group { margin-top: var(--space-8); }
+.cl-guides__group h2 { margin-bottom: var(--space-3); color: var(--color-text-subtle); font-size: var(--font-size-2); font-weight: 500; }
+.cl-guides__group ul { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.cl-guides__group a { display: grid; gap: 4px; padding: var(--space-4); border-radius: 12px; background: var(--color-panel); }
+.cl-guides__group a:hover { background: var(--gray-a3); }
+.cl-guides__group strong { font-size: var(--font-size-3); font-weight: 600; }
+.cl-guides__group span { color: var(--color-text-muted); font-size: var(--font-size-2); line-height: 1.6; }
+@media (max-width: 860px) {
+  .cl-guide-campaigns__grid { grid-template-columns: minmax(0, 1fr); }
+}
