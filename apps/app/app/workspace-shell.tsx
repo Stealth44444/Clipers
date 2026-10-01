@@ -1,42 +1,59 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
+  ArrowUpRight,
   Banknote,
+  ChartLine,
   ClipboardCheck,
+  Compass,
   Film,
   Gauge,
+  House,
   Megaphone,
   MessageSquareWarning,
   PlusCircle,
   ScrollText,
+  Settings,
   UserCheck,
   Wallet,
 } from 'lucide-react';
 import { AppShell, Sidebar, UserMenu, type SidebarSection } from '@clipers/ui';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { siteUrl } from '@/lib/urls';
 
-type WorkspaceRole = 'admin' | 'brand' | 'creator';
+export type WorkspaceRole = 'admin' | 'brand' | 'creator';
 
 const ROLE_LABEL: Record<WorkspaceRole, string> = { admin: '운영자', brand: '브랜드', creator: '크리에이터' };
 
 const ICON = { size: 18 };
 
-// Hash links until phases 3-5 split each workspace into real routes.
 const NAVIGATION: Record<WorkspaceRole, SidebarSection[]> = {
   creator: [
     {
-      title: '크리에이터',
+      title: '탐색',
       items: [
-        { href: '#campaigns-title', label: '캠페인', icon: <Megaphone {...ICON} /> },
-        { href: '#applications-title', label: '내 지원', icon: <UserCheck {...ICON} /> },
-        { href: '#clips-title', label: '내 클립', icon: <Film {...ICON} /> },
-        { href: '#settlements-title', label: '내 정산', icon: <Wallet {...ICON} /> },
+        { href: '/creator', label: '홈', icon: <House {...ICON} />, exact: true },
+        { href: '/creator/campaigns', label: '캠페인', icon: <Megaphone {...ICON} /> },
+        { href: siteUrl('/discover'), label: '디스커버', icon: <Compass {...ICON} />, badge: <ArrowUpRight size={14} /> },
       ],
     },
+    {
+      title: '내 활동',
+      items: [
+        { href: '/creator/analytics', label: '분석', icon: <ChartLine {...ICON} /> },
+        { href: '/creator/submissions', label: '제출 현황', icon: <Film {...ICON} /> },
+        { href: '/creator/earnings', label: '수익', icon: <Wallet {...ICON} /> },
+      ],
+    },
+    {
+      title: '계정',
+      items: [{ href: '/creator/settings', label: '설정', icon: <Settings {...ICON} /> }],
+    },
   ],
+  // Hash links until phases 4-5 split these workspaces into routes.
   brand: [
     {
       title: '브랜드',
@@ -61,20 +78,14 @@ const NAVIGATION: Record<WorkspaceRole, SidebarSection[]> = {
   ],
 };
 
-export default function WorkspaceShell({ role, children }: { role: WorkspaceRole; children: ReactNode }) {
+export default function WorkspaceShell({ role, displayName, topbarExtra, children }: {
+  role: WorkspaceRole;
+  displayName: string;
+  topbarExtra?: ReactNode;
+  children: ReactNode;
+}) {
   const router = useRouter();
   const pathname = usePathname();
-  const [displayName, setDisplayName] = useState('');
-
-  useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
-    void (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) return;
-      const { data: profile } = await supabase.from('profiles').select('display_name').eq('id', data.user.id).maybeSingle();
-      setDisplayName(profile?.display_name ?? data.user.email ?? '');
-    })();
-  }, []);
 
   async function signOut() {
     await getSupabaseBrowserClient().auth.signOut();
@@ -90,7 +101,12 @@ export default function WorkspaceShell({ role, children }: { role: WorkspaceRole
         </Link>
       }
       sidebar={<Sidebar activePath={pathname} LinkComponent={Link} sections={NAVIGATION[role]} />}
-      topbarEnd={<UserMenu name={displayName} onSignOut={() => void signOut()} subtitle={ROLE_LABEL[role]} />}
+      topbarEnd={
+        <>
+          {topbarExtra}
+          <UserMenu name={displayName} onSignOut={() => void signOut()} subtitle={ROLE_LABEL[role]} />
+        </>
+      }
     >
       {children}
     </AppShell>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { PLATFORMS } from '@clipers/db';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
-import WorkspaceShell from '../workspace-shell';
 
 type Campaign = {
   id: string;
@@ -214,7 +213,7 @@ export default function BrandWorkspace() {
   const bankTransferInfo = process.env.NEXT_PUBLIC_BANK_TRANSFER_INFO ?? '계좌 정보 미설정 — 운영팀에 문의하세요.';
 
   return (
-    <WorkspaceShell role="brand">
+    <>
       <div className="app-shell">
         <div className="app-heading">
           <h1>캠페인 만들기</h1>
@@ -363,6 +362,6 @@ export default function BrandWorkspace() {
           </div>
         </section>
       </div>
-    </WorkspaceShell>
+    </>
   );
 }

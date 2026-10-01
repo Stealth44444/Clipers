@@ -1,32 +1,18 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { safeNextPath } from '@/lib/auth';
+import { getSupabaseServerClient } from '@/lib/supabase-server';
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code');
   const next = safeNextPath(request.nextUrl.searchParams.get('next')) ?? '/creator';
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const failed = () => NextResponse.redirect(new URL('/login?error=auth_callback_failed', request.url));
 
-  if (!code || !url || !anonKey) {
-    return NextResponse.redirect(new URL('/login?error=auth_callback_failed', request.url));
-  }
+  if (!code) return failed();
 
-  const cookieStore = await cookies();
-  const supabase = createServerClient(url, anonKey, {
-    cookies: {
-      getAll: () => cookieStore.getAll(),
-      setAll: (cookiesToSet: { name: string; value: string; options: CookieOptions }[]) => {
-        cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
-      },
-    },
-  });
-
+  const supabase = await getSupabaseServerClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) {
-    return NextResponse.redirect(new URL('/login?error=auth_callback_failed', request.url));
-  }
+  if (error) return failed();
 
+  // Middleware sends the user on to onboarding or their own workspace if `next` doesn't fit.
   return NextResponse.redirect(new URL(next, request.url));
 }

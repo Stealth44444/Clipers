@@ -1,3 +1,12 @@
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <div data-role="admin">{children}</div>;
+import type { ReactNode } from 'react';
+import { getSession } from '@/lib/session';
+import WorkspaceShell from '../workspace-shell';
+
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const { profile } = await getSession();
+  return (
+    <WorkspaceShell displayName={profile.display_name} role="admin">
+      {children}
+    </WorkspaceShell>
+  );
 }

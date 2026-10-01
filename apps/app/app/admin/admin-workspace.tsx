@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { getOverdueItems, getViewSpikeFlags, platformLabel, rejectClip, resolveDispute, reviewManualViewReport } from '@clipers/db';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import SettlementPanel from './settlement-panel';
-import WorkspaceShell from '../workspace-shell';
 
 type ReviewApplication = {
   id: string;
@@ -330,7 +329,7 @@ export default function AdminWorkspace() {
   }
 
   return (
-    <WorkspaceShell role="admin">
+    <>
       <div className="app-shell">
         <div className="app-heading">
           <h1>검수 대기열</h1>
@@ -553,6 +552,6 @@ export default function AdminWorkspace() {
 
         {userId && <SettlementPanel userId={userId} />}
       </div>
-    </WorkspaceShell>
+    </>
   );
 }

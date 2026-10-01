@@ -2,54 +2,22 @@
 
 import { useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  BadgeCheck,
-  ChevronLeft,
-  CircleHelp,
-  Clapperboard,
-  EyeOff,
-  FileText,
-  Footprints,
-  Megaphone,
-  Scissors,
-  Shield,
-  Shuffle,
-  Smile,
-  Sprout,
-  TrendingUp,
-  Trophy,
-  Wallet,
-} from 'lucide-react';
+import { BadgeCheck, ChevronLeft, Clapperboard, FileText, Megaphone, Scissors, Shield, Wallet } from 'lucide-react';
 import {
   EXPERIENCE_OPTIONS,
   MAX_INTERESTS,
   ON_CAMERA_OPTIONS,
   canContinueOnboarding,
   emptyOnboardingAnswers,
-  interestsByGroup,
   onboardingSteps,
-  toggleInterest,
   type OnboardingAnswers,
 } from '@clipers/db';
-import { Badge, Button, Chip, List, ListRow, OptionCard, ProgressBar, Switch } from '@clipers/ui';
-import { INTEREST_ICONS } from '@/lib/interest-icons';
+import { Badge, Button, List, ListRow, OptionCard, ProgressBar, Switch } from '@clipers/ui';
+import InterestPicker from '@/components/interest-picker';
+import { EXPERIENCE_ICONS, ON_CAMERA_ICONS } from '@/components/profile-option-icons';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 const ICON = { size: 18 };
-
-const CAMERA_ICONS: Record<string, ReactNode> = {
-  always: <Smile {...ICON} />,
-  sometimes: <Shuffle {...ICON} />,
-  never: <EyeOff {...ICON} />,
-  undecided: <CircleHelp {...ICON} />,
-};
-
-const EXPERIENCE_ICONS: Record<string, ReactNode> = {
-  new: <Sprout {...ICON} />,
-  beginner: <Footprints {...ICON} />,
-  intermediate: <TrendingUp {...ICON} />,
-  pro: <Trophy {...ICON} />,
-};
 
 export default function OnboardingFlow() {
   const router = useRouter();
@@ -154,31 +122,7 @@ export default function OnboardingFlow() {
             description={`최대 ${MAX_INTERESTS}개까지 고를 수 있어요. 맞는 캠페인을 추천하는 데 써요.`}
             title="어떤 분야에 관심 있으세요?"
           >
-            <p className="cl-flow__hint" aria-live="polite">
-              {answers.interests.length}/{MAX_INTERESTS} 선택
-            </p>
-            {interestsByGroup().map((group) => (
-              <section aria-label={group.label} className="cl-chip-section" key={group.id}>
-                <h2 className="cl-chip-section__title">{group.label}</h2>
-                <div className="cl-chip-group">
-                  {group.interests.map((interest) => {
-                    const Icon = INTEREST_ICONS[interest.id];
-                    const selected = answers.interests.includes(interest.id);
-                    return (
-                      <Chip
-                        disabled={!selected && answers.interests.length >= MAX_INTERESTS}
-                        icon={<Icon size={16} />}
-                        key={interest.id}
-                        onToggle={() => update({ interests: toggleInterest(answers.interests, interest.id) })}
-                        selected={selected}
-                      >
-                        {interest.label}
-                      </Chip>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
+            <InterestPicker onChange={(interests) => update({ interests })} value={answers.interests} />
           </Step>
         )}
 
@@ -188,7 +132,7 @@ export default function OnboardingFlow() {
               {ON_CAMERA_OPTIONS.map((option) => (
                 <OptionCard
                   description={option.description}
-                  icon={CAMERA_ICONS[option.id]}
+                  icon={ON_CAMERA_ICONS[option.id]}
                   key={option.id}
                   onSelect={() => update({ onCamera: option.id })}
                   selected={answers.onCamera === option.id}
