@@ -1564,3 +1564,20 @@
 @media (max-width: 860px) {
   .cl-guide-campaigns__grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ---------- contact (advertiser inquiries) ---------- */
+.cl-contact { width: min(640px, 100% - 40px); margin: 0 auto; padding: 56px 0 96px; }
+.cl-contact h1 { font-size: clamp(30px, 4.6vw, 42px); font-weight: 600; letter-spacing: -0.03em; }
+.cl-contact__lead { margin-top: var(--space-3); color: var(--color-text-muted); font-size: 17px; line-height: 1.7; }
+.cl-contact__form { position: relative; display: grid; gap: var(--space-4); margin-top: var(--space-7); }
+.cl-contact__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.cl-contact__trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.cl-contact__consent { display: flex; align-items: flex-start; gap: var(--space-2); color: var(--color-text); font-size: var(--font-size-2); line-height: 1.6; cursor: pointer; }
+.cl-contact__consent input { margin-top: 4px; accent-color: var(--brand-9); }
+.cl-contact__consent small { display: block; color: var(--color-text-subtle); font-size: var(--font-size-1); }
+.cl-contact__message { color: var(--tomato-11, #d13415); font-size: var(--font-size-2); }
+.cl-contact__done { display: grid; gap: var(--space-2); margin-top: var(--space-7); padding: var(--space-6); border-radius: 16px; background: var(--color-panel); }
+.cl-contact__done p { color: var(--color-text-muted); }
+@media (max-width: 640px) {
+  .cl-contact__row { grid-template-columns: minmax(0, 1fr); }
+}
