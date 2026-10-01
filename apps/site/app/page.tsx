@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ChevronRight, Eye, ScanSearch, Wallet } from 'lucide-react';
+import { ChevronRight, Eye, ScanSearch, UserRound } from 'lucide-react';
 import { DEFAULT_PRICING, MIN_PAYOUT_VIEWS } from '@clipers/db';
 import { ButtonLink, MeshGradient, Rail, StatusDot, buttonClass, formatKRW } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
 import CampaignTypes from '@/components/campaign-types';
+import ClippingStage from '@/components/clipping-stage';
 import EarningsPhone from '@/components/earnings-phone';
 import LandingChrome, { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import LogoWall from '@/components/logo-wall';
@@ -13,32 +14,43 @@ import RotatingHeadline from '@/components/rotating-headline';
 import { loadLiveCampaigns } from '@/lib/campaigns';
 import { loadShowcaseVideos } from '@/lib/youtube-showcase';
 
-// Creator landing (the front door; brands have /brands). Copy draft: docs/superpowers/specs/2026-10-01-landing-copy-draft.md.
-// Sections below the hero follow the contentrewards.com creator page (kept by request). No invented totals or testimonials.
+// Creator landing (the front door; brands have /brands). Design: docs/superpowers/specs/2026-10-01-creator-page-messaging-design.md.
+// Order follows what a newcomer asks: why me → what is clipping → what kinds → what's open → can I trust it.
+// No invented totals or testimonials.
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Clipers — 숏폼 올리고, 조회수만큼 받으세요',
-  description: '열려 있는 숏폼 캠페인에 지원하고 영상을 올리세요. 검수를 통과한 영상은 검증된 조회수만큼 정산돼요. 가입과 지원은 무료예요.',
+  title: 'Clipers — 구독자 0명부터, 숏폼 조회수만큼 받으세요',
+  description: '구독자 수와 상관없이 캠페인에 참여하고, 올린 숏폼의 조회수만큼 정산받으세요. 가입과 지원은 무료예요.',
   alternates: { canonical: '/' },
 };
 
+const rateExample = `예를 들어 1천 회당 ${formatKRW(DEFAULT_PRICING.creatorCpm)}인 캠페인이라면, 조회수 10만 회에 ${formatKRW(DEFAULT_PRICING.creatorCpm * 100)}이에요.`;
+
 const FAQ = [
+  { q: '클리핑이 뭔가요?', a: '캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리는 일이에요. 올린 영상의 조회수만큼 정산돼요.' },
+  {
+    q: '구독자가 적거나 새 채널이어도 되나요?',
+    a: '네. 구독자 수나 수익창출 여부와 상관없이 누구나 지원할 수 있어요. 캠페인마다 운영팀이 지원을 확인한 뒤 승인해요.',
+  },
+  { q: '남의 영상을 올려도 괜찮은가요?', a: '클리핑 캠페인은 원작자가 사용을 허락한 영상만 다뤄요. 캠페인에 적힌 요구사항에 맞춰 편집해 주세요.' },
   { q: '가입비나 지원 비용이 있나요?', a: '없어요. 가입과 캠페인 지원은 무료예요.' },
-  { q: '얼마를 받나요?', a: '캠페인마다 조회수 1천 회당 받는 금액이 먼저 공개돼요. 검수를 통과한 영상의 검증된 조회수에 그 금액을 곱해 정산돼요.' },
+  {
+    q: '얼마를 받나요?',
+    a: `캠페인마다 조회수 1천 회당 받는 금액이 먼저 공개돼요. 검수를 통과한 영상의 검증된 조회수에 그 금액을 곱해 정산돼요. ${rateExample}`,
+  },
   {
     q: '조회수가 얼마나 나와야 정산되나요?',
     a: '영상 하나의 조회수가 1,000회를 넘으면 그전 조회수까지 모두 정산되고, 이후 늘어난 조회수도 매주 이어서 정산돼요.',
   },
   { q: '언제 돈을 받을 수 있나요?', a: '정산된 금액이 3,000원 이상이면 지급을 요청할 수 있어요.' },
-  { q: '어떤 플랫폼에 올리면 되나요?', a: '유튜브 쇼츠, 틱톡, 인스타그램 릴스, 페이스북, X, 네이버 클립, 카카오 쇼츠예요. 캠페인마다 올릴 수 있는 플랫폼이 정해져 있어요.' },
+  { q: '어떤 플랫폼에 올리면 되나요?', a: '유튜브 쇼츠, 틱톡, 인스타그램 릴스, 페이스북, X, 네이버 클립, 카카오 숏폼이에요. 캠페인마다 올릴 수 있는 플랫폼이 정해져 있어요.' },
   { q: '조회수는 어떻게 확인하나요?', a: '유튜브는 조회수를 자동으로 가져오고, 다른 플랫폼은 화면 캡처를 제출하면 운영팀이 확인해요.' },
-  { q: '아무나 참여할 수 있나요?', a: '캠페인마다 지원하고, 운영팀이 승인하면 영상을 올릴 수 있어요.' },
 ];
 
-
-
+// Below this many live campaigns the rail looks empty, so the section stays hidden (one desktop row of cards).
+const MIN_LANDING_CAMPAIGNS = 4;
 
 const BARS = [0.12, 0.22, 0.36, 0.52, 0.7, 0.92];
 
@@ -55,11 +67,11 @@ export default async function HomePage() {
         </div>
         <div className="cl-landing-hero__copy">
           <h1 className="cl-landing-hero__title">
-            숏폼 올리고,
+            구독자 0명부터,
             <br />
             조회수만큼 받으세요
           </h1>
-          <p className="cl-landing-hero__lead">열려 있는 캠페인에 지원하고 영상을 올리세요. 검수를 통과한 영상은 검증된 조회수만큼 정산돼요.</p>
+          <p className="cl-landing-hero__lead">알리고 싶은 영상이 있는 곳과 크리에이터를 이어 드려요. 숏폼으로 만들어 올리면, 새 채널이어도 조회수만큼 받아요.</p>
           <div className="cl-landing-hero__actions">
             <ButtonLink href={SIGN_UP} size="lg" variant="primary">
               무료로 시작하기
@@ -77,7 +89,21 @@ export default async function HomePage() {
         <LogoWall />
       </section>
 
-      {campaigns.length > 0 && (
+      <section aria-labelledby="clipping-title" className="cl-landing-section cl-clipping">
+        <h2 className="cl-landing-section__title" id="clipping-title">
+          찍지 않아도, 편집만으로
+        </h2>
+        <p className="cl-landing-section__lead">
+          클리핑은 캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리는 일이에요. 스트리머 방송, 신제품 영상, 게임 플레이처럼 쓸 수 있는 영상은
+          캠페인마다 다르고, 자르고 자막을 넣고 순서를 바꾸는 편집은 자유예요.
+        </p>
+        <p className="cl-clipping__note">영상을 더 많은 사람에게 알리고 싶은 쪽이 조회수만큼 비용을 내요. Clipers에서는 이런 요청을 캠페인이라고 불러요.</p>
+        <ClippingStage rate={rate} />
+      </section>
+
+      <CampaignTypes videos={showcaseVideos} />
+
+      {campaigns.length >= MIN_LANDING_CAMPAIGNS && (
         <section className="cl-landing-section cl-landing-campaigns">
           <Rail
             description={
@@ -121,7 +147,7 @@ export default async function HomePage() {
               </div>
             </div>
             <h3>간단하게</h3>
-            <p>캠페인을 고르고, 영상을 올리고, 정산받으면 끝이에요.</p>
+            <p>정산된 금액이 3,000원을 넘으면, 버튼 한 번으로 지급을 요청해요.</p>
           </article>
 
           <article className="cl-bento5__card">
@@ -146,13 +172,13 @@ export default async function HomePage() {
             <div aria-hidden className="cl-bento5__visual">
               <div className="cl-mock-ring">
                 <span>
-                  <i>72시간</i>
+                  <i>48시간</i>
                   <i>승인</i>
                 </span>
               </div>
             </div>
             <h3>빠르게</h3>
-            <p>올린 영상은 72시간 안에 검수하고, 통과하면 바로 조회수 집계가 시작돼요.</p>
+            <p>올린 영상은 48시간 안에 검수하고, 통과하면 바로 조회수 집계가 시작돼요.</p>
           </article>
 
           <article className="cl-bento5__card">
@@ -164,7 +190,7 @@ export default async function HomePage() {
               </div>
             </div>
             <h3>끝없이</h3>
-            <p>영상을 더 올리고 조회수가 늘수록 더 받아요.</p>
+            <p>조회수가 1,000회를 넘으면 그전 조회수까지 모두 정산되고, 그 뒤로 늘어난 조회수도 매주 이어서 받아요.</p>
           </article>
 
           <article className="cl-bento5__card">
@@ -182,26 +208,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <CampaignTypes videos={showcaseVideos} />
 
       <LandingFaq items={FAQ} path="/" />
 
       <section className="cl-cta-card">
         <h2>
-          좋아하는 콘텐츠로,
+          수익창출을 기다리지 말고,
           <br />
-          오늘부터 수익을
+          오늘부터 받으세요
         </h2>
-        <p className="cl-cta-card__lead">가입과 캠페인 지원은 무료예요. 마음에 드는 캠페인부터 시작해 보세요.</p>
+        <p className="cl-cta-card__lead">가입과 지원은 무료예요. 새 채널로도 지금 바로 시작할 수 있어요.</p>
         <ul className="cl-cta-card__facts">
+          <li>
+            <UserRound aria-hidden size={18} /> 구독자 조건 없음
+          </li>
           <li>
             <Eye aria-hidden size={18} /> 조회수 1,000회부터 정산
           </li>
           <li>
-            <Wallet aria-hidden size={18} /> 3,000원부터 지급 요청
-          </li>
-          <li>
-            <ScanSearch aria-hidden size={18} /> 72시간 안에 검수
+            <ScanSearch aria-hidden size={18} /> 48시간 안에 검수
           </li>
         </ul>
         <div className="cl-cta-card__actions">

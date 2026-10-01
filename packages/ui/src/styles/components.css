@@ -1186,7 +1186,7 @@
 }
 
 /* ---------- clipping explainer (creator landing): long video in a macOS window → the same stretch as a short ---------- */
-.cl-clipping .cl-landing-section__lead { max-width: 720px; line-height: 1.65; }
+.cl-clipping .cl-landing-section__lead { max-width: 720px; line-height: 1.65; text-wrap: balance; }
 .cl-clipping__note { margin: calc(var(--space-4) * -1) auto var(--space-7); color: var(--color-text-subtle); font-size: var(--font-size-2); text-align: center; }
 .cl-clip-stage { display: grid; grid-template-columns: minmax(0, 600px) 220px; align-items: center; justify-content: center; gap: 56px; }
 .cl-clip-window { width: 100%; }
