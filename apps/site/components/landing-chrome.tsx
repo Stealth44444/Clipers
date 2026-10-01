@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ButtonLink } from '@clipers/ui';
 import JsonLd from '@/components/json-ld';
 import RoleMenu from '@/components/role-menu';
+import { COMPANY } from '@/lib/company';
 import { appUrl, siteUrl } from '@/lib/urls';
 
 export const SIGN_UP = appUrl('/login?mode=sign-up');
@@ -41,10 +42,14 @@ export default function LandingChrome({ path, cta, children }: { path: string; c
           <Link href="/">크리에이터</Link>
           <Link href="/brands">브랜드</Link>
           <Link href="/discover">캠페인 둘러보기</Link>
+          <Link href="/guides">가이드</Link>
           <a href={appUrl('/terms')}>이용약관</a>
           <a href={appUrl('/privacy')}>개인정보 처리방침</a>
         </nav>
         <p>© 2026 Clipers</p>
+        <p className="cl-landing-footer__company">
+          대표 {COMPANY.representative} · 사업자등록번호 {COMPANY.registrationNumber} · {COMPANY.address}
+        </p>
       </footer>
     </div>
   );

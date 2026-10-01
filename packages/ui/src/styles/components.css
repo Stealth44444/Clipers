@@ -917,6 +917,8 @@
 .cl-landing-footer nav { display: flex; flex-wrap: wrap; gap: var(--space-5); }
 .cl-landing-footer nav a:hover { color: var(--color-text); }
 .cl-landing-footer p { margin-left: auto; }
+/* Operator details: a quiet full-width line under the footer row */
+.cl-landing-footer p.cl-landing-footer__company { flex-basis: 100%; margin-left: 0; color: var(--color-text-subtle); font-size: var(--font-size-1); line-height: 1.6; }
 
 @media (max-width: 860px) {
   .cl-landing-nav__links > a { display: none; }
