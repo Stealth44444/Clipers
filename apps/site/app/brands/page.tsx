@@ -5,6 +5,7 @@ import { Avatar, ButtonLink, PlatformIcon, ProgressBar } from '@clipers/ui';
 import LandingChrome, { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import LogoWall from '@/components/logo-wall';
 import ProductTour from '@/components/product-tour';
+import ReachGlobe from '@/components/reach-globe';
 
 // Brand landing. Copy draft: docs/superpowers/specs/2026-10-01-landing-copy-draft.md. The brand rate is never shown.
 
@@ -29,7 +30,7 @@ const FAQ = [
 export default function BrandsPage() {
   return (
     <LandingChrome cta="캠페인 시작하기" path="/brands">
-      <section className="cl-landing-hero">
+      <section className="cl-landing-hero cl-landing-hero--globe">
         <h1 className="cl-landing-hero__title">
           숏폼으로,
           <br />
@@ -44,6 +45,7 @@ export default function BrandsPage() {
             진행 중인 캠페인 보기
           </ButtonLink>
         </div>
+        <ReachGlobe />
         <LogoWall />
       </section>
 

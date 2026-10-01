@@ -819,6 +819,9 @@
   color: var(--color-text);
 }
 .cl-landing .cl-button--ghost { color: var(--color-text-muted); }
+/* The supplied X mark is white for dark surfaces; flip it on the light landing (not inside the dark product window). */
+.cl-landing .cl-platform-icon[src$="/x.png"] { filter: invert(1); }
+.cl-landing .cl-demo .cl-platform-icon[src$="/x.png"] { filter: none; }
 .cl-landing .cl-button--ghost:hover { background: var(--gray-a3); color: var(--color-text); }
 
 .cl-landing-nav { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: var(--space-6); height: 64px; padding: 0 max(var(--space-5), calc((100% - 1160px) / 2)); background: rgba(255, 253, 251, 0.8); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
@@ -1180,4 +1183,37 @@
 @media (prefers-reduced-motion: reduce) {
   .cl-showcase__stage { animation: none; }
   .cl-kinds__text, .cl-kinds__card { transition: none; }
+}
+
+/* ---------- reach globe (brand hero) ---------- */
+.cl-landing-hero--globe { grid-template-columns: minmax(0, 1fr); }
+.cl-landing-hero--globe > * { justify-self: center; }
+.cl-globe { position: relative; justify-self: stretch; width: min(920px, 100%); height: clamp(380px, 52vw, 600px); margin: var(--space-4) auto 0; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.cl-globe[data-dragging="true"] { cursor: grabbing; }
+.cl-globe::before { position: absolute; inset: 12% 22%; border-radius: 50%; background: radial-gradient(closest-side, rgba(88, 185, 130, 0.16), rgba(205, 235, 120, 0.1) 60%, transparent); content: ""; filter: blur(20px); }
+.cl-globe__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cl-globe__node { position: absolute; top: 0; left: 0; display: grid; place-items: center; will-change: transform, opacity; }
+.cl-globe__tile { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 15px; background: #fff; box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.06), 0 8px 22px rgba(31, 26, 20, 0.1); }
+.cl-globe__tile img { width: 28px; height: 28px; }
+.cl-globe__avatar { display: grid; place-items: center; padding: 3px; border-radius: 50%; background: #fff; box-shadow: 0 8px 22px rgba(31, 26, 20, 0.12); }
+.cl-globe__avatar .cl-avatar { width: 40px; height: 40px; font-size: 15px; }
+.cl-globe__caption, .cl-globe__bubble { position: absolute; bottom: calc(100% + 8px); left: 50%; white-space: nowrap; opacity: calc(var(--front, 1) * var(--front, 1)); transform: translateX(-50%); pointer-events: none; }
+.cl-globe__caption { color: var(--color-text-subtle); font-size: var(--font-size-1); }
+.cl-globe__bubble { padding: 10px 14px; border-radius: 14px 14px 14px 4px; background: rgba(255, 255, 255, 0.92); color: var(--color-text); font-size: var(--font-size-3); font-weight: 500; box-shadow: 0 10px 30px rgba(31, 26, 20, 0.1); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transform: translateX(-12%); }
+/* A creator glows when an arc lands on them */
+.cl-globe__node::after { position: absolute; inset: -6px; border-radius: 50%; box-shadow: 0 0 0 0 rgba(88, 185, 130, 0.5); content: ""; opacity: 0; pointer-events: none; }
+.cl-globe__node[data-kind="campaign"]::after, .cl-globe__node[data-kind="platform"]::after { border-radius: 20px; }
+.cl-globe__node[data-hit="true"]::after { animation: cl-globe-hit 1.4s ease-out infinite; opacity: 1; }
+@keyframes cl-globe-hit { from { box-shadow: 0 0 0 0 rgba(88, 185, 130, 0.5); } to { box-shadow: 0 0 0 18px rgba(88, 185, 130, 0); } }
+.cl-globe__pill { position: absolute; top: 0; left: 0; z-index: 200; padding: 6px 10px; border-radius: 8px; background: #fff; color: var(--brand-11); font-size: var(--font-size-2); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; box-shadow: 0 0 0 0.5px rgba(88, 185, 130, 0.35), 0 8px 20px rgba(47, 125, 82, 0.15); opacity: 0; transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3); pointer-events: none; }
+@media (max-width: 640px) {
+  .cl-globe { height: 380px; }
+  .cl-globe__tile { width: 42px; height: 42px; border-radius: 12px; }
+  .cl-globe__tile img { width: 22px; height: 22px; }
+  .cl-globe__avatar .cl-avatar { width: 32px; height: 32px; font-size: 13px; }
+  .cl-globe__bubble { font-size: var(--font-size-2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-globe { cursor: default; }
+  .cl-globe__node[data-hit="true"]::after { animation: none; }
 }
