@@ -1303,11 +1303,6 @@
 .cl-kinds__stage { position: sticky; top: 64px; width: min(1160px, 100% - 40px); height: calc(100vh - 64px); margin: 0 auto; }
 .cl-kinds__icon { flex: 0 0 auto; margin-top: 0.3em; color: var(--color-text); }
 /* Closing card */
-.cl-cta-card { display: grid; justify-items: center; gap: var(--space-5); text-align: center; width: min(1160px, 100% - 40px); margin: 40px auto 96px; padding: clamp(40px, 7vw, 88px); border-radius: 32px; background: linear-gradient(180deg, var(--color-panel) 0%, #e3f2d9 55%, #b9e3c7 100%); }
-.cl-cta-card h2 { font-size: clamp(30px, 5vw, 56px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.15; text-wrap: balance; }
-.cl-cta-card__line { display: block; text-wrap: balance; }
-.cl-cta-card__lead { max-width: 520px; color: var(--color-text-muted); font-size: var(--font-size-4); line-height: 1.6; }
-.cl-cta-card__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-3); }
 @media (max-width: 960px) {
   .cl-bento5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cl-bento5__card--tall { grid-column: span 2; grid-row: auto; }
@@ -1327,6 +1322,18 @@
 /* Full-bleed behind the hero, under the translucent nav, melting into the page on every edge */
 .cl-hero-mesh { position: absolute; top: -64px; bottom: -160px; left: 50%; z-index: -1; width: 100vw; opacity: 0.72; transform: translateX(-50%); pointer-events: none; }
 .cl-hero-mesh--split { -webkit-mask-image: radial-gradient(46% 58% at 74% 46%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 14%, #000 52%, transparent 94%); mask-image: radial-gradient(46% 58% at 74% 46%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 14%, #000 52%, transparent 94%); -webkit-mask-composite: source-in; mask-composite: intersect; }
+/* ---------- closing section (creator landing): one message and the buttons over a borderless mesh ---------- */
+.cl-closing { position: relative; display: grid; justify-items: center; gap: var(--space-5); padding: 136px 20px 168px; overflow-x: clip; text-align: center; isolation: isolate; }
+.cl-closing__title { font-size: clamp(30px, 5vw, 56px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.15; }
+.cl-closing__title span { display: block; text-wrap: balance; }
+.cl-closing__lead { max-width: 520px; color: var(--color-text-muted); font-size: var(--font-size-4); line-height: 1.6; text-wrap: balance; }
+.cl-closing__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-3); }
+@media (max-width: 640px) {
+  .cl-closing { padding: 96px 20px 120px; }
+  .cl-hero-mesh--closing { -webkit-mask-image: radial-gradient(70% 40% at 50% 58%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%); mask-image: radial-gradient(70% 40% at 50% 58%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%); }
+}
+/* Closing section: the hero's mesh again, faded on every side so it melts into the page (no box, no edge). */
+.cl-hero-mesh--closing { top: 0; bottom: 0; -webkit-mask-image: radial-gradient(42% 46% at 50% 58%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%); mask-image: radial-gradient(42% 46% at 50% 58%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%); }
 .cl-hero-mesh--window { -webkit-mask-image: radial-gradient(58% 50% at 50% 66%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 14%, #000 52%, transparent 94%); mask-image: radial-gradient(58% 50% at 50% 66%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 14%, #000 52%, transparent 94%); -webkit-mask-composite: source-in; mask-composite: intersect; }
 .cl-landing-hero--split::after, .cl-landing-hero--window::after { display: none; }
 @media (max-width: 860px) {

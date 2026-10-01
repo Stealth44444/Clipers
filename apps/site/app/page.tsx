@@ -237,12 +237,15 @@ export default async function HomePage() {
 
       <LandingFaq items={FAQ} path="/" />
 
-      <section className="cl-cta-card">
-        <h2>
-          <span className="cl-cta-card__line">수익창출을 기다리지 말고,</span> <span className="cl-cta-card__line">오늘부터 받으세요</span>
+      <section className="cl-closing">
+        <div aria-hidden className="cl-hero-mesh cl-hero-mesh--closing">
+          <MeshGradient />
+        </div>
+        <h2 className="cl-closing__title">
+          <span>수익창출을 기다리지 말고,</span> <span>오늘부터 받으세요</span>
         </h2>
-        <p className="cl-cta-card__lead">가입과 지원은 무료예요. 새 채널로도 지금 바로 시작할 수 있어요.</p>
-        <div className="cl-cta-card__actions">
+        <p className="cl-closing__lead">가입과 지원은 무료예요. 새 채널로도 지금 바로 시작할 수 있어요.</p>
+        <div className="cl-closing__actions">
           <ButtonLink href={SIGN_UP} size="lg" variant="primary">
             무료로 시작하기
           </ButtonLink>
