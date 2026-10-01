@@ -54,8 +54,8 @@ export async function GET() {
     '3. 요구사항에 맞춰 숏폼을 만들어 올리고 링크를 제출합니다.',
     '4. 검수를 통과한 영상의 조회수만큼 매주 정산받고, 원할 때 지급을 요청합니다.',
     '',
-    '## 가이드',
-    ...GUIDE_GROUPS.flatMap((group) => [
+    '## 가이드 (크리에이터)',
+    ...GUIDE_GROUPS.filter((group) => group.audience === 'creator').flatMap((group) => [
       `### ${group.label}`,
       ...GUIDES.filter((guide) => guide.group === group.id).map(
         (guide) => `- [${guide.title}](${siteUrl(`/guides/${guide.slug}`)}): ${guide.answer.join(' ')}`
@@ -69,6 +69,14 @@ export async function GET() {
     `- 상담이 필요하면 [상담 문의](${siteUrl('/contact')})에 남기면 운영팀이 이메일로 답합니다.`,
     `- 자세한 안내: [브랜드 안내](${siteUrl('/brands')})`,
     '',
+    '## 가이드 (광고주)',
+    ...GUIDE_GROUPS.filter((group) => group.audience === 'advertiser').flatMap((group) => [
+      `### ${group.label}`,
+      ...GUIDES.filter((guide) => guide.group === group.id).map(
+        (guide) => `- [${guide.title}](${siteUrl(`/guides/${guide.slug}`)}): ${guide.answer.join(' ')}`
+      ),
+      '',
+    ]),
     '## 자주 묻는 질문 (광고주)',
     ...ADVERTISER_FAQ.flatMap((item) => [`### ${item.q}`, item.a, '']),
     '## 페이지',
