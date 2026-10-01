@@ -10,9 +10,9 @@ type FormMode = 'sign-in' | 'sign-up';
 
 const WORKSPACE_BY_ROLE: Record<string, string> = { admin: '/admin', brand: '/brand', creator: '/creator' };
 
-export default function LoginForm({ next, callbackFailed }: { next: string | null; callbackFailed: boolean }) {
+export default function LoginForm({ next, callbackFailed, initialMode = 'sign-in' }: { next: string | null; callbackFailed: boolean; initialMode?: FormMode }) {
   const router = useRouter();
-  const [mode, setMode] = useState<FormMode>('sign-in');
+  const [mode, setMode] = useState<FormMode>(initialMode);
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

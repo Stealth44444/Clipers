@@ -117,3 +117,8 @@ export function canContinueOnboarding(step: OnboardingStep, answers: OnboardingA
       return answers.termsAgreed && answers.privacyAgreed;
   }
 }
+
+/** Campaign categories are stored as interest labels; this finds the label's group for marketplace filters. */
+export function interestGroupOfCategory(category: string): InterestGroupId | null {
+  return INTERESTS.find((interest) => interest.label === category)?.group ?? null;
+}

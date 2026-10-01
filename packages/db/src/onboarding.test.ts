@@ -6,6 +6,7 @@ import {
   MAX_INTERESTS,
   canContinueOnboarding,
   emptyOnboardingAnswers,
+  interestGroupOfCategory,
   interestsByGroup,
   onboardingSteps,
   toggleInterest,
@@ -90,5 +91,16 @@ describe('canContinueOnboarding', () => {
 
   it('needs both consents on the terms step', () => {
     expect(canContinueOnboarding('terms', { ...completeCreator, privacyAgreed: false })).toBe(false);
+  });
+});
+
+describe('interestGroupOfCategory', () => {
+  it('maps a campaign category label to its interest group', () => {
+    expect(interestGroupOfCategory('K팝·아이돌')).toBe('entertainment');
+    expect(interestGroupOfCategory('운동·헬스')).toBe('health');
+  });
+
+  it('returns null for free-text categories from before the picker existed', () => {
+    expect(interestGroupOfCategory('기타')).toBeNull();
   });
 });

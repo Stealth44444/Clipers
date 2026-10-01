@@ -35,6 +35,10 @@
   --brand-a3: rgba(88, 185, 130, 0.12);
   --brand-a4: rgba(88, 185, 130, 0.2);
   --brand-contrast: #06140c;
+  /* Ambient light for showcase surfaces only (marketplace/landing heroes) — never on text, borders or controls. */
+  --brand-lime: #cdeb78;
+  --glow-brand: radial-gradient(55% 90% at 18% 0%, rgba(88, 185, 130, 0.26) 0%, rgba(88, 185, 130, 0) 70%),
+    radial-gradient(45% 80% at 82% 0%, rgba(205, 235, 120, 0.16) 0%, rgba(205, 235, 120, 0) 70%);
 
   --amber-9: #ffc53d;
   --amber-11: #ffca16;
