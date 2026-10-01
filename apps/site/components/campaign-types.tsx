@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Fragment, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Clapperboard, Music, Scissors } from 'lucide-react';
 import MockCampaignCard, { MOCK_CAMPAIGNS } from '@/components/mock-campaign-card';
 import type { ShowcaseKind, ShowcaseVideo } from '@/lib/youtube-showcase';
@@ -16,7 +16,7 @@ const KINDS: { id: keyof typeof MOCK_CAMPAIGNS; label: string; icon: ReactNode; 
     label: '클리핑',
     icon: <Scissors size={26} />,
     title: '클리핑 캠페인.',
-    body: '캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 만들어요. 얼굴을 드러내지 않아도, 편집만 할 줄 알면 시작할 수 있어요.',
+    body: '캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 만들어요. 얼굴을 드러내지 않아도, 편집만 할 줄 알면 시작할 수 있어요.',
   },
   {
     id: 'ugc',
@@ -121,7 +121,12 @@ export default function CampaignTypes({ videos = {} }: { videos?: Partial<Record
                 {kind.icon}
               </span>
               <span>
-                <strong>{kind.title}</strong> {kind.body}
+                <strong>{kind.title}</strong>{' '}
+                {kind.body.split(/(?<=\.) /).map((sentence) => (
+                  <Fragment key={sentence}>
+                    <span className="cl-phrase">{sentence}</span>{' '}
+                  </Fragment>
+                ))}
               </span>
             </p>
             <div aria-hidden className="cl-kinds__stack">

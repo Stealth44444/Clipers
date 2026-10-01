@@ -1521,7 +1521,7 @@
 }
 
 /* Short landing copy (up to ~4 lines) reads best with even lines */
-.cl-kinds__text, .cl-landing-hero__lead, .cl-closing__lead, .cl-bento5__card > p, .cl-audience__lead, .cl-landing-section__lead { text-wrap: balance; }
+.cl-landing-hero__lead, .cl-closing__lead, .cl-bento5__card > p, .cl-audience__lead, .cl-landing-section__lead { text-wrap: balance; }
 
 /* ---------- guides (creator AEO): a calm reading column ---------- */
 .cl-guide { width: min(680px, 100% - 40px); margin: 0 auto; padding: 56px 0 24px; }
