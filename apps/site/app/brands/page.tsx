@@ -8,6 +8,7 @@ import SolutionCards from '@/components/brand/solution-cards';
 import StartCard, { CONTACT } from '@/components/brand/start-card';
 import UseCases from '@/components/brand/use-cases';
 import VerifyFlow from '@/components/brand/verify-flow';
+import ViewsStory from '@/components/brand/views-story';
 import LandingChrome, { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import LogoWall from '@/components/logo-wall';
 import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
@@ -32,6 +33,7 @@ export default async function BrandsPage() {
   return (
     <LandingChrome cta="캠페인 시작하기" path="/brands">
       <HorizonHero signUpHref={SIGN_UP} />
+      <ViewsStory />
 
       <section aria-label="함께 쓰는 플랫폼" className="cl-landing-logos">
         <LogoWall />
