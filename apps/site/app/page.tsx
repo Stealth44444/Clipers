@@ -9,6 +9,7 @@ import EarningsPhone from '@/components/earnings-phone';
 import LandingChrome, { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import LogoWall from '@/components/logo-wall';
 import NotificationStack from '@/components/notification-stack';
+import RotatingHeadline from '@/components/rotating-headline';
 import { loadLiveCampaigns } from '@/lib/campaigns';
 
 // Creator landing (the front door; brands have /brands). Copy draft: docs/superpowers/specs/2026-10-01-landing-copy-draft.md.
@@ -69,7 +70,8 @@ export default async function HomePage() {
         <EarningsPhone minViews={MIN_PAYOUT_VIEWS} rate={rate} />
       </section>
 
-      <section aria-label="함께 쓰는 플랫폼" className="cl-landing-logos">
+      <section className="cl-landing-logos">
+        <RotatingHeadline />
         <LogoWall />
       </section>
 
