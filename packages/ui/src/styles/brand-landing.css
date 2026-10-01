@@ -264,21 +264,22 @@
 
 /* Views data section: pinned while native scroll fills 20 of 100 tiles and rolls three numbers into place */
 .cl-views__track { position: relative; height: 260vh; }
-/* min-height, not height: content taller than the viewport grows the pin instead of spilling under the nav and over the notes */
-.cl-views__pin { position: sticky; top: 0; display: grid; align-content: center; box-sizing: border-box; min-height: 100vh; padding: 64px 0 24px; }
+/* min-height, not height: content taller than the viewport grows the pin instead of spilling under the nav and over what
+   follows. The top padding is the 56px nav plus 40px of air, so the heading never sits right under the nav. */
+.cl-views__pin { position: sticky; top: 0; display: grid; align-content: center; box-sizing: border-box; min-height: 100vh; padding: 96px 0 24px; }
 .cl-views__inner { width: min(1160px, 100% - 48px); margin: 0 auto; }
 .cl-views [data-enter], .cl-views [data-beat] { opacity: var(--o, 1); transform: translateY(calc((1 - var(--o, 1)) * 24px)); }
 .cl-views__intro { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: end; gap: 64px; }
 .cl-views__intro h2 { font-size: clamp(36px, 4.6vw, 58px); font-weight: 600; letter-spacing: -0.045em; line-height: 1.08; }
 .cl-views__intro p { margin-bottom: 6px; color: var(--color-text-muted); font-size: 17px; line-height: 1.65; }
-.cl-views__tiles { margin: 40px 0 0; }
+.cl-views__tiles { margin: 32px 0 0; }
 .cl-views__grid { display: grid; grid-template-columns: repeat(25, minmax(0, 1fr)); gap: 6px; }
 .cl-views__grid i { position: relative; overflow: hidden; aspect-ratio: 9 / 16; border-radius: 7px; background: #efeff2; }
 .cl-views__grid i[data-hit]::after { position: absolute; inset: 0; background: var(--brand-11); clip-path: inset(calc((1 - var(--fill, 1)) * 100%) 0 0 0); content: ""; }
-.cl-views__tiles figcaption { display: flex; align-items: center; gap: 24px; margin-top: 14px; color: var(--color-text-muted); font-size: 14px; }
+.cl-views__tiles figcaption { display: flex; align-items: center; gap: 24px; margin-top: 12px; color: var(--color-text-muted); font-size: 14px; }
 .cl-views__tiles figcaption b { display: inline-block; width: 10px; height: 14px; margin-right: 8px; border-radius: 3px; background: #efeff2; vertical-align: -2px; }
 .cl-views__tiles figcaption b[data-key="hit"] { background: var(--brand-11); }
-.cl-views__stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 36px; }
+.cl-views__stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 28px; }
 .cl-views__stat { padding: 22px 24px 0 0; box-shadow: inset 0 1px 0 var(--gray-a4); }
 .cl-views__stat + .cl-views__stat { padding-left: 24px; box-shadow: inset 0 1px 0 var(--gray-a4), inset 1px 0 0 var(--gray-a4); }
 .cl-views__num { font-size: clamp(36px, 4vw, 54px); font-weight: 600; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
@@ -286,14 +287,16 @@
 .cl-views__stat[data-accent] .cl-views__num { color: var(--brand-11); }
 .cl-views__stat h3 { margin-top: 14px; font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
 .cl-views__stat h3 + p { margin-top: 6px; color: var(--color-text-muted); font-size: 14px; line-height: 1.6; }
-.cl-views__close { margin-top: 32px; font-size: clamp(20px, 2.2vw, 30px); font-weight: 600; letter-spacing: -0.035em; text-align: center; }
+.cl-views__close { margin-top: 28px; font-size: clamp(20px, 2.2vw, 30px); font-weight: 600; letter-spacing: -0.035em; text-align: center; }
 .cl-views__close span { color: var(--color-text-subtle); }
 @media (min-width: 861px) and (max-height: 899px) {
-  /* Laptops around 1536x821: tighter so the pinned section fits in one screen */
+  /* Laptops around 1536x821: tighter so the pinned section fits in one screen with air under the nav */
   .cl-views__intro h2 { font-size: 44px; }
   .cl-views__tiles { margin-top: 24px; }
+  .cl-views__grid i { aspect-ratio: 9 / 13; }
   .cl-views__stats { margin-top: 24px; }
   .cl-views__stat { padding-top: 16px; }
+  .cl-views__num { font-size: 44px; }
   .cl-views__close { margin-top: 20px; }
 }
 @media (max-width: 860px), (max-height: 819px), (prefers-reduced-motion: reduce) {
