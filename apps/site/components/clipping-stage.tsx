@@ -196,7 +196,7 @@ export default function ClippingStage({ rate }: { rate: number }) {
       </div>
       <div aria-hidden className="cl-clip-stage__result">
         <p className="cl-clip-stage__views">
-          <PlatformIcon platform="naver_clip" size={16} />
+          <PlatformIcon platform="youtube_shorts" size={16} />
           조회수 {compact(views)}
         </p>
         <p className="cl-clip-stage__payout">{formatKRW(payout)}</p>

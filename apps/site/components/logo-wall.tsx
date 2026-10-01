@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef, type CSSProperties, type PointerEvent } from 'react';
+import { useEffect, useRef, type PointerEvent } from 'react';
 
 // Platform marks for the landing, from the files in /platforms (brand-supplied PNGs; CapCut and Discord as SVG marks
-// framed the same way). At rest they read as one quiet
-// grey; a soft spotlight (the pointer, or a slow sweep when there is none) reveals each mark's own colour.
-// They fade in one by one when scrolled into view.
+// framed the same way), running as an endless carousel whose ends fade into the page. At rest they read as one quiet
+// grey; a soft spotlight (the pointer, or a slow sweep when there is none) reveals each mark's own colour. The colour
+// layer is a second copy of the same track with the same animation, so the two stay in step; hovering pauses both.
 const PLATFORMS = [
   { src: '/platforms/capcut.svg', label: '캡컷' },
   { src: '/platforms/youtube_shorts.png', label: '유튜브 쇼츠' },
@@ -18,14 +18,17 @@ const PLATFORMS = [
   { src: '/platforms/discord.svg', label: '디스코드' },
 ];
 
-function Marks({ lit }: { lit?: boolean }) {
+// The list twice over, so sliding by half its width lands exactly where it started.
+function Track({ lit }: { lit?: boolean }) {
   return (
-    <ul aria-hidden={lit || undefined} aria-label={lit ? undefined : '함께 쓰는 플랫폼'} className={lit ? 'cl-logo-wall cl-logo-wall--lit' : 'cl-logo-wall'}>
-      {PLATFORMS.map((platform, index) => (
-        <li key={platform.src} style={{ '--i': index } as CSSProperties}>
-          <img alt={lit ? '' : platform.label} className="cl-logo-wall__img" height={52} src={platform.src} width={52} />
-        </li>
-      ))}
+    <ul aria-hidden={lit || undefined} aria-label={lit ? undefined : '함께 쓰는 플랫폼'} className={lit ? 'cl-logo-track cl-logo-track--lit' : 'cl-logo-track'}>
+      {[0, 1].flatMap((copy) =>
+        PLATFORMS.map((platform) => (
+          <li aria-hidden={copy === 1 || undefined} key={`${copy}-${platform.src}`}>
+            <img alt={lit || copy === 1 ? '' : platform.label} className="cl-logo-wall__img" height={52} src={platform.src} width={52} />
+          </li>
+        ))
+      )}
     </ul>
   );
 }
@@ -59,8 +62,10 @@ export default function LogoWall() {
 
   return (
     <div className="cl-logo-cloud" onPointerLeave={(event) => delete event.currentTarget.dataset.pointer} onPointerMove={onPointerMove} ref={rootRef}>
-      <Marks />
-      <Marks lit />
+      <Track />
+      <div aria-hidden className="cl-logo-cloud__lit">
+        <Track lit />
+      </div>
     </div>
   );
 }
