@@ -124,7 +124,7 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
  * motion, and falls back to the element's CSS background when WebGL is unavailable.
  */
 export function MeshGradient({
-  colors = ['#fffdfb', '#e3f3e9', '#9fd8b8', '#eef6cf'],
+  colors = ['#ffffff', '#e3f3e9', '#9fd8b8', '#eef6cf'],
   speed = 1,
   scale = 1.1,
   pointer = 0.5,

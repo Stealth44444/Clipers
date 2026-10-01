@@ -33,8 +33,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           flexDirection: 'column',
           justifyContent: 'space-between',
           padding: '72px 80px',
-          background: '#fffdfb',
-          color: '#1f1a14',
+          background: '#ffffff',
+          color: '#1d1d1f',
           fontFamily: 'Pretendard',
         }}
       >
@@ -42,7 +42,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div style={{ display: 'flex', fontSize: 64, fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.25, wordBreak: 'keep-all' }}>
           {guide?.title ?? 'Clipers 가이드'}
         </div>
-        <div style={{ display: 'flex', fontSize: 28, fontWeight: 500, color: '#8b8178' }}>{label}</div>
+        <div style={{ display: 'flex', fontSize: 28, fontWeight: 500, color: '#8e8e93' }}>{label}</div>
       </div>
     ),
     {
