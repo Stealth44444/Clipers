@@ -1377,12 +1377,11 @@
   .cl-mock-ring i:last-child, .cl-mock-withdraw__button > span:last-child, .cl-mock-withdraw__toast, .cl-short__burst { opacity: 0; }
 }
 
-/* Kinds: a frosted, segmented progress bar so the pinned section reads as a sweep */
-.cl-kinds__progress { position: absolute; bottom: 32px; left: 50%; z-index: 5; display: flex; gap: var(--space-2); padding: 12px 16px 14px; border-radius: 16px; background: rgba(255, 255, 255, 0.72); box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.08), 0 12px 32px rgba(31, 26, 20, 0.08); transform: translateX(-50%); -webkit-backdrop-filter: saturate(180%) blur(18px); backdrop-filter: saturate(180%) blur(18px); }
-.cl-kinds__step { display: grid; gap: 8px; width: 104px; padding: 0; border: 0; background: none; color: var(--color-text-subtle); font: inherit; font-size: var(--font-size-1); font-weight: 500; text-align: left; cursor: pointer; transition: color 0.25s ease; }
-.cl-kinds__step:hover, .cl-kinds__step[aria-current="step"] { color: var(--color-text); }
-.cl-kinds__step:focus-visible { outline: 2px solid var(--brand-9); outline-offset: 4px; border-radius: 4px; }
-.cl-kinds__step-track { display: block; height: 2px; overflow: hidden; border-radius: 2px; background: var(--gray-a4); }
+/* Kinds: three hairline segments under the pinned stage, so it reads as a sweep */
+.cl-kinds__progress { position: absolute; bottom: 40px; left: 50%; z-index: 5; display: flex; gap: 6px; transform: translateX(-50%); }
+.cl-kinds__step { padding: 8px 0; border: 0; background: none; cursor: pointer; }
+.cl-kinds__step:focus-visible { outline: 2px solid var(--brand-9); outline-offset: 2px; border-radius: 2px; }
+.cl-kinds__step-track { display: block; width: 36px; height: 2px; overflow: hidden; border-radius: 2px; background: var(--gray-a4); }
 .cl-kinds__step-track span { display: block; height: 100%; background: var(--color-text); transform-origin: left; transition: transform 0.12s linear; }
 @media (max-width: 860px) {
   .cl-kinds__progress { display: none; }

@@ -77,8 +77,14 @@ export default function CampaignTypes() {
 
         <nav aria-label="캠페인 종류 진행" className="cl-kinds__progress">
           {KINDS.map((kind, index) => (
-            <button aria-current={index === active ? 'step' : undefined} className="cl-kinds__step" key={kind.id} onClick={() => jumpTo(index)} type="button">
-              <span className="cl-kinds__step-label">{kind.label}</span>
+            <button
+              aria-current={index === active ? 'step' : undefined}
+              aria-label={kind.label}
+              className="cl-kinds__step"
+              key={kind.id}
+              onClick={() => jumpTo(index)}
+              type="button"
+            >
               <span aria-hidden className="cl-kinds__step-track">
                 <span style={{ transform: `scaleX(${Math.min(1, Math.max(0, progress * KINDS.length - index))})` }} />
               </span>
