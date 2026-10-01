@@ -7,6 +7,8 @@ export const DEFAULT_PRICING: CampaignPricing = { brandCpm: 3000, creatorCpm: 80
 export const MIN_CAMPAIGN_BUDGET = 1_000_000;
 /** A clip is paid only once it reaches this many verified views (1 CPM); earlier views carry over. */
 export const MIN_PAYOUT_VIEWS = 1000;
+/** Creators can request a payout once their pending net balance reaches this amount (won). */
+export const MIN_WITHDRAWAL = 3000;
 
 export function expectedViews(budget: number, pricing: CampaignPricing): number {
   if (!(budget > 0) || !(pricing.brandCpm > 0)) return 0;

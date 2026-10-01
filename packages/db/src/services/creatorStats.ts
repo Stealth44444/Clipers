@@ -1,4 +1,5 @@
 import type { ClipSnapshotSeries } from './anomalyDetection';
+import { MIN_WITHDRAWAL } from '../pricing';
 import { getPreviousWeekPeriod } from './settlement';
 
 const KOREA_OFFSET_MS = 9 * 60 * 60 * 1000;
@@ -123,4 +124,11 @@ export function cumulativeCountByDay(events: string[], dayKeys: string[]): numbe
     while (index < eventDays.length && eventDays[index] <= day) index += 1;
     return index;
   });
+}
+
+/** What a creator could request right now: all pending settlements, net of withholding (mirrors request_payout()). */
+export function payoutRequest(settlements: { amount: number | string; withholding_amount: number | string; status: string }[]) {
+  const pending = settlements.filter((settlement) => settlement.status === 'pending');
+  const amount = pending.reduce((sum, settlement) => sum + Number(settlement.amount) - Number(settlement.withholding_amount), 0);
+  return { amount, count: pending.length, canRequest: amount >= MIN_WITHDRAWAL, shortfall: Math.max(0, MIN_WITHDRAWAL - amount) };
 }

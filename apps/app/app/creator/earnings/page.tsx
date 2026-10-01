@@ -1,5 +1,5 @@
 import { Banknote, CalendarDays, Clock, Wallet } from 'lucide-react';
-import { settlementPeriodLabel, summarizeEarnings } from '@clipers/db';
+import { payoutRequest, settlementPeriodLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
   Card,
@@ -39,6 +39,7 @@ export default async function CreatorEarningsPage() {
     .order('period', { ascending: false });
   const settlements = (data ?? []) as unknown as Settlement[];
   const summary = summarizeEarnings(settlements);
+  const payout = payoutRequest(settlements);
 
   return (
     <Page>
@@ -51,7 +52,11 @@ export default async function CreatorEarningsPage() {
           <StatCard icon={<Banknote {...ICON} />} label="누적 정산액" tone="amber" value={formatKRW(summary.total)} />
         </StatGrid>
 
-        <Card description="정산 대기 건은 지급 요청을 보내면 운영팀이 확인 후 지급해요." title="지급 단계">
+        <Card>
+          <RequestPayoutButton amount={payout.amount} canRequest={payout.canRequest} shortfall={payout.shortfall} />
+        </Card>
+
+        <Card description="지급 요청을 보내면 운영팀이 확인 후 지급해요." title="지급 단계">
           <Timeline
             items={(['pending', 'requested', 'paid'] as const).map((status) => ({
               id: status,
@@ -92,11 +97,7 @@ export default async function CreatorEarningsPage() {
                   header: '상태',
                   render: (row) => {
                     const status = statusDisplay(SETTLEMENT_STATUS, row.status);
-                    return row.status === 'pending' ? (
-                      <RequestPayoutButton settlementId={row.id} />
-                    ) : (
-                      <Badge tone={status.tone}>{status.label}</Badge>
-                    );
+                    return <Badge tone={status.tone}>{status.label}</Badge>;
                   },
                 },
               ]}

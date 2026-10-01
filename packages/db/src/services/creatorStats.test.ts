@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { countByStatus, creatorChecklist, cumulativeCountByDay, settlementPeriodLabel, summarizeEarnings, viewTrend } from './creatorStats';
+import { countByStatus, creatorChecklist, cumulativeCountByDay, payoutRequest, settlementPeriodLabel, summarizeEarnings, viewTrend } from './creatorStats';
 
 // 2026-10-01 10:00 KST (Thursday). Previous settlement week starts Monday 2026-09-21.
 const NOW = new Date('2026-10-01T01:00:00Z');
@@ -93,5 +93,26 @@ describe('cumulativeCountByDay', () => {
     // 09-29T16:00Z is 09-30 01:00 KST.
     const events = ['2026-09-28T03:00:00Z', '2026-09-29T16:00:00Z', '2026-10-01T01:00:00Z'];
     expect(cumulativeCountByDay(events, days)).toEqual([1, 2, 3]);
+  });
+});
+
+describe('payoutRequest', () => {
+  it('sums the net amount of pending settlements and allows a request from 3,000원', () => {
+    expect(
+      payoutRequest([
+        { amount: 2000, withholding_amount: 66, status: 'pending' },
+        { amount: 1200, withholding_amount: 40, status: 'pending' },
+        { amount: 9000, withholding_amount: 0, status: 'paid' },
+      ])
+    ).toEqual({ amount: 3094, count: 2, canRequest: true, shortfall: 0 });
+  });
+
+  it('reports how much more is needed below the minimum', () => {
+    expect(payoutRequest([{ amount: 1000, withholding_amount: 33, status: 'pending' }])).toEqual({
+      amount: 967,
+      count: 1,
+      canRequest: false,
+      shortfall: 2033,
+    });
   });
 });
