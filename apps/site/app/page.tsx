@@ -4,6 +4,7 @@ import { BadgeCheck, Eye, Gauge, Layers, ScanSearch } from 'lucide-react';
 import { PLATFORMS } from '@clipers/db';
 import { Avatar, ButtonLink, PlatformIcon, ProgressBar } from '@clipers/ui';
 import JsonLd from '@/components/json-ld';
+import LogoMarquee from '@/components/logo-marquee';
 import ProductTour from '@/components/product-tour';
 import { appUrl, siteUrl } from '@/lib/urls';
 
@@ -69,14 +70,7 @@ export default function HomePage() {
               크리에이터로 수익 내기
             </ButtonLink>
           </div>
-          <ul aria-label="지원 플랫폼" className="cl-landing-platforms">
-            {PLATFORMS.map((platform) => (
-              <li key={platform.value}>
-                <PlatformIcon platform={platform.value} size={22} />
-                <span>{platform.label}</span>
-              </li>
-            ))}
-          </ul>
+          <LogoMarquee />
         </section>
 
         <section aria-labelledby="features-title" className="cl-landing-section">
