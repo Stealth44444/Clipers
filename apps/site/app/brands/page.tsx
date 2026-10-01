@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { PLATFORMS } from '@clipers/db';
-import { Avatar, ButtonLink, DeviceFrame, PlatformIcon, ProgressBar, StatusDot, buttonClass } from '@clipers/ui';
+import { Avatar, ButtonLink, DeviceFrame, MeshGradient, PlatformIcon, ProgressBar, StatusDot, buttonClass } from '@clipers/ui';
 import BrandLiveWindow from '@/components/brand-live-window';
 import LandingChrome, { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import LogoWall from '@/components/logo-wall';
@@ -36,6 +36,9 @@ export default function BrandsPage() {
   return (
     <LandingChrome cta="캠페인 시작하기" path="/brands">
       <section className="cl-landing-hero cl-landing-hero--window">
+        <div aria-hidden className="cl-hero-mesh cl-hero-mesh--window">
+          <MeshGradient />
+        </div>
         <h1 className="cl-landing-hero__title">
           숏폼으로,
           <br />

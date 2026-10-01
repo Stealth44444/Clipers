@@ -12,6 +12,7 @@ export * from './components/Checklist';
 export * from './components/Chip';
 export * from './components/DataTable';
 export * from './components/DeviceFrame';
+export * from './components/MeshGradient';
 export * from './components/Dialog';
 export * from './components/Dropzone';
 export * from './components/EmptyState';

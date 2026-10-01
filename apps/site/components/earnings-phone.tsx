@@ -4,23 +4,24 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Avatar, DeviceFrame, PlatformIcon, StatusDot, formatKRW } from '@clipers/ui';
 
 // Creator hero visual: a clip plays on a phone while its views climb, and the payout beside it climbs with them.
-// The slider takes over so visitors can try their own view count (views are on a log scale, 1 to 1,000,000).
+// The slider takes over so visitors can try their own view count (views on a log scale, 1,000 to 1,000,000).
 // Rate and threshold come from the server page as plain numbers so no pricing module ships to the browser.
 
 const LOOP_MS = 9000;
 const AUTO_PEAK = 120_000;
 const SLIDER_MAX = 1000;
 
-const viewsFromSlider = (value: number) => Math.round(Math.pow(10, (value / SLIDER_MAX) * 6));
-const sliderFromViews = (views: number) => Math.round((Math.log10(Math.max(1, views)) / 6) * SLIDER_MAX);
+// The slider runs on a log scale from 1,000 (the first paid view count) to 1,000,000.
+const MIN_VIEWS = 1_000;
+const viewsFromSlider = (value: number) => Math.round(Math.pow(10, 3 + (value / SLIDER_MAX) * 3));
+const sliderFromViews = (views: number) => Math.round(Math.max(0, (Math.log10(Math.max(MIN_VIEWS, views)) - 3) / 3) * SLIDER_MAX);
 const compact = (views: number) =>
   views >= 10_000 ? `${(views / 10_000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만` : views.toLocaleString('ko-KR');
 
 const SCALE: [number, string][] = [
-  [0, '1회'],
-  [50, '1천'],
-  [66.67, '1만'],
-  [83.33, '10만'],
+  [0, '1천'],
+  [33.33, '1만'],
+  [66.67, '10만'],
   [100, '100만'],
 ];
 
@@ -38,7 +39,7 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
       const t = (Math.max(0, now - start) % LOOP_MS) / LOOP_MS;
       // Climb for 80% of the loop (slow start, like a clip catching on), then hold.
       const climb = Math.min(1, t / 0.8);
-      setViews(Math.round(AUTO_PEAK * Math.pow(climb, 2.2)));
+      setViews(Math.round(MIN_VIEWS + (AUTO_PEAK - MIN_VIEWS) * Math.pow(climb, 2.2)));
       raf = requestAnimationFrame(tick);
     };
     const observer = new IntersectionObserver(([entry]) => {
