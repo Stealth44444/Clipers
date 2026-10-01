@@ -106,7 +106,7 @@ export default async function HomePage() {
             <ProgressBar value={1 - POOL.remaining / POOL.total} />
           </div>
           <Link className="cl-link" href="/guides/what-is-clipping">
-            클리핑 부업 더 알아보기
+            클리핑 더 알아보기
           </Link>
         </div>
         <ClippingStage rate={rate} />
