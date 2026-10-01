@@ -821,7 +821,8 @@
 .cl-landing .cl-button--ghost { color: var(--color-text-muted); }
 /* The supplied X mark is white for dark surfaces; flip it on the light landing (not inside the dark product window). */
 .cl-landing .cl-platform-icon[src$="/x.png"] { filter: invert(1); }
-.cl-landing .cl-demo .cl-platform-icon[src$="/x.png"] { filter: none; }
+.cl-landing .cl-demo .cl-platform-icon[src$="/x.png"],
+.cl-landing .cl-app-dark .cl-platform-icon[src$="/x.png"] { filter: none; }
 .cl-landing .cl-button--ghost:hover { background: var(--gray-a3); color: var(--color-text); }
 
 .cl-landing-nav { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: var(--space-6); height: 64px; padding: 0 max(var(--space-5), calc((100% - 1160px) / 2)); background: rgba(255, 255, 255, 0.8); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
@@ -937,8 +938,10 @@
 
 /* ---------- product tour (landing) — the real dark app UI, shown as a product shot ---------- */
 .cl-landing-section__lead { margin: calc(var(--space-6) * -1) auto var(--space-6); color: var(--color-text-muted); font-size: var(--font-size-4); text-align: center; }
-/* Restore the app's dark tokens inside the window (the landing scope switched them to light). */
-.cl-demo {
+/* Restore the app's dark tokens inside product shots (the landing scope switched them to light): the macOS window
+   and every crop of the real app UI on the landings use exactly the app's colours. */
+.cl-demo,
+.cl-app-dark {
   color-scheme: dark;
   --color-background: #111111;
   --color-panel: #191919;
@@ -953,6 +956,9 @@
   --gray-4: #2a2a2a;
   --gray-5: #313131;
   --brand-11: #7fd6a4;
+  color: var(--color-text);
+}
+.cl-demo {
   width: min(920px, 100%);
   overflow: hidden;
   border-radius: 20px;
