@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
-import { X } from 'lucide-react';
+import { XIcon } from '@phosphor-icons/react/ssr';
 import { IconButton } from './Button';
 
 export function Dialog({ open, onClose, title, children, footer }: { open: boolean; onClose: () => void; title: ReactNode; children: ReactNode; footer?: ReactNode }) {
@@ -29,7 +29,7 @@ export function Dialog({ open, onClose, title, children, footer }: { open: boole
       <div className="cl-dialog__header">
         <h2 className="cl-dialog__title">{title}</h2>
         <IconButton label="닫기" onClick={onClose}>
-          <X size={18} />
+          <XIcon size={18} />
         </IconButton>
       </div>
       <div className="cl-dialog__body">{children}</div>

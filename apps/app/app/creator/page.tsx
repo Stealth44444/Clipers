@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CircleUserRound, Eye, Film, Megaphone, Send, Wallet } from 'lucide-react';
+import { EyeIcon, FilmStripIcon, MegaphoneIcon, PaperPlaneTiltIcon, UserCircleIcon, WalletIcon } from '@phosphor-icons/react/ssr';
 import { creatorChecklist, platformLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
@@ -52,21 +52,21 @@ export default async function CreatorHomePage() {
   });
 
   const STEP_CONTENT: Record<string, Omit<ChecklistItem, 'id' | 'done'>> = {
-    account: { icon: <CircleUserRound {...ICON} />, title: '계정 만들기', description: '가입과 프로필 설정을 마쳤어요.' },
+    account: { icon: <UserCircleIcon {...ICON} />, title: '계정 만들기', description: '가입과 프로필 설정을 마쳤어요.' },
     apply: {
-      icon: <Megaphone {...ICON} />,
+      icon: <MegaphoneIcon {...ICON} />,
       title: '캠페인에 지원하기',
       description: '관심 있는 캠페인에 지원하면 운영팀이 검토해요.',
       action: <ButtonLink href="/creator/campaigns" size="sm" variant="secondary">캠페인 보기</ButtonLink>,
     },
     submit: {
-      icon: <Send {...ICON} />,
+      icon: <PaperPlaneTiltIcon {...ICON} />,
       title: '첫 클립 제출하기',
       description: '승인된 캠페인에 게시한 영상 링크를 제출하세요.',
       action: <ButtonLink href="/creator/campaigns" size="sm" variant="secondary">제출하기</ButtonLink>,
     },
     settle: {
-      icon: <Wallet {...ICON} />,
+      icon: <WalletIcon {...ICON} />,
       title: '첫 정산 받기',
       description: '검수를 통과한 클립의 조회수는 매주 정산돼요.',
     },
@@ -84,15 +84,15 @@ export default async function CreatorHomePage() {
         )}
 
         <StatGrid>
-          <StatCard highlight icon={<Wallet {...ICON} />} label="누적 정산액" tone="brand" value={formatKRW(earnings.total)} />
-          <StatCard icon={<Eye {...ICON} />} label="검증 조회수" tone="sky" value={formatCompactNumber(verifiedViews)} />
+          <StatCard highlight icon={<WalletIcon {...ICON} />} label="누적 정산액" tone="brand" value={formatKRW(earnings.total)} />
+          <StatCard icon={<EyeIcon {...ICON} />} label="검증 조회수" tone="sky" value={formatCompactNumber(verifiedViews)} />
           <StatCard
-            icon={<Megaphone {...ICON} />}
+            icon={<MegaphoneIcon {...ICON} />}
             label="참여 캠페인"
             tone="violet"
             value={applicationRows.filter((row) => row.status === 'approved').length}
           />
-          <StatCard icon={<Film {...ICON} />} label="제출한 클립" tone="amber" value={clipRows.length} />
+          <StatCard icon={<FilmStripIcon {...ICON} />} label="제출한 클립" tone="amber" value={clipRows.length} />
         </StatGrid>
 
         <section>
@@ -129,7 +129,7 @@ export default async function CreatorHomePage() {
               <EmptyState
                 action={<ButtonLink href="/creator/campaigns" variant="primary">캠페인 둘러보기</ButtonLink>}
                 description="캠페인에 지원하고 승인되면 영상 링크를 제출할 수 있어요."
-                icon={<Film size={24} />}
+                icon={<FilmStripIcon size={24} />}
                 title="아직 제출한 클립이 없어요"
               />
             </Card>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react/ssr';
 import { cx } from '../lib/cx';
 
 /**
@@ -54,10 +54,10 @@ export function Rail({ title, description, variant = 'cards', children }: {
         {/* Always shown so the control doesn't pop in; disabled while there is nothing to page to. */}
         <div className="cl-rail__arrows">
           <button aria-label="이전" className="cl-rail__arrow" disabled={edges.start} onClick={() => page(-1)} type="button">
-            <ChevronLeft size={18} />
+            <CaretLeftIcon size={18} />
           </button>
           <button aria-label="다음" className="cl-rail__arrow" disabled={edges.end} onClick={() => page(1)} type="button">
-            <ChevronRight size={18} />
+            <CaretRightIcon size={18} />
           </button>
         </div>
       </div>

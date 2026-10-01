@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { Check } from 'lucide-react';
+import { CheckIcon } from '@phosphor-icons/react/ssr';
 
 export function OptionCard({ icon, title, description, badge, selected, onSelect }: {
   icon?: ReactNode;
@@ -14,7 +14,7 @@ export function OptionCard({ icon, title, description, badge, selected, onSelect
   return (
     <button aria-checked={selected} className="cl-option-card" onClick={onSelect} role="radio" type="button">
       {icon && <span className="cl-option-card__icon">{icon}</span>}
-      <span className="cl-option-card__radio" aria-hidden>{selected && <Check size={12} strokeWidth={3} />}</span>
+      <span className="cl-option-card__radio" aria-hidden>{selected && <CheckIcon size={12} weight="bold" />}</span>
       <span className="cl-option-card__title">
         {title}
         {badge}

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Search, Sparkles } from 'lucide-react';
+import { MagnifyingGlassIcon, SparkleIcon } from '@phosphor-icons/react/ssr';
 import { INTEREST_GROUPS, extractYouTubeVideoId, interestGroupOfCategory } from '@clipers/db';
 import { Card, CardGrid, EmptyState, Page, Rail, SectionHeader, Stack, Starfield, formatCompactNumber } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
@@ -40,7 +40,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
           <h1 className="cl-market-hero__title">{activeGroup ? `${activeGroup.label} 캠페인` : '지금 참여할 수 있는 캠페인'}</h1>
           <p className="cl-market-hero__description">영상을 올리고, 검증된 조회수만큼 정산받으세요. 지원은 무료예요.</p>
           <form action="/discover" className="cl-search" role="search">
-            <Search aria-hidden size={18} />
+            <MagnifyingGlassIcon aria-hidden size={18} />
             {activeGroup && <input name="group" type="hidden" value={activeGroup.id} />}
             <input aria-label="캠페인 검색" className="cl-input" defaultValue={q} name="q" placeholder="캠페인, 브랜드, 분야로 검색" type="search" />
           </form>
@@ -74,7 +74,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
                     ) : undefined
                   }
                   description={query || activeGroup ? '다른 검색어나 분야로 찾아보세요.' : '새 캠페인이 열리면 여기에 보여요.'}
-                  icon={<Sparkles size={24} />}
+                  icon={<SparkleIcon size={24} />}
                   title="조건에 맞는 캠페인이 없어요"
                   tone="neutral"
                 />

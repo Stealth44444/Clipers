@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useState, type ReactNode } from 'react';
-import { Upload } from 'lucide-react';
+import { UploadSimpleIcon } from '@phosphor-icons/react/ssr';
 
 export function Dropzone({ accept, onFile, title, hint, fileName }: { accept?: string; onFile: (file: File) => void; title: ReactNode; hint?: ReactNode; fileName?: string | null }) {
   const inputId = useId();
@@ -24,7 +24,7 @@ export function Dropzone({ accept, onFile, title, hint, fileName }: { accept?: s
         if (file) onFile(file);
       }}
     >
-      <Upload size={22} />
+      <UploadSimpleIcon size={22} />
       <span className="cl-dropzone__title">{fileName ?? title}</span>
       {hint && <span className="cl-dropzone__hint">{hint}</span>}
       <input

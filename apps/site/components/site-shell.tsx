@@ -1,17 +1,21 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { BookOpen, Dumbbell, LayoutGrid, Palette, ShoppingBag, Sparkles } from 'lucide-react';
+import { BarbellIcon, BookOpenIcon, PaletteIcon, ShoppingBagIcon, SparkleIcon, SquaresFourIcon } from '@phosphor-icons/react/ssr';
+import type { Icon as PhosphorIcon } from '@phosphor-icons/react';
 import { INTEREST_GROUPS, type InterestGroupId } from '@clipers/db';
 import { AppShell, ButtonLink, Sidebar } from '@clipers/ui';
 import { appUrl } from '@/lib/urls';
 
 const ICON = { size: 18 };
-const GROUP_ICONS: Record<InterestGroupId, ReactNode> = {
-  entertainment: <Sparkles {...ICON} />,
-  lifestyle: <ShoppingBag {...ICON} />,
-  health: <Dumbbell {...ICON} />,
-  knowledge: <BookOpen {...ICON} />,
-  hobby: <Palette {...ICON} />,
+
+/** Regular glyph normally, filled glyph on the current page (iOS tab-bar convention). */
+const navIcon = (Icon: PhosphorIcon) => ({ icon: <Icon {...ICON} />, activeIcon: <Icon {...ICON} weight="fill" /> });
+const GROUP_ICONS: Record<InterestGroupId, PhosphorIcon> = {
+  entertainment: SparkleIcon,
+  lifestyle: ShoppingBagIcon,
+  health: BarbellIcon,
+  knowledge: BookOpenIcon,
+  hobby: PaletteIcon,
 };
 
 export function discoverHref(group?: string | null): string {
@@ -32,10 +36,10 @@ export default function SiteShell({ activeGroup, children }: { activeGroup?: str
           activePath={discoverHref(activeGroup)}
           LinkComponent={Link}
           sections={[
-            { title: '탐색', items: [{ href: discoverHref(), label: '모든 캠페인', icon: <LayoutGrid {...ICON} />, exact: true }] },
+            { title: '탐색', items: [{ href: discoverHref(), label: '모든 캠페인', ...navIcon(SquaresFourIcon), exact: true }] },
             {
               title: '분야',
-              items: INTEREST_GROUPS.map((group) => ({ href: discoverHref(group.id), label: group.label, icon: GROUP_ICONS[group.id], exact: true })),
+              items: INTEREST_GROUPS.map((group) => ({ href: discoverHref(group.id), label: group.label, ...navIcon(GROUP_ICONS[group.id]), exact: true })),
             },
           ]}
         />

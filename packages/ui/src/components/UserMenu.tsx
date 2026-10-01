@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, LogOut } from 'lucide-react';
+import { CaretDownIcon, SignOutIcon } from '@phosphor-icons/react/ssr';
 import { Avatar } from './Avatar';
 
 export function UserMenu({ name, subtitle, onSignOut, signOutLabel = '로그아웃' }: { name: string; subtitle?: string; onSignOut: () => void; signOutLabel?: string }) {
@@ -29,7 +29,7 @@ export function UserMenu({ name, subtitle, onSignOut, signOutLabel = '로그아�
       <button aria-expanded={open} aria-haspopup="menu" className="cl-user-menu__trigger" onClick={() => setOpen((value) => !value)} type="button">
         <Avatar name={name || '?'} size="sm" />
         <span className="cl-user-menu__name">{name}</span>
-        <ChevronDown size={16} />
+        <CaretDownIcon size={16} />
       </button>
       {open && (
         <div className="cl-user-menu__panel" role="menu">
@@ -38,7 +38,7 @@ export function UserMenu({ name, subtitle, onSignOut, signOutLabel = '로그아�
             {subtitle && <span>{subtitle}</span>}
           </div>
           <button className="cl-user-menu__item" onClick={onSignOut} role="menuitem" type="button">
-            <LogOut size={16} />
+            <SignOutIcon size={16} />
             {signOutLabel}
           </button>
         </div>

@@ -2,7 +2,7 @@
 
 import { useState, useTransition, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Send } from 'lucide-react';
+import { PaperPlaneTiltIcon } from '@phosphor-icons/react/ssr';
 import { platformLabel } from '@clipers/db';
 import { Button, Dialog, Field, Input, Select } from '@clipers/ui';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
@@ -47,7 +47,7 @@ export default function SubmitClipDialog({ campaignId, campaignTitle, platforms,
 
   return (
     <>
-      <Button icon={<Send size={15} />} onClick={() => setOpen(true)} size="sm" variant="primary">
+      <Button icon={<PaperPlaneTiltIcon size={15} />} onClick={() => setOpen(true)} size="sm" variant="primary">
         클립 제출
       </Button>
       <Dialog

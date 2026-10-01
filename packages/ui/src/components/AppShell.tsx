@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
-import { Menu, X } from 'lucide-react';
+import { ListIcon, XIcon } from '@phosphor-icons/react/ssr';
 import { IconButton } from './Button';
 
 export function AppShell({ logo, topbarEnd, sidebar, children }: { logo: ReactNode; topbarEnd?: ReactNode; sidebar: ReactNode; children: ReactNode }) {
@@ -11,7 +11,7 @@ export function AppShell({ logo, topbarEnd, sidebar, children }: { logo: ReactNo
     <div className="cl-shell" data-nav-open={navOpen}>
       <header className="cl-topbar">
         <IconButton className="cl-menu-toggle" label={navOpen ? '메뉴 닫기' : '메뉴 열기'} onClick={() => setNavOpen((open) => !open)}>
-          {navOpen ? <X size={20} /> : <Menu size={20} />}
+          {navOpen ? <XIcon size={20} /> : <ListIcon size={20} />}
         </IconButton>
         {logo}
         <div className="cl-topbar__end">{topbarEnd}</div>

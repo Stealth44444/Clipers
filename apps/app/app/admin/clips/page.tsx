@@ -1,4 +1,4 @@
-import { ClipboardCheck } from 'lucide-react';
+import { ClipboardTextIcon } from '@phosphor-icons/react/ssr';
 import { platformLabel } from '@clipers/db';
 import { Badge, Card, DataTable, EmptyState, Page, PageHeader } from '@clipers/ui';
 import { getSession } from '@/lib/session';
@@ -79,7 +79,7 @@ export default async function AdminClipsPage() {
         />
       ) : (
         <Card>
-          <EmptyState description="크리에이터가 클립을 제출하면 여기에 보여요." icon={<ClipboardCheck size={24} />} title="검수할 클립이 없어요" tone="neutral" />
+          <EmptyState description="크리에이터가 클립을 제출하면 여기에 보여요." icon={<ClipboardTextIcon size={24} />} title="검수할 클립이 없어요" tone="neutral" />
         </Card>
       )}
     </Page>

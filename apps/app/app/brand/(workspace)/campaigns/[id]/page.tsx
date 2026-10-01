@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { ExternalLink, Eye, Film, Pencil, Target, Wallet } from 'lucide-react';
+import { ArrowSquareOutIcon, EyeIcon, FilmStripIcon, PencilSimpleIcon, TargetIcon, WalletIcon } from '@phosphor-icons/react/ssr';
 import { campaignPricing, creatorPayoutToClipCap, platformLabel, platformLabels } from '@clipers/db';
 import {
   Badge,
@@ -58,7 +58,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
       <PageHeader
         actions={
           campaign.status === 'draft' ? (
-            <ButtonLink href={`/brand/campaigns/new?draft=${campaign.id}`} icon={<Pencil size={15} />} variant="secondary">
+            <ButtonLink href={`/brand/campaigns/new?draft=${campaign.id}`} icon={<PencilSimpleIcon size={15} />} variant="secondary">
               수정
             </ButtonLink>
           ) : undefined
@@ -95,10 +95,10 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
         )}
 
         <StatGrid>
-          <StatCard highlight icon={<Wallet {...ICON} />} label="사용한 예산" tone="brand" value={formatKRW(summary.spent)} />
-          <StatCard icon={<Target {...ICON} />} label="예상 조회수" tone="violet" value={formatCompactNumber(summary.expectedViews)} />
-          <StatCard icon={<Eye {...ICON} />} label="검증 조회수" tone="sky" value={formatCompactNumber(summary.verifiedViews)} />
-          <StatCard icon={<Film {...ICON} />} label="받은 클립" tone="amber" value={summary.clipCount} />
+          <StatCard highlight icon={<WalletIcon {...ICON} />} label="사용한 예산" tone="brand" value={formatKRW(summary.spent)} />
+          <StatCard icon={<TargetIcon {...ICON} />} label="예상 조회수" tone="violet" value={formatCompactNumber(summary.expectedViews)} />
+          <StatCard icon={<EyeIcon {...ICON} />} label="검증 조회수" tone="sky" value={formatCompactNumber(summary.verifiedViews)} />
+          <StatCard icon={<FilmStripIcon {...ICON} />} label="받은 클립" tone="amber" value={summary.clipCount} />
         </StatGrid>
 
         <Card title="예산">
@@ -167,7 +167,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
                   align: 'right',
                   render: (clip) => (
                     <a aria-label="영상 열기" className="cl-icon-button" href={clip.url} rel="noreferrer" target="_blank">
-                      <ExternalLink size={16} />
+                      <ArrowSquareOutIcon size={16} />
                     </a>
                   ),
                 },
@@ -185,7 +185,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
                     ? '크리에이터들이 지원하고 승인되면 영상이 올라오기 시작해요.'
                     : '캠페인이 공개되면 크리에이터들의 영상이 여기에 모여요.'
                 }
-                icon={<Film size={24} />}
+                icon={<FilmStripIcon size={24} />}
                 title="아직 받은 클립이 없어요"
                 tone="neutral"
               />
