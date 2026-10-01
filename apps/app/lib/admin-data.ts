@@ -8,7 +8,7 @@ export type AdminQueueCounts = {
   overdueClips: number;
   viewReports: number;
   disputes: number;
-  /** Creators waiting for a bank transfer. */
+  /** Payout requests waiting for a bank transfer. */
   payouts: number;
 };
 
@@ -23,7 +23,7 @@ export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => 
     supabase.from('clips').select('id', count).eq('status', 'pending_review').lt('sla_deadline', new Date().toISOString()),
     supabase.from('manual_view_reports').select('id', count).eq('status', 'pending'),
     supabase.from('clip_disputes').select('id', count).eq('status', 'open'),
-    supabase.from('settlements').select('creator_id').eq('status', 'requested'),
+    supabase.from('payouts').select('id', count).eq('status', 'requested'),
   ]);
   return {
     deposits: deposits.count ?? 0,
@@ -32,6 +32,6 @@ export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => 
     overdueClips: overdueClips.count ?? 0,
     viewReports: viewReports.count ?? 0,
     disputes: disputes.count ?? 0,
-    payouts: new Set((payouts.data ?? []).map((row) => row.creator_id)).size,
+    payouts: payouts.count ?? 0,
   };
 });

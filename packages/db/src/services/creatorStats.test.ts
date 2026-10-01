@@ -97,22 +97,26 @@ describe('cumulativeCountByDay', () => {
 });
 
 describe('payoutRequest', () => {
-  it('sums the net amount of pending settlements and allows a request from 3,000원', () => {
+  it('sums pending settlements into one payout and allows a request from 3,000원', () => {
     expect(
       payoutRequest([
-        { amount: 2000, withholding_amount: 66, status: 'pending' },
-        { amount: 1200, withholding_amount: 40, status: 'pending' },
-        { amount: 9000, withholding_amount: 0, status: 'paid' },
+        { amount: 2000, status: 'pending' },
+        { amount: 1200.5, status: 'pending' },
+        { amount: 9000, status: 'paid' },
       ])
-    ).toEqual({ amount: 3094, count: 2, canRequest: true, shortfall: 0 });
+    ).toEqual({ amount: 3200, tax: { gross: 3200, incomeTax: 0, localTax: 0, net: 3200 }, count: 2, canRequest: true, shortfall: 0 });
+  });
+
+  it('withholds on the whole payout once it is large enough', () => {
+    expect(payoutRequest([{ amount: 20_000, status: 'pending' }, { amount: 20_000, status: 'pending' }]).tax).toEqual({
+      gross: 40_000,
+      incomeTax: 1_200,
+      localTax: 120,
+      net: 38_680,
+    });
   });
 
   it('reports how much more is needed below the minimum', () => {
-    expect(payoutRequest([{ amount: 1000, withholding_amount: 33, status: 'pending' }])).toEqual({
-      amount: 967,
-      count: 1,
-      canRequest: false,
-      shortfall: 2033,
-    });
+    expect(payoutRequest([{ amount: 1000, status: 'pending' }])).toMatchObject({ amount: 1000, count: 1, canRequest: false, shortfall: 2000 });
   });
 });

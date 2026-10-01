@@ -13,7 +13,6 @@ type StoredSettlement = {
   clip_id: string;
   amount: number | string;
   verified_views: number;
-  withholding_amount: number | string;
   status: 'pending' | 'requested' | 'paid';
   period: string;
   creator: { display_name: string } | null;
@@ -40,7 +39,7 @@ export default function SettlementPanel() {
 
     const { data, error: queryError } = await getSupabaseBrowserClient()
       .from('settlements')
-      .select('id,creator_id,campaign_id,clip_id,amount,verified_views,withholding_amount,status,period,creator:profiles!settlements_creator_id_fkey(display_name),campaign:campaigns!settlements_campaign_id_fkey(title)')
+      .select('id,creator_id,campaign_id,clip_id,amount,verified_views,status,period,creator:profiles!settlements_creator_id_fkey(display_name),campaign:campaigns!settlements_campaign_id_fkey(title)')
       .eq('period', period.period)
       .order('creator_id', { ascending: true });
 
@@ -82,7 +81,6 @@ export default function SettlementPanel() {
       creatorName: string;
       status: string;
       gross: number;
-      withholding: number;
     }>();
 
     for (const settlement of settlements) {
@@ -92,23 +90,19 @@ export default function SettlementPanel() {
         creatorName: settlement.creator?.display_name ?? '크리에이터',
         status: statusDisplay(SETTLEMENT_STATUS, settlement.status).label,
         gross: 0,
-        withholding: 0,
       };
       current.gross += Number(settlement.amount);
-      current.withholding += Number(settlement.withholding_amount);
       totals.set(key, current);
     }
 
     const rows = [
-      ['정산 주', '크리에이터', '크리에이터 ID', '상태', '총액', '원천징수(placeholder)', '실지급액'],
+      ['정산 주', '크리에이터', '크리에이터 ID', '상태', '정산액'],
       ...[...totals.values()].map((total) => [
         period.period,
         total.creatorName,
         total.creatorId,
         total.status,
         total.gross.toFixed(2),
-        total.withholding.toFixed(2),
-        (total.gross - total.withholding).toFixed(2),
       ]),
     ];
     const csv = `\uFEFF${rows.map((row) => row.map(csvCell).join(',')).join('\r\n')}`;
@@ -157,7 +151,6 @@ export default function SettlementPanel() {
           },
           { key: 'views', header: '검증 조회수', align: 'right', render: (settlement) => Number(settlement.verified_views).toLocaleString('ko-KR') },
           { key: 'amount', header: '정산액', align: 'right', render: (settlement) => formatKRW(Number(settlement.amount)) },
-          { key: 'withholding', header: '원천징수', align: 'right', render: (settlement) => formatKRW(Number(settlement.withholding_amount)) },
           {
             key: 'status',
             header: '상태',

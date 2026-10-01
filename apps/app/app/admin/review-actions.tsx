@@ -154,18 +154,12 @@ export function ConfirmDepositAction({ campaignId, reviewerId, amount }: { campa
   return <ActionButton label="입금 확인" pendingLabel="처리 중…" run={confirm} variant="primary" />;
 }
 
-/** Marks one creator's requested settlements paid, after the operator has made the bank transfer. */
-export function PayoutPaidAction({ settlementIds, amount, creatorName }: { settlementIds: string[]; amount: number; creatorName: string }) {
+/** Marks a payout paid, after the operator has made the bank transfer; its settlements follow. */
+export function PayoutPaidAction({ payoutId, amount, legalName }: { payoutId: string; amount: number; legalName: string }) {
   async function markPaid(): Promise<ActionResult> {
-    if (!window.confirm(`${creatorName}님에게 ${formatKRW(amount)}을 이체했나요? 이체를 마친 뒤에만 지급 완료로 바꿔 주세요.`)) return { ok: true };
-    const { data, error } = await getSupabaseBrowserClient()
-      .from('settlements')
-      .update({ status: 'paid' })
-      .in('id', settlementIds)
-      .eq('status', 'requested')
-      .select('id');
-    if (error) return fail('지급 완료로 바꾸지 못했어요.');
-    return (data ?? []).length === settlementIds.length ? { ok: true } : fail('일부 정산의 상태가 이미 바뀌었어요. 새로고침한 뒤 확인해 주세요.');
+    if (!window.confirm(`${legalName}님 계좌로 ${formatKRW(amount)}을 이체했나요? 이체를 마친 뒤에만 지급 완료로 바꿔 주세요.`)) return { ok: true };
+    const { error } = await getSupabaseBrowserClient().rpc('mark_payout_paid', { p_payout_id: payoutId });
+    return error ? fail('지급 완료로 바꾸지 못했어요. 새로고침한 뒤 확인해 주세요.') : { ok: true };
   }
   return <ActionButton label="지급 완료" pendingLabel="처리 중…" run={markPaid} variant="primary" />;
 }

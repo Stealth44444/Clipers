@@ -3,13 +3,16 @@
 import { Button } from '@clipers/ui';
 
 export type PayoutRequest = {
-  creatorId: string;
+  id: string;
   creatorName: string;
-  settlementIds: string[];
-  firstPeriod: string;
-  lastPeriod: string;
+  legalName: string;
+  bank: string;
+  accountNumber: string;
   gross: number;
-  withholding: number;
+  incomeTax: number;
+  localTax: number;
+  net: number;
+  requestedAt: string;
 };
 
 function csvCell(value: string | number): string {
@@ -18,19 +21,22 @@ function csvCell(value: string | number): string {
   return `"${safeText.replaceAll('"', '""')}"`;
 }
 
-/** One row per creator with an open payout request, for the bank transfer sheet. */
+/** Open payout requests as a bank transfer sheet: who, where, how much. */
 export default function PayoutCsvButton({ requests }: { requests: PayoutRequest[] }) {
   function exportCsv() {
     const rows = [
-      ['크리에이터', '크리에이터 ID', '정산 주', '정산 건수', '정산액', '원천징수', '이체할 금액'],
+      ['크리에이터', '예금주', '은행', '계좌번호', '정산액', '소득세', '지방소득세', '이체할 금액', '요청 시각', '지급 ID'],
       ...requests.map((request) => [
         request.creatorName,
-        request.creatorId,
-        request.firstPeriod === request.lastPeriod ? request.firstPeriod : `${request.firstPeriod} ~ ${request.lastPeriod}`,
-        request.settlementIds.length,
-        request.gross.toFixed(2),
-        request.withholding.toFixed(2),
-        (request.gross - request.withholding).toFixed(2),
+        request.legalName,
+        request.bank,
+        request.accountNumber,
+        request.gross,
+        request.incomeTax,
+        request.localTax,
+        request.net,
+        request.requestedAt,
+        request.id,
       ]),
     ];
     const csv = `﻿${rows.map((row) => row.map(csvCell).join(',')).join('\r\n')}`;
@@ -44,7 +50,7 @@ export default function PayoutCsvButton({ requests }: { requests: PayoutRequest[
 
   return (
     <Button onClick={exportCsv} variant="secondary">
-      CSV 내보내기
+      이체용 CSV
     </Button>
   );
 }

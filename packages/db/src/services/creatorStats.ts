@@ -1,4 +1,5 @@
 import type { ClipSnapshotSeries } from './anomalyDetection';
+import { payoutTax } from '../payouts';
 import { MIN_WITHDRAWAL } from '../pricing';
 import { getPreviousWeekPeriod } from './settlement';
 
@@ -126,9 +127,10 @@ export function cumulativeCountByDay(events: string[], dayKeys: string[]): numbe
   });
 }
 
-/** What a creator could request right now: all pending settlements, net of withholding (mirrors request_payout()). */
-export function payoutRequest(settlements: { amount: number | string; withholding_amount: number | string; status: string }[]) {
+/** What a creator could request right now: all pending settlements as one payout, and its withholding (mirrors request_payout()). */
+export function payoutRequest(settlements: { amount: number | string; status: string }[]) {
   const pending = settlements.filter((settlement) => settlement.status === 'pending');
-  const amount = pending.reduce((sum, settlement) => sum + Number(settlement.amount) - Number(settlement.withholding_amount), 0);
-  return { amount, count: pending.length, canRequest: amount >= MIN_WITHDRAWAL, shortfall: Math.max(0, MIN_WITHDRAWAL - amount) };
+  const settled = pending.reduce((sum, settlement) => sum + Number(settlement.amount), 0);
+  const tax = payoutTax(settled);
+  return { amount: tax.gross, tax, count: pending.length, canRequest: settled >= MIN_WITHDRAWAL, shortfall: Math.max(0, MIN_WITHDRAWAL - settled) };
 }

@@ -1,5 +1,5 @@
 import { Banknote, CalendarDays, Clock, Wallet } from 'lucide-react';
-import { fetchAllRows, payoutRequest, settlementPeriodLabel, summarizeEarnings } from '@clipers/db';
+import { bankName, fetchAllRows, maskAccountNumber, payoutRequest, settlementPeriodLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
   Card,
@@ -22,31 +22,54 @@ type Settlement = {
   id: string;
   period: string;
   amount: number | string;
-  withholding_amount: number | string;
   verified_views: number;
   status: string;
   campaign: { title: string } | null;
 };
 
+type Payout = {
+  id: string;
+  gross_amount: number;
+  income_tax: number;
+  local_tax: number;
+  net_amount: number;
+  bank_code: string;
+  account_number: string;
+  status: 'requested' | 'paid';
+  requested_at: string;
+  paid_at: string | null;
+};
+
 const ICON = { size: 18 };
+
+const formatDate = (iso: string) => new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'long', day: 'numeric' }).format(new Date(iso));
 
 export default async function CreatorEarningsPage() {
   const { supabase, user } = await getSession();
   const settlements = (await fetchAllRows((from, to) =>
     supabase
       .from('settlements')
-      .select('id, period, amount, withholding_amount, verified_views, status, campaign:campaigns!settlements_campaign_id_fkey(title)')
+      .select('id, period, amount, verified_views, status, campaign:campaigns!settlements_campaign_id_fkey(title)')
       .eq('creator_id', user.id)
       .order('period', { ascending: false })
       .order('id')
       .range(from, to)
   )) as unknown as Settlement[];
+  const [{ data: payoutRows }, { data: account }] = await Promise.all([
+    supabase
+      .from('payouts')
+      .select('id, gross_amount, income_tax, local_tax, net_amount, bank_code, account_number, status, requested_at, paid_at')
+      .eq('creator_id', user.id)
+      .order('requested_at', { ascending: false }),
+    supabase.from('payout_accounts').select('bank_code, account_number').eq('creator_id', user.id).maybeSingle(),
+  ]);
+  const payouts = (payoutRows ?? []) as Payout[];
   const summary = summarizeEarnings(settlements);
   const payout = payoutRequest(settlements);
 
   return (
     <Page>
-      <PageHeader description="검수를 통과한 클립은 조회수 1,000회부터 매주 정산돼요. 금액은 원천징수 전 기준이에요." title="수익" />
+      <PageHeader description="검수를 통과한 클립은 조회수 1,000회부터 매주 정산돼요. 정산액은 세금을 떼기 전 금액이에요." title="수익" />
       <Stack>
         <StatGrid>
           <StatCard highlight icon={<Wallet {...ICON} />} label="받을 금액" tone="brand" value={formatKRW(summary.unpaid)} />
@@ -56,7 +79,12 @@ export default async function CreatorEarningsPage() {
         </StatGrid>
 
         <Card>
-          <RequestPayoutButton amount={payout.amount} canRequest={payout.canRequest} shortfall={payout.shortfall} />
+          <RequestPayoutButton
+            account={account ? `${bankName(account.bank_code)} ${maskAccountNumber(account.account_number)}` : null}
+            canRequest={payout.canRequest}
+            shortfall={payout.shortfall}
+            tax={payout.tax}
+          />
         </Card>
 
         <Card description="지급 요청을 보내면 운영팀이 확인 후 지급해요." title="지급 단계">
@@ -70,6 +98,42 @@ export default async function CreatorEarningsPage() {
             }))}
           />
         </Card>
+
+        {payouts.length > 0 && (
+          <section>
+            <SectionHeader description="사업소득세 3.3%(소득세 3% + 지방소득세 0.3%)를 떼고 보내요. 지급액이 33,334원 미만이면 떼지 않아요." title="지급 내역" />
+            <DataTable
+              columns={[
+                {
+                  key: 'requested',
+                  header: '요청일',
+                  render: (row) => (
+                    <div>
+                      <p>{formatDate(row.requested_at)}</p>
+                      <p className="cl-meta-subtle">
+                        {bankName(row.bank_code)} {maskAccountNumber(row.account_number)}
+                      </p>
+                    </div>
+                  ),
+                },
+                { key: 'gross', header: '정산액', align: 'right', render: (row) => formatKRW(row.gross_amount) },
+                { key: 'tax', header: '세금', align: 'right', render: (row) => formatKRW(row.income_tax + row.local_tax) },
+                { key: 'net', header: '받을 금액', align: 'right', render: (row) => <span className="cl-emphasis">{formatKRW(row.net_amount)}</span> },
+                {
+                  key: 'status',
+                  header: '상태',
+                  render: (row) => (
+                    <Badge tone={row.status === 'paid' ? 'brand' : 'amber'}>{row.status === 'paid' ? `지급 완료 ${row.paid_at ? formatDate(row.paid_at) : ''}` : '지급 대기'}</Badge>
+                  ),
+                },
+              ]}
+              empty=""
+              label="지급 내역"
+              rowKey={(row) => row.id}
+              rows={payouts}
+            />
+          </section>
+        )}
 
         <section>
           <SectionHeader title="정산 내역" />
@@ -88,13 +152,6 @@ export default async function CreatorEarningsPage() {
                 },
                 { key: 'views', header: '검증 조회수', align: 'right', render: (row) => Number(row.verified_views).toLocaleString('ko-KR') },
                 { key: 'amount', header: '정산액', align: 'right', render: (row) => formatKRW(Number(row.amount)) },
-                { key: 'withholding', header: '원천징수', align: 'right', render: (row) => formatKRW(Number(row.withholding_amount)) },
-                {
-                  key: 'net',
-                  header: '실지급액',
-                  align: 'right',
-                  render: (row) => <span className="cl-emphasis">{formatKRW(Number(row.amount) - Number(row.withholding_amount))}</span>,
-                },
                 {
                   key: 'status',
                   header: '상태',
