@@ -8,7 +8,7 @@ import { Avatar, DeviceFrame, PlatformIcon, StatusDot, formatKRW } from '@cliper
 // The slider takes over so visitors can try their own view count (views on a log scale, 1,000 to 1,000,000).
 // Rate and threshold come from the server page as plain numbers so no pricing module ships to the browser.
 
-const LOOP_MS = 9000;
+const LOOP_MS = 6000;
 const AUTO_PEAK = 120_000;
 const SLIDER_MAX = 1000;
 
@@ -19,8 +19,8 @@ const sliderFromViews = (views: number) => Math.round(Math.max(0, (Math.log10(Ma
 const compact = (views: number) =>
   views >= 10_000 ? `${(views / 10_000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만` : views.toLocaleString('ko-KR');
 
-// What plays on the phone: three creator clips, each from its own campaign; the feed swipes to the next one
-// each loop. Videos: 540×960, muted, ~9s (public/media/clips). The player chrome is neutral, not any one app's.
+// What plays on the phone: four creator clips, each from its own campaign; the feed swipes to the next one
+// each loop. Videos: 540×960, muted, 6s (public/media/clips). The player chrome is neutral, not any one app's.
 const CLIPS = [
   {
     video: '/media/clips/beauty.mp4',
@@ -32,6 +32,17 @@ const CLIPS = [
     likes: '3.2만',
     comments: '418',
     campaign: '데일리 마스카라 루틴 챌린지',
+  },
+  {
+    video: '/media/clips/drive.mp4',
+    poster: '/media/clips/drive.jpg',
+    platform: 'naver_clip',
+    handle: 'desert.drive',
+    caption: '의자에 앉은 채로 받아 낸 신차 점프',
+    tag: '#카스타그램',
+    likes: '7.4만',
+    comments: '962',
+    campaign: '신차 런칭 하이라이트 클리핑',
   },
   {
     video: '/media/clips/pet.mp4',

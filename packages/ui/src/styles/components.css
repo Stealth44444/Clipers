@@ -1351,12 +1351,12 @@
 .cl-short__audio { display: flex; align-items: center; gap: 1.6cqw; font-size: 3.3cqw; }
 .cl-short__audio svg { flex: 0 0 auto; width: 3.6cqw; height: 3.6cqw; }
 .cl-short__audio > span { overflow: hidden; white-space: nowrap; -webkit-mask-image: linear-gradient(90deg, #000 80%, transparent); mask-image: linear-gradient(90deg, #000 80%, transparent); }
-.cl-short__audio > span > span { display: inline-block; animation: cl-audio-run 9s linear infinite; }
+.cl-short__audio > span > span { display: inline-block; animation: cl-audio-run 8s linear infinite; }
 @keyframes cl-audio-run { to { transform: translateX(-50%); } }
-.cl-short__progress { position: absolute; bottom: 0; left: 0; z-index: 1; height: 0.9cqw; background: rgba(255, 255, 255, 0.92); animation: cl-short-play 9s linear both; }
+.cl-short__progress { position: absolute; bottom: 0; left: 0; z-index: 1; height: 0.9cqw; background: rgba(255, 255, 255, 0.92); animation: cl-short-play 6s linear both; }
 .cl-short__slide:not([data-state="active"]) .cl-short__progress { width: 0; animation: none; }
 @keyframes cl-short-play { from { width: 0; } to { width: 100%; } }
-.cl-short__burst { position: absolute; top: 42%; left: 50%; color: #ff5470; opacity: 0; filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.3)); transform: translate(-50%, -50%) scale(0); animation: cl-burst 9s ease both; }
+.cl-short__burst { position: absolute; top: 42%; left: 50%; color: #ff5470; opacity: 0; filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.3)); transform: translate(-50%, -50%) scale(0); animation: cl-burst 6s ease both; }
 @keyframes cl-burst { 0%, 56% { opacity: 0; transform: translate(-50%, -50%) scale(0); } 59% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.18); } 63% { transform: translate(-50%, -50%) scale(0.94); } 68% { opacity: 0.95; transform: translate(-50%, -50%) scale(1); } 78%, 100% { opacity: 0; transform: translate(-50%, -80%) scale(1.08); } }
 
 @media (prefers-reduced-motion: reduce) {
