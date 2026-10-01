@@ -97,17 +97,17 @@
 }
 
 /* Use cases (reference: product tour) — icon tabs, a progress track, then the brand app's 제출 영상 screen */
-.cl-cases__tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 200px)); justify-content: center; }
+.cl-cases__tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 176px)); justify-content: center; }
 .cl-cases__tab { position: relative; display: grid; justify-items: center; gap: 14px; padding: 4px 0 26px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
 .cl-cases__tab + .cl-cases__tab::before { position: absolute; top: 22px; left: 0; width: 1px; height: 40px; background: var(--gray-a4); content: ""; }
 .cl-cases__icon { display: grid; place-items: center; width: 64px; height: 56px; border-radius: 16px; background: #fff; color: var(--color-text-subtle); box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 4px 14px rgba(0, 0, 0, 0.06); transition: color 0.2s ease; }
-.cl-cases__label { color: #a1a1a6; font-size: 21px; font-weight: 600; letter-spacing: -0.03em; transition: color 0.2s ease; }
+.cl-cases__label { color: #a1a1a6; font-size: 19px; font-weight: 600; letter-spacing: -0.03em; white-space: nowrap; transition: color 0.2s ease; }
 .cl-cases__tab[aria-selected="true"] .cl-cases__icon,
 .cl-cases__tab[aria-selected="true"] .cl-cases__label,
 .cl-cases__tab:hover .cl-cases__label { color: var(--color-text); }
 .cl-cases__tab:focus-visible { outline: none; }
 .cl-cases__tab:focus-visible .cl-cases__icon { box-shadow: var(--focus-ring); }
-.cl-cases__track { position: relative; width: min(600px, 100%); height: 2px; margin: 0 auto; border-radius: 1px; background: var(--gray-a4); }
+.cl-cases__track { position: relative; width: min(1056px, 100%); height: 2px; margin: 0 auto; border-radius: 1px; background: var(--gray-a4); }
 .cl-cases__track span { position: absolute; top: 0; bottom: 0; left: calc(var(--case) * 100% / var(--cases)); width: calc(100% / var(--cases)); overflow: hidden; border-radius: 1px; }
 .cl-cases__track span::after { position: absolute; inset: 0; background: var(--brand-9); content: ""; transform-origin: left; }
 .cl-cases__track span[data-moving="true"]::after { animation: cl-case-fill 6s linear both; }
@@ -120,7 +120,7 @@
 .cl-cases__filters span { padding: 5px 10px; border-radius: 7px; }
 .cl-cases__filters span[data-on="true"] { background: var(--gray-a4); color: var(--color-text); }
 .cl-cases__filters b { margin-left: 5px; color: var(--color-text-subtle); font-weight: 500; font-variant-numeric: tabular-nums; }
-.cl-cases__grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.cl-cases__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
 .cl-cases__grid li { display: grid; gap: 8px; min-width: 0; animation: cl-feed-in 0.45s ease both; }
 .cl-cases__thumb { display: block; width: 100%; aspect-ratio: 9 / 16; border-radius: 10px; background: var(--color-panel); object-fit: cover; }
 .cl-cases__who { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 12px; }
@@ -129,10 +129,12 @@
 .cl-cases__row { display: flex; align-items: center; justify-content: space-between; gap: 6px; color: var(--color-text-subtle); font-size: 11.5px; font-variant-numeric: tabular-nums; }
 .cl-cases__row .cl-status-dot { font-size: 11.5px; }
 @media (max-width: 800px) {
-  .cl-cases__tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* flex-start, not center: a centred strip that overflows hides its first tab behind an unreachable left edge */
+  .cl-cases__tabs { display: flex; justify-content: flex-start; padding: 0 4px; overflow-x: auto; scrollbar-width: none; }
+  .cl-cases__tabs::-webkit-scrollbar { display: none; }
   .cl-cases__icon { display: none; }
   .cl-cases__label { font-size: 15px; }
-  .cl-cases__tab { padding-bottom: 14px; }
+  .cl-cases__tab { flex: 0 0 auto; padding: 4px 18px 14px; }
   .cl-cases__tab + .cl-cases__tab::before { top: 4px; height: 18px; }
   .cl-cases__window .cl-demo__body { grid-template-columns: minmax(0, 1fr); }
   .cl-cases__window .cl-demo__nav { display: none; }

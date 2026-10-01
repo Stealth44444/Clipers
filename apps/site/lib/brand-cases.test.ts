@@ -1,14 +1,14 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { BRAND_CASES, CASE_CLIPS, clipMedia } from './brand-cases';
+import { BRAND_CASES, CASE_CLIPS, clipMedia, clipSource } from './brand-cases';
 
 const publicDir = path.resolve(__dirname, '../public');
 
 describe('BRAND_CASES', () => {
-  it('has the three cases in order with five clips each', () => {
-    expect(BRAND_CASES.map((item) => item.id)).toEqual(['launch', 'music', 'channel']);
-    for (const item of BRAND_CASES) expect(item.clips).toHaveLength(5);
+  it('has the six cases in order with four clips each', () => {
+    expect(BRAND_CASES.map((item) => item.id)).toEqual(['launch', 'app', 'music', 'film', 'tourism', 'channel']);
+    for (const item of BRAND_CASES) expect(item.clips).toHaveLength(4);
   });
 
   it('has counts that add up and a clip waiting for review', () => {
@@ -18,14 +18,29 @@ describe('BRAND_CASES', () => {
     }
   });
 
-  it('plays every clip exactly once across the cases', () => {
-    const used = BRAND_CASES.flatMap((item) => item.clips.map((clip) => clip.clip));
+  it('uses every clip, and never the same clip twice in one case', () => {
+    const used = new Set(BRAND_CASES.flatMap((item) => item.clips.map((clip) => clip.clip)));
     expect([...used].sort()).toEqual([...CASE_CLIPS].sort());
+    for (const item of BRAND_CASES) expect(new Set(item.clips.map((clip) => clip.clip)).size).toBe(item.clips.length);
   });
 
-  it('gives the launch case the fashion and car clips and the channel case the game highlights', () => {
-    expect(BRAND_CASES[0].clips.every((clip) => /^(fashion|car)-/.test(clip.clip))).toBe(true);
-    expect(BRAND_CASES[2].clips.every((clip) => clip.clip.startsWith('hoops'))).toBe(true);
+  it('cuts one source several ways in a clipping campaign, and mixes sources in the others', () => {
+    for (const item of BRAND_CASES) {
+      const sources = new Set(item.clips.map((clip) => clipSource(clip.clip)));
+      if (item.kind === '클리핑 캠페인') expect(sources.size).toBe(1);
+      else expect(sources.size).toBeGreaterThan(1);
+    }
+  });
+
+  it('keeps a creator with their clip across campaigns', () => {
+    const owner = new Map<string, string>();
+    for (const item of BRAND_CASES) {
+      for (const clip of item.clips) {
+        const seen = owner.get(clip.clip);
+        if (seen) expect(clip.creator).toBe(seen);
+        owner.set(clip.clip, clip.creator);
+      }
+    }
   });
 });
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
-import { ChartLine, Film, House, Megaphone, MonitorPlay, Music, Package, Users } from 'lucide-react';
+import { ChartLine, Clapperboard, Film, House, MapPin, Megaphone, MonitorPlay, Music, Package, Smartphone, Users } from 'lucide-react';
 import { Avatar, PlatformIcon, StatusDot, formatCompactNumber } from '@clipers/ui';
 import { useDemoFrame } from '@/components/brand/use-demo-frame';
 import { BRAND_CASES, clipMedia, type BrandCase } from '@/lib/brand-cases';
@@ -12,7 +12,10 @@ import { BRAND_CASES, clipMedia, type BrandCase } from '@/lib/brand-cases';
 
 const ICONS: Record<BrandCase['id'], ReactNode> = {
   launch: <Package size={24} />,
+  app: <Smartphone size={24} />,
   music: <Music size={24} />,
+  film: <Clapperboard size={24} />,
+  tourism: <MapPin size={24} />,
   channel: <MonitorPlay size={24} />,
 };
 const FRAMES = BRAND_CASES.map((item) => ({ ms: 6000, state: item.id }));
@@ -27,7 +30,16 @@ const NAV = [
 export default function UseCases() {
   const { ref, index, moving, go } = useDemoFrame<BrandCase['id'], HTMLElement>(FRAMES);
   const grid = useRef<HTMLUListElement>(null);
+  const tabs = useRef<HTMLDivElement>(null);
   const active = BRAND_CASES[index];
+
+  // On phones the tab strip scrolls sideways; keep the active tab in view (only the strip moves, never the page).
+  useEffect(() => {
+    const strip = tabs.current;
+    const tab = strip?.children[index] as HTMLElement | undefined;
+    if (!strip || !tab || strip.scrollWidth <= strip.clientWidth) return;
+    strip.scrollTo({ left: tab.offsetLeft - (strip.clientWidth - tab.offsetWidth) / 2, behavior: 'smooth' });
+  }, [index]);
 
   useEffect(() => {
     grid.current?.querySelectorAll('video').forEach((video) => {
@@ -41,7 +53,7 @@ export default function UseCases() {
       <h2 className="cl-landing-section__title" id="cases-title">
         이럴 때 캠페인을 열어요
       </h2>
-      <div aria-label="사례" className="cl-cases__tabs" role="tablist">
+      <div aria-label="사례" className="cl-cases__tabs" ref={tabs} role="tablist">
         {BRAND_CASES.map((item, position) => (
           <button
             aria-controls="cases-panel"
