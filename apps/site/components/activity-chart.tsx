@@ -37,7 +37,7 @@ export default function ActivityChart({ activity }: { activity: Point[] }) {
           value={metric}
         />
       </div>
-      <LineChart label={metric === 'views' ? '누적 조회수' : '누적 제출 수'} points={points} variant="minimal" />
+      <LineChart label={metric === 'views' ? '누적 조회수' : '누적 제출 수'} points={points} unit={metric === 'views' ? '회' : '건'} variant="minimal" />
     </section>
   );
 }
