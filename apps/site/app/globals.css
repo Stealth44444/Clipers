@@ -164,3 +164,10 @@
     padding: 12px 9px;
   }
 }
+
+.app-campaign-description {
+  max-width: 720px;
+  margin-top: 16px;
+  color: var(--color-text);
+  white-space: pre-line;
+}

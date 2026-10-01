@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { platformLabel, platformLabels, rankCreatorEarnings, rollupDailyViews } from '@clipers/db';
+import { budgetUsage, campaignPricing, platformLabel, platformLabels, rankCreatorEarnings, rollupDailyViews } from '@clipers/db';
 import { getSupabaseServerClient } from '@/lib/supabase-server';
 import { creatorLoginUrl } from '@/lib/urls';
 import { ViewsChart } from './views-chart';
@@ -13,7 +13,7 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
 
   const { data: campaign } = await supabase
     .from('campaigns')
-    .select('id,title,category,total_budget,content_requirements,reference_url,cover_image_url,allowed_platforms,brand:profiles!campaigns_brand_id_fkey(display_name)')
+    .select('id,title,category,total_budget,brand_cpm,creator_cpm,description,content_requirements,reference_links,cover_image_url,allowed_platforms,brand:profiles!campaigns_brand_id_fkey(display_name)')
     .eq('id', id)
     .eq('track', 'self_serve')
     .eq('status', 'live')
@@ -53,9 +53,13 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
     settlementRows.map((row) => ({ creatorId: row.creator_id, creatorName: row.creator?.display_name ?? '크리에이터', amount: Number(row.amount) }))
   );
   const leaderboard = rankedCreators.slice(0, 3);
-  const consumedBudget = settlementRows.reduce((sum, row) => sum + Number(row.amount), 0);
-  const averageEarning = rankedCreators.length > 0 ? Math.round(consumedBudget / rankedCreators.length) : 0;
+  const creatorPaid = settlementRows.reduce((sum, row) => sum + Number(row.amount), 0);
+  const averageEarning = rankedCreators.length > 0 ? Math.round(creatorPaid / rankedCreators.length) : 0;
   const totalBudget = Number((campaign as { total_budget: number }).total_budget);
+  // Budget burns at the brand rate; creator payouts are the smaller creator-rate share of that spend.
+  const consumedBudget = budgetUsage(totalBudget, creatorPaid, campaignPricing(campaign as { brand_cpm: number; creator_cpm: number })).spent;
+  const description = (campaign as { description: string | null }).description;
+  const referenceLinks = (campaign as { reference_links: string[] }).reference_links ?? [];
   const latestTotalViews = dailyViews.at(-1)?.totalViews ?? 0;
   const medal = ['🥇', '🥈', '🥉'];
 
@@ -85,6 +89,7 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
             {(campaign as { category: string }).category} · 참여자 {(applications ?? []).length}명 ·{' '}
             {platformLabels((campaign as { allowed_platforms: string[] }).allowed_platforms)}
           </p>
+          {description && <p className="app-campaign-description">{description}</p>}
           <a className="app-button app-button-primary" href={creatorLoginUrl} style={{ display: 'inline-flex', marginTop: 12 }}>
             지원하기
           </a>
@@ -125,16 +130,21 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
               콘텐츠 요구사항: {(campaign as { content_requirements: string | null }).content_requirements}
             </p>
           )}
-          {(campaign as { reference_url: string | null }).reference_url && (
+          {referenceLinks.length > 0 && (
             <p className="app-muted">
-              참고 자료: <a href={(campaign as { reference_url: string }).reference_url} rel="noreferrer" target="_blank">링크 열기</a>
+              참고 자료:{' '}
+              {referenceLinks.map((link, index) => (
+                <a href={link} key={link} rel="noreferrer" target="_blank">
+                  링크 {index + 1}{index < referenceLinks.length - 1 ? ', ' : ''}
+                </a>
+              ))}
             </p>
           )}
         </section>
 
         {leaderboard.length > 0 && (
           <section className="app-section" aria-labelledby="leaderboard-title">
-            <h2 id="leaderboard-title">Top clippers</h2>
+            <h2 id="leaderboard-title">상위 크리에이터</h2>
             <p className="app-muted">참여 크리에이터 평균 수익 {averageEarning.toLocaleString('ko-KR')}원</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
               {leaderboard.map((entry) => (

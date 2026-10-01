@@ -1,13 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { calculateWeeklySettlementDrafts, findPlatformRate, getCampaignsToClose, getPreviousWeekPeriod } from '@clipers/db';
+import {
+  calculateWeeklySettlementDrafts,
+  campaignPricing,
+  creatorPayoutCap,
+  findPlatformRate,
+  getCampaignsToClose,
+  getPreviousWeekPeriod,
+} from '@clipers/db';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 type CampaignForSettlement = {
   id: string;
   title: string;
   total_budget: number | string;
+  brand_cpm: number | string;
+  creator_cpm: number | string;
 };
 
 type ApprovedClip = {
@@ -116,7 +125,7 @@ export default function SettlementPanel({ userId }: { userId: string }) {
       while (true) {
         const { data, error: clipsError } = await supabase
           .from('clips')
-          .select('id,campaign_id,creator_id,platform,reviewed_at,campaign:campaigns!clips_campaign_id_fkey(id,title,total_budget)')
+          .select('id,campaign_id,creator_id,platform,reviewed_at,campaign:campaigns!clips_campaign_id_fkey(id,title,total_budget,brand_cpm,creator_cpm)')
           .eq('status', 'approved')
           .order('id', { ascending: true })
           .range(clipOffset, clipOffset + pageSize - 1);
@@ -211,7 +220,8 @@ export default function SettlementPanel({ userId }: { userId: string }) {
           reviewedAt: clip.reviewed_at,
           cpmRate: rate.cpmRate,
           perClipCap: rate.maxPayout,
-          campaignBudget: Number(campaign.total_budget),
+          // Creators can only be paid the creator-rate share of the brand's budget.
+          campaignBudget: creatorPayoutCap(Number(campaign.total_budget), campaignPricing(campaign)),
           previouslySettledClipAmount: previousClipRows.reduce(
             (total, settlement) => total + Number(settlement.amount),
             0

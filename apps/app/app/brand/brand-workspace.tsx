@@ -157,13 +157,13 @@ export default function BrandWorkspace() {
         const { data: publicUrlData } = supabase.storage.from('campaign-banners').getPublicUrl(path);
         const { error: updateError } = await supabase
           .from('campaigns')
-          .update({ cover_image_url: publicUrlData.publicUrl, content_requirements: contentRequirements.trim() || null, reference_url: referenceUrl.trim() || null })
+          .update({ cover_image_url: publicUrlData.publicUrl, content_requirements: contentRequirements.trim() || null, reference_links: referenceUrl.trim() ? [referenceUrl.trim()] : [] })
           .eq('id', (campaignRow as { id: string }).id);
         if (updateError) throw updateError;
       } else if (contentRequirements.trim() || referenceUrl.trim()) {
         const { error: updateError } = await supabase
           .from('campaigns')
-          .update({ content_requirements: contentRequirements.trim() || null, reference_url: referenceUrl.trim() || null })
+          .update({ content_requirements: contentRequirements.trim() || null, reference_links: referenceUrl.trim() ? [referenceUrl.trim()] : [] })
           .eq('id', (campaignRow as { id: string }).id);
         if (updateError) throw updateError;
       }
