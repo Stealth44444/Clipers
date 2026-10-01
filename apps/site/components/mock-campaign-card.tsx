@@ -3,7 +3,7 @@ import { Avatar, PlatformIcon, ProgressBar, formatCompactKRW, formatKRW } from '
 import type { ShowcaseVideo } from '@/lib/youtube-showcase';
 
 // Illustrative campaign cards for marketing visuals, in the marketplace card styles. With a real YouTube video they show
-// its thumbnail, title and channel and link to it on YouTube; budget, rate and participants stay illustrative.
+// its thumbnail and channel, a brand-style campaign title, and link to the video on YouTube; budget, rate and participants stay illustrative.
 
 export type MockCampaign = {
   brand: string;
@@ -61,7 +61,7 @@ export default function MockCampaignCard({ campaign, video, rate = 800 }: { camp
           <Avatar name={brand} size="sm" src={video?.avatar} />
           <span className="cl-ccard__brand-name">{brand}</span>
         </p>
-        <p className="cl-ccard__title">{video?.title ?? campaign.title}</p>
+        <p className="cl-ccard__title">{video?.campaign ?? campaign.title}</p>
         <div className="cl-ccard__row">
           <span className="cl-ccard__platforms">
             {campaign.platforms.map((platform) => (

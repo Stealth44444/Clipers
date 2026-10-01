@@ -605,7 +605,7 @@
 .cl-number { font-variant-numeric: tabular-nums; }
 
 /* ---------- media card ---------- */
-.cl-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); }
+.cl-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: var(--space-4); }
 .cl-media-card { display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius-5); background: var(--color-panel); }
 .cl-media-card__media { display: grid; aspect-ratio: 16 / 9; place-items: center; overflow: hidden; background: var(--gray-3); color: var(--gray-8); }
 .cl-media-card__media img { width: 100%; height: 100%; object-fit: cover; }
@@ -694,7 +694,7 @@
 .cl-ccard__brand .cl-avatar { width: 20px; height: 20px; font-size: 10px; }
 .cl-ccard__brand-name { overflow: hidden; color: var(--color-text-muted); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
 .cl-ccard__dot { color: var(--gray-8); }
-.cl-ccard__title { display: -webkit-box; min-height: 2.6em; overflow: hidden; font-size: var(--font-size-3); line-height: 1.3; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.cl-ccard__title { display: -webkit-box; min-height: 2.6em; overflow: hidden; font-size: var(--font-size-3); font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .cl-ccard__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
 .cl-ccard__platforms { display: inline-flex; align-items: center; gap: 8px; color: var(--color-text-subtle); }
 .cl-ccard__rate { color: var(--color-text-muted); font-size: var(--font-size-1); font-variant-numeric: tabular-nums; }
@@ -769,7 +769,7 @@
 .cl-chart__last { stroke: var(--color-panel); stroke-width: 2; }
 
 /* ---------- rails (horizontal rows paged by arrows; scrollbar hidden) ---------- */
-.cl-rail { display: grid; grid-auto-columns: minmax(280px, 340px); grid-auto-flow: column; gap: var(--space-4); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
+.cl-rail { display: grid; grid-auto-columns: minmax(340px, 400px); grid-auto-flow: column; gap: var(--space-4); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
 .cl-rail::-webkit-scrollbar { display: none; }
 .cl-rail > * { scroll-snap-align: start; }
 .cl-rail--clips { grid-auto-columns: 168px; gap: var(--space-3); }
@@ -1271,8 +1271,8 @@
 .cl-kinds__item { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: var(--space-7); pointer-events: none; }
 .cl-kinds__text { display: flex; gap: var(--space-4); max-width: 520px; color: var(--color-text-subtle); font-size: clamp(22px, 2.6vw, 32px); line-height: 1.45; letter-spacing: -0.03em; opacity: 0; transform: translateY(28px); transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .cl-kinds__text strong { color: var(--color-text); font-weight: 600; }
-.cl-kinds__stack { position: relative; justify-self: center; width: min(540px, 100%); height: 560px; }
-.cl-kinds__card { position: absolute; width: 290px; opacity: 0; transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.cl-kinds__stack { position: relative; justify-self: center; width: min(620px, 100%); height: 560px; }
+.cl-kinds__card { position: absolute; width: 350px; opacity: 0; transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .cl-kinds__card .cl-ccard { background: #fff; box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.06), 0 24px 60px rgba(31, 26, 20, 0.12); }
 .cl-kinds__card:nth-child(1) { top: 0; left: 0; --rest: rotate(-7deg); }
 .cl-kinds__card:nth-child(2) { top: 70px; right: 0; --rest: rotate(6deg); }
@@ -1291,7 +1291,7 @@
   .cl-kinds__item { position: static; grid-template-columns: minmax(0, 1fr); pointer-events: auto; }
   .cl-kinds__item .cl-kinds__text { opacity: 1; transform: none; }
   .cl-kinds__stack { width: 100%; height: 400px; overflow: hidden; }
-  .cl-kinds__card { width: 230px; opacity: 1; }
+  .cl-kinds__card { width: min(280px, 78vw); opacity: 1; }
   .cl-kinds__item .cl-kinds__card { opacity: 1; transform: var(--rest); }
   .cl-kinds__card:nth-child(2) { top: 60px; }
   .cl-kinds__card:nth-child(3) { top: 150px; }

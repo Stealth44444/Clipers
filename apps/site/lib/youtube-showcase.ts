@@ -3,7 +3,35 @@
 // Without a key, or if the API fails, the cards keep their gradient covers.
 
 export type ShowcaseKind = 'clipping' | 'ugc' | 'music';
-export type ShowcaseVideo = { id: string; title: string; channel: string; channelId: string; avatar?: string; thumbnail: string; url: string };
+export type ShowcaseVideo = {
+  id: string;
+  /** The video's own title (for the link's label). */
+  title: string;
+  /** A campaign title the way a brand would write one (never the raw video title). */
+  campaign: string;
+  channel: string;
+  channelId: string;
+  avatar?: string;
+  thumbnail: string;
+  url: string;
+};
+
+// Example campaign titles per kind and card slot, built from the channel (and, for music, the song).
+const CAMPAIGN_TITLES: Record<ShowcaseKind, ((channel: string, song: string) => string)[]> = {
+  clipping: [(c) => `${c} 라이브 명장면 클리핑`, (c) => `${c} 스트림 하이라이트 클리핑`, (c) => `${c} 에피소드 숏폼 클리핑`],
+  ugc: [(c) => `${c} 추천템 리뷰 숏폼`, (c) => `${c}와 함께하는 일상 브이로그`, (c) => `${c} 콜라보 언박싱 챌린지`],
+  music: [(c, s) => `${c} '${s}' 숏폼 챌린지`, (c, s) => `'${s}' 립싱크 챌린지`, (c, s) => `'${s}' 댄스 커버 챌린지`],
+};
+
+/** "Taylor Swift - Patient Zero (Official Music Video)" → "Patient Zero"; "DRAKE - QUEBEC" → "QUEBEC". */
+function songOf(title: string): string {
+  const afterDash = title.includes(' - ') ? title.slice(title.lastIndexOf(' - ') + 3) : title;
+  const song = afterDash.replace(/[([{【].*$/, '').replace(/\s+(ft\.?|feat\.?)\s.*$/i, '').trim();
+  return song || title;
+}
+
+/** Channel names without the "- Topic" / "VEVO" suffixes, for titles. */
+const displayName = (channel: string) => channel.replace(/\s*-\s*Topic$/i, '').replace(/VEVO$/i, '').trim();
 
 const SOURCES: Record<ShowcaseKind, { categoryId: string; minSeconds: number }> = {
   // Clipping campaigns cut long streams and podcasts into shorts, so pick long-form gaming videos.
@@ -62,6 +90,7 @@ async function loadKind(kind: ShowcaseKind, key: string): Promise<ShowcaseVideo[
     picked.push({
       id: item.id,
       title: item.snippet.title,
+      campaign: CAMPAIGN_TITLES[kind][picked.length](displayName(item.snippet.channelTitle), songOf(item.snippet.title)),
       channel: item.snippet.channelTitle,
       channelId: item.snippet.channelId,
       thumbnail,
