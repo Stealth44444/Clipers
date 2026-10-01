@@ -1,4 +1,4 @@
-import { DEFAULT_PRICING, MIN_PAYOUT_VIEWS, MIN_WITHDRAWAL, REVIEW_SLA_OPTIONS } from '@clipers/db';
+import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET, MIN_PAYOUT_VIEWS, MIN_WITHDRAWAL, REVIEW_SLA_OPTIONS } from '@clipers/db';
 import { formatKRW } from '@clipers/ui';
 
 // Public creator policy, worded once for the guides. Creator rate only: the brand rate is never public.
@@ -15,3 +15,5 @@ export function earningsFor(views: number): number {
 }
 
 export const earnings = (views: number) => formatKRW(earningsFor(views));
+
+export const MIN_BUDGET = `${(MIN_CAMPAIGN_BUDGET / 10_000).toLocaleString('ko-KR')}만 원`;

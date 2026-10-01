@@ -5,6 +5,7 @@ import type { Guide } from './types';
 export const SITUATION_GUIDES: Guide[] = [
   {
     slug: 'side-job-office-workers',
+    audience: 'creator',
     group: 'situation',
     title: '직장인·프리랜서가 퇴근 후에 할 만한 숏폼 부업이 있을까요?',
     description: '정해진 근무 시간 없이, 퇴근 후나 주말에 원하는 캠페인만 골라 숏폼을 올리고 조회수만큼 받는 방법이에요. 얼굴을 드러내지 않아도 돼요.',
@@ -38,6 +39,7 @@ export const SITUATION_GUIDES: Guide[] = [
   },
   {
     slug: 'side-job-stay-at-home-parents',
+    audience: 'creator',
     group: 'situation',
     title: '전업주부·육아 중에 집에서 할 수 있는 부업이 있을까요?',
     description: '휴대폰 편집 앱으로 숏폼을 만들어 올리고 조회수만큼 받는 재택 부업이에요. 정해진 근무 시간이 없어 아이 재우고 남는 시간에 짬짬이 할 수 있어요.',
@@ -69,6 +71,7 @@ export const SITUATION_GUIDES: Guide[] = [
   },
   {
     slug: 'side-job-students',
+    audience: 'creator',
     group: 'situation',
     title: '대학생·취준생이 돈 들이지 않고 할 수 있는 부업이 있을까요?',
     description: '가입비 없이, 수업과 공부 사이에 숏폼을 편집해 올리고 조회수만큼 받는 부업이에요. 올린 영상은 내 채널에 남아 편집 실력을 보여 주는 기록이 돼요.',
@@ -96,6 +99,7 @@ export const SITUATION_GUIDES: Guide[] = [
   },
   {
     slug: 'video-editors',
+    audience: 'creator',
     group: 'situation',
     title: '편집 실력으로 외주 말고 수익을 낼 수 있을까요?',
     description: '클라이언트와 수정 요청을 주고받는 외주 대신, 캠페인 요구사항에 맞춰 편집해 올리고 조회수만큼 받는 방법이에요.',
@@ -123,6 +127,7 @@ export const SITUATION_GUIDES: Guide[] = [
   },
   {
     slug: 'existing-shorts-channels',
+    audience: 'creator',
     group: 'situation',
     title: '이미 쇼츠·릴스 채널을 운영 중인데 추가 수익을 낼 수 있을까요?',
     description: '운영 중인 숏폼 채널에 캠페인 영상을 올리고 조회수만큼 받는 방법이에요. 수익창출 전 채널도 참여할 수 있어요.',
@@ -150,6 +155,7 @@ export const SITUATION_GUIDES: Guide[] = [
   },
   {
     slug: 'side-job-seniors',
+    audience: 'creator',
     group: 'situation',
     title: '중장년·은퇴 후에 스마트폰으로 할 수 있는 일이 있을까요?',
     description: '스마트폰 편집 앱으로 숏폼을 만들어 올리고 조회수만큼 받는 일이에요. 캠페인마다 무엇을 만들지 정해져 있어 편집을 처음 배우는 분도 시작할 수 있어요.',

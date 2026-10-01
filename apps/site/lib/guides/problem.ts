@@ -6,6 +6,7 @@ import type { Guide } from './types';
 export const PROBLEM_GUIDES: Guide[] = [
   {
     slug: 'fan-edits',
+    audience: 'creator',
     group: 'problem',
     title: '좋아하는 아이돌·스트리머 영상으로 돈을 벌 수 있을까요?',
     description: '아티스트나 스트리머가 직접 캠페인을 열면, 그 영상을 편집해 올리고 조회수만큼 받을 수 있어요. 팬 편집을 수익으로 잇는 방법과 주의할 점을 정리했어요.',
@@ -29,10 +30,12 @@ export const PROBLEM_GUIDES: Guide[] = [
     ],
     faqIds: ['others-videos', 'what-is-clipping', 'how-much'],
     related: ['what-is-clipping', 'copyright-safe-clipping', 'video-editors'],
+    counterpart: 'for-streamers',
     updated: UPDATED,
   },
   {
     slug: 'monetization-rejected',
+    audience: 'creator',
     group: 'problem',
     title: '유튜브 수익창출이 거절됐어요, 다른 방법이 있을까요?',
     description: '유튜브 수익창출 심사와 별개로, 캠페인에 참여해 올린 숏폼의 조회수만큼 받는 방법이 있어요. 수익창출이 거절된 채널도 지원할 수 있어요.',
@@ -61,6 +64,7 @@ export const PROBLEM_GUIDES: Guide[] = [
   },
   {
     slug: 'is-it-legit',
+    audience: 'creator',
     group: 'problem',
     title: '조회수 부업, 믿을 수 있는 곳은 어떻게 고르나요?',
     description: '조회수로 돈을 주는 부업을 고를 때 확인할 다섯 가지 기준과, Clipers가 각 기준을 어떻게 지키는지 정리했어요.',
@@ -92,10 +96,12 @@ export const PROBLEM_GUIDES: Guide[] = [
     ],
     faqIds: ['fees', 'when-paid', 'rejected'],
     related: ['shorts-earnings-calculator', 'what-is-clipping', 'monetization-rejected'],
+    counterpart: 'verified-views',
     updated: UPDATED,
   },
   {
     slug: 'copyright-safe-clipping',
+    audience: 'creator',
     group: 'problem',
     title: '쇼츠 짜깁기, 저작권 괜찮을까요?',
     description: '허락 없이 남의 영상을 잘라 올리면 저작권 문제가 생길 수 있어요. 원작자가 허락한 영상으로 클리핑하는 방법을 정리했어요.',
@@ -119,6 +125,7 @@ export const PROBLEM_GUIDES: Guide[] = [
     ],
     faqIds: ['others-videos', 'what-is-clipping', 'rejected'],
     related: ['what-is-clipping', 'fan-edits', 'monetization-rejected'],
+    counterpart: 'for-broadcasters',
     updated: UPDATED,
   },
 ];

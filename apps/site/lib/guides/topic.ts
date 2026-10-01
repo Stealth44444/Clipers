@@ -5,6 +5,7 @@ import type { Guide } from './types';
 export const TOPIC_GUIDES: Guide[] = [
   {
     slug: 'earn-before-monetization',
+    audience: 'creator',
     group: 'topic',
     title: '수익창출 전에도 쇼츠로 돈을 벌 수 있을까요?',
     description: '유튜브 수익창출 조건을 채우기 전에도, 캠페인에 참여해 올린 숏폼의 조회수만큼 받을 수 있어요. 구독자 조건 없이 새 채널로 시작하는 방법을 정리했어요.',
@@ -47,6 +48,7 @@ export const TOPIC_GUIDES: Guide[] = [
   },
   {
     slug: 'what-is-clipping',
+    audience: 'creator',
     group: 'topic',
     title: '클리핑 부업이란 뭔가요?',
     description: '클리핑은 캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리고, 조회수만큼 받는 부업이에요. 캠페인 구조와 편집 방법, 저작권까지 정리했어요.',
@@ -85,10 +87,12 @@ export const TOPIC_GUIDES: Guide[] = [
     ],
     faqIds: ['what-is-clipping', 'others-videos', 'rejected'],
     related: ['faceless-shortform', 'copyright-safe-clipping', 'earn-before-monetization'],
+    counterpart: 'clipping-marketing',
     updated: UPDATED,
   },
   {
     slug: 'shorts-earnings-calculator',
+    audience: 'creator',
     group: 'topic',
     title: '쇼츠 조회수 10만 회면 얼마를 받을까요?',
     description: `Clipers 캠페인 기준으로 쇼츠 조회수별 받는 금액을 정리했어요. 1천 회당 ${RATE}이면 10만 회에 ${earnings(100_000)}이에요.`,
@@ -121,6 +125,7 @@ export const TOPIC_GUIDES: Guide[] = [
   },
   {
     slug: 'faceless-shortform',
+    audience: 'creator',
     group: 'topic',
     title: '얼굴 안 나오는 숏폼으로도 돈을 벌 수 있나요?',
     description: '클리핑 캠페인은 정해진 영상을 편집해 올리기 때문에 얼굴을 드러내지 않아도 돼요. 얼굴 없이 숏폼으로 수익을 내는 방법을 정리했어요.',

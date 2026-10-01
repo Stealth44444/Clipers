@@ -4,6 +4,7 @@ import type { Guide } from './types';
 export const PLATFORM_GUIDES: Guide[] = [
   {
     slug: 'platforms',
+    audience: 'creator',
     group: 'platform',
     title: '쇼츠·릴스·틱톡, 어느 플랫폼에 올려도 돈을 받을 수 있나요?',
     description: '유튜브 쇼츠, 틱톡, 인스타그램 릴스, 페이스북, X, 네이버 클립, 카카오 숏폼에 올린 영상의 조회수만큼 받을 수 있어요. 플랫폼별 조회수 확인 방법을 정리했어요.',
