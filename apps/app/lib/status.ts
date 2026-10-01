@@ -25,3 +25,11 @@ export const CONTENT_TYPE_LABEL: Record<string, string> = { clipping: '클리핑
 export function statusDisplay(map: Record<string, StatusDisplay>, status: string): StatusDisplay {
   return map[status] ?? { label: status, tone: 'neutral' };
 }
+
+export const CAMPAIGN_STATUS: Record<string, StatusDisplay> = {
+  draft: { label: '입금 전', tone: 'neutral' },
+  pending_escrow: { label: '입금 확인 중', tone: 'amber' },
+  live: { label: '진행 중', tone: 'brand' },
+  paused: { label: '일시중지', tone: 'sky' },
+  closed: { label: '종료', tone: 'neutral' },
+};

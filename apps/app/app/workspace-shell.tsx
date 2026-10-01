@@ -14,7 +14,7 @@ import {
   House,
   Megaphone,
   MessageSquareWarning,
-  PlusCircle,
+  Receipt,
   ScrollText,
   Settings,
   UserCheck,
@@ -53,16 +53,27 @@ const NAVIGATION: Record<WorkspaceRole, SidebarSection[]> = {
       items: [{ href: '/creator/settings', label: '설정', icon: <Settings {...ICON} /> }],
     },
   ],
-  // Hash links until phases 4-5 split these workspaces into routes.
   brand: [
     {
-      title: '브랜드',
+      title: '개요',
       items: [
-        { href: '#create-campaign-title', label: '캠페인 만들기', icon: <PlusCircle {...ICON} /> },
-        { href: '#my-campaigns-title', label: '내 캠페인', icon: <Megaphone {...ICON} /> },
+        { href: '/brand', label: '홈', icon: <House {...ICON} />, exact: true },
+        { href: '/brand/campaigns', label: '캠페인', icon: <Megaphone {...ICON} /> },
       ],
     },
+    {
+      title: '관리',
+      items: [
+        { href: '/brand/analytics', label: '분석', icon: <ChartLine {...ICON} /> },
+        { href: '/brand/spend', label: '예산 사용 내역', icon: <Receipt {...ICON} /> },
+      ],
+    },
+    {
+      title: '브랜드',
+      items: [{ href: '/brand/settings', label: '설정', icon: <Settings {...ICON} /> }],
+    },
   ],
+  // Hash links until phase 5 splits the admin workspace into routes.
   admin: [
     {
       title: '운영',

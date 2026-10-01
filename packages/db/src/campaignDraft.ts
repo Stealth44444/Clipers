@@ -1,4 +1,4 @@
-import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET, creatorPayoutCap } from './pricing';
+import { MIN_CAMPAIGN_BUDGET, type CampaignPricing } from './pricing';
 
 export const CAMPAIGN_TITLE_MAX = 80;
 export const CAMPAIGN_DESCRIPTION_MAX = 2000;
@@ -70,12 +70,12 @@ export function campaignDraftErrors(draft: CampaignDraft): Partial<Record<Campai
   if (!draft.totalBudget.trim() || !Number.isFinite(budget)) errors.totalBudget = '예산을 입력해 주세요.';
   else if (budget < MIN_CAMPAIGN_BUDGET) errors.totalBudget = `예산은 최소 ${won(MIN_CAMPAIGN_BUDGET)}부터예요.`;
 
+  // Entered in brand spend; converted to the creator payout cap only when saved (see clipCapToCreatorPayout).
   const cap = Number(draft.maxPayoutPerClip);
   if (!draft.maxPayoutPerClip.trim() || !Number.isFinite(cap) || cap <= 0) {
-    errors.maxPayoutPerClip = '클립당 최대 지급액을 입력해 주세요.';
-  } else if (!errors.totalBudget) {
-    const creatorBudget = creatorPayoutCap(budget, DEFAULT_PRICING);
-    if (cap > creatorBudget) errors.maxPayoutPerClip = `클립당 최대 지급액은 ${won(creatorBudget)}을 넘을 수 없어요.`;
+    errors.maxPayoutPerClip = '클립당 최대 예산을 입력해 주세요.';
+  } else if (!errors.totalBudget && cap > budget) {
+    errors.maxPayoutPerClip = `클립당 최대 예산은 총예산(${won(budget)})을 넘을 수 없어요.`;
   }
 
   const links = filledReferenceLinks(draft.referenceLinks);
@@ -92,4 +92,27 @@ export function firstCampaignDraftError(draft: CampaignDraft): string | null {
   const errors = campaignDraftErrors(draft);
   const field = CAMPAIGN_DRAFT_FIELDS.find((key) => errors[key]);
   return field ? errors[field]! : null;
+}
+
+/** Sections of the campaign form, in order; a section counts once it is filled in and valid. */
+export function campaignDraftProgress(draft: CampaignDraft): { done: number; total: number } {
+  const errors = campaignDraftErrors(draft);
+  const sections = [
+    !!draft.title.trim() && !!draft.description.trim() && !errors.title && !errors.description,
+    !!draft.category.trim(),
+    draft.platforms.length > 0,
+    !errors.totalBudget && !errors.maxPayoutPerClip,
+    filledReferenceLinks(draft.referenceLinks).length > 0 && !errors.referenceLinks,
+    !!draft.requirements.trim() && !errors.requirements,
+  ];
+  return { done: sections.filter(Boolean).length, total: sections.length };
+}
+
+/** campaign_platform_rates.max_payout caps the creator payout; brands enter the cap as their own spend. */
+export function clipCapToCreatorPayout(brandSpendCap: number, pricing: CampaignPricing): number {
+  return Math.floor((brandSpendCap * pricing.creatorCpm) / pricing.brandCpm);
+}
+
+export function creatorPayoutToClipCap(creatorPayoutCap: number, pricing: CampaignPricing): number {
+  return Math.round((creatorPayoutCap * pricing.brandCpm) / pricing.creatorCpm);
 }

@@ -1,6 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { MIN_CAMPAIGN_BUDGET } from './pricing';
-import { campaignDraftErrors, emptyCampaignDraft, firstCampaignDraftError, type CampaignDraft } from './campaignDraft';
+import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET } from './pricing';
+import {
+  campaignDraftErrors,
+  campaignDraftProgress,
+  clipCapToCreatorPayout,
+  creatorPayoutToClipCap,
+  emptyCampaignDraft,
+  firstCampaignDraftError,
+  type CampaignDraft,
+} from './campaignDraft';
 
 const valid: CampaignDraft = {
   ...emptyCampaignDraft(),
@@ -34,10 +42,15 @@ describe('campaignDraftErrors', () => {
     );
   });
 
-  it('rejects a per-clip cap above what creators can be paid in total', () => {
-    expect(campaignDraftErrors({ ...valid, totalBudget: '1000000', maxPayoutPerClip: '300000' }).maxPayoutPerClip).toBe(
-      '클립당 최대 지급액은 266,666원을 넘을 수 없어요.'
+  it('rejects a per-clip cap above the total budget', () => {
+    expect(campaignDraftErrors({ ...valid, totalBudget: '1000000', maxPayoutPerClip: '1000001' }).maxPayoutPerClip).toBe(
+      '클립당 최대 예산은 총예산(1,000,000원)을 넘을 수 없어요.'
     );
+  });
+
+  it('converts the per-clip cap between brand spend and creator payout', () => {
+    expect(clipCapToCreatorPayout(300_000, DEFAULT_PRICING)).toBe(80_000);
+    expect(creatorPayoutToClipCap(80_000, DEFAULT_PRICING)).toBe(300_000);
   });
 
   it('validates reference links and ignores blank rows', () => {
@@ -52,5 +65,13 @@ describe('campaignDraftErrors', () => {
 
   it('returns the first error in form order', () => {
     expect(firstCampaignDraftError({ ...valid, title: '', platforms: [] })).toBe('캠페인 이름을 입력해 주세요.');
+  });
+});
+
+describe('campaignDraftProgress', () => {
+  it('counts completed form sections', () => {
+    expect(campaignDraftProgress(emptyCampaignDraft())).toEqual({ done: 0, total: 6 });
+    expect(campaignDraftProgress(valid)).toEqual({ done: 6, total: 6 });
+    expect(campaignDraftProgress({ ...emptyCampaignDraft(), title: '이름', platforms: ['tiktok'] })).toEqual({ done: 1, total: 6 });
   });
 });

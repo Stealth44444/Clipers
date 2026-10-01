@@ -636,3 +636,25 @@
 .cl-budget-cell { display: grid; gap: 6px; min-width: 160px; }
 .cl-section-gap { margin-bottom: var(--space-3); }
 .cl-summary__value { white-space: pre-line; }
+
+/* ---------- full-screen editor (campaign form) ---------- */
+.cl-editor { min-height: 100vh; }
+.cl-editor__header { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: var(--space-4); height: 60px; padding: 0 var(--space-5); background: rgba(17, 17, 17, 0.78); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
+.cl-editor__back { display: inline-flex; align-items: center; gap: 2px; color: var(--color-text-muted); font-weight: 500; }
+.cl-editor__back:hover { color: var(--color-text); }
+.cl-editor__title { flex: 1 1 auto; font-size: var(--font-size-3); text-align: center; }
+.cl-editor__body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--space-5); width: min(1120px, 100% - 48px); margin: 0 auto; padding: var(--space-6) 0 var(--space-9); }
+.cl-editor__main { display: grid; gap: var(--space-4); }
+.cl-editor__aside { position: sticky; top: 84px; align-self: start; }
+.cl-cover-preview { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius-4); object-fit: cover; }
+.cl-form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.cl-link-row { display: flex; align-items: center; gap: var(--space-2); }
+@media (max-width: 960px) {
+  .cl-editor__body { grid-template-columns: minmax(0, 1fr); }
+  .cl-editor__aside { position: static; }
+}
+@media (max-width: 640px) {
+  .cl-editor__header { padding: 0 var(--space-4); }
+  .cl-editor__body { width: min(100% - 32px, 1120px); padding-top: var(--space-5); }
+  .cl-form-row { grid-template-columns: minmax(0, 1fr); }
+}

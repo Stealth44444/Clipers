@@ -2,14 +2,21 @@
 
 import { useMemo, useState } from 'react';
 import { CircleCheck, Eye, Film, TrendingUp } from 'lucide-react';
-import { platformLabel, viewTrend } from '@clipers/db';
+import { viewTrend } from '@clipers/db';
 import { Card, LineChart, Select, StatCard, StatGrid, Tabs, formatCompactNumber } from '@clipers/ui';
 
 export type AnalyticsClip = {
   id: string;
-  platform: string;
+  /** Value the filter select groups by (platform for creators, campaign for brands). */
+  group: string;
   status: string;
   snapshots: { capturedAt: string; viewCount: number }[];
+};
+
+type Props = {
+  clips: AnalyticsClip[];
+  filter: { label: string; allLabel: string; options: { value: string; label: string }[] };
+  clipLabel: string;
 };
 
 type Range = '7' | '30' | '90';
@@ -17,13 +24,11 @@ type Mode = 'cumulative' | 'daily';
 
 const ICON = { size: 18 };
 
-export default function AnalyticsView({ clips }: { clips: AnalyticsClip[] }) {
+export default function ViewsAnalytics({ clips, filter, clipLabel }: Props) {
   const [range, setRange] = useState<Range>('30');
   const [mode, setMode] = useState<Mode>('cumulative');
-  const [platform, setPlatform] = useState('all');
-
-  const platforms = useMemo(() => [...new Set(clips.map((clip) => clip.platform))], [clips]);
-  const selected = platform === 'all' ? clips : clips.filter((clip) => clip.platform === platform);
+  const [group, setGroup] = useState('all');
+  const selected = group === 'all' ? clips : clips.filter((clip) => clip.group === group);
   const trend = useMemo(
     () => viewTrend(selected.map((clip) => ({ clipId: clip.id, snapshots: clip.snapshots })), Number(range)),
     [selected, range]
@@ -49,11 +54,11 @@ export default function AnalyticsView({ clips }: { clips: AnalyticsClip[] }) {
           onChange={setRange}
           value={range}
         />
-        <Select aria-label="플랫폼" className="cl-toolbar__select" onChange={(event) => setPlatform(event.target.value)} value={platform}>
-          <option value="all">모든 플랫폼</option>
-          {platforms.map((value) => (
-            <option key={value} value={value}>
-              {platformLabel(value)}
+        <Select aria-label={filter.label} className="cl-toolbar__select" onChange={(event) => setGroup(event.target.value)} value={group}>
+          <option value="all">{filter.allLabel}</option>
+          {filter.options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
             </option>
           ))}
         </Select>
@@ -62,7 +67,7 @@ export default function AnalyticsView({ clips }: { clips: AnalyticsClip[] }) {
       <StatGrid>
         <StatCard highlight icon={<TrendingUp {...ICON} />} label={`최근 ${range}일 조회수`} tone="brand" value={formatCompactNumber(periodViews)} />
         <StatCard icon={<Eye {...ICON} />} label="누적 조회수" tone="sky" value={formatCompactNumber(totalViews)} />
-        <StatCard icon={<Film {...ICON} />} label="제출한 클립" tone="violet" value={selected.length} />
+        <StatCard icon={<Film {...ICON} />} label={clipLabel} tone="violet" value={selected.length} />
         <StatCard
           icon={<CircleCheck {...ICON} />}
           label="승인된 클립"
