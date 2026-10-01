@@ -9,7 +9,7 @@ import ReceivedClipsDemo from '@/components/brand/demos/received-clips-demo';
 const CARDS: { title: string; body: string; demo: ReactNode }[] = [
   { title: '예산과 조건만 정하세요', body: '캠페인 종류, 올릴 플랫폼, 예산만 정하면 준비가 끝나요.', demo: <CampaignEditorDemo /> },
   { title: '크리에이터가 만들어요', body: '승인된 크리에이터들이 각자 영상을 만들어 올리고, 링크로 제출해요.', demo: <ClipSubmitDemo /> },
-  { title: '나머지는 Clipers가', body: '검수, 조회수 집계, 크리에이터 정산과 지급까지 Clipers가 맡아요.', demo: <ReceivedClipsDemo /> },
+  { title: '나머지는 Clipers가', body: '검수, 조회수 집계, 크리에이터 정산과 지급까지 Clipers가 해요.', demo: <ReceivedClipsDemo /> },
 ];
 
 export default function SolutionCards() {

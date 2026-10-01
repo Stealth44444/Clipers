@@ -12,7 +12,8 @@ import {
 } from '@/lib/views-math';
 
 // Spec §5: why paying for views beats paying a fixed fee, from an 80:20 split. The section pins while native scroll
-// fills 20 of 100 tiles, rolls four numbers into place and lands one line (never hijacked). Phones, short screens and
+// fills 20 of 100 tiles, rolls three numbers into place and lands one line (never hijacked). Sources and the model
+// live in docs/superpowers/specs/2026-10-01-brand-hero-data-design.md. Phones, short screens and
 // reduced motion get the finished state in normal flow. The server HTML is the finished state too.
 
 const TILES = 100;
@@ -30,11 +31,11 @@ const STATS: Stat[] = [
     title: '중앙값 게시물의 실제 1천 회당 비용',
     body: (
       <>
-        협찬비 기준이 1천 회당 {SPONSOR_PRICE_PER_1K / 10_000}만 원이어도,<sup>2</sup> 중앙값 게시물은 조회수가 평균의 {Math.round(medianToMean() * 100)}%라 실제로는
-        약 {medianPricePer1kManwon()}만 원이에요.<sup>3</sup>
+        기준은 1천 회당 {SPONSOR_PRICE_PER_1K / 10_000}만 원이지만, 중앙값 게시물은 조회수가 평균의 {Math.round(medianToMean() * 100)}%라 실제로는 약{' '}
+        {medianPricePer1kManwon()}만 원이에요.
       </>
     ),
-    range: [0.42, 0.56],
+    range: [0.44, 0.58],
   },
   {
     value: Math.round(belowMeanShare() * 100),
@@ -43,10 +44,10 @@ const STATS: Stat[] = [
     title: '평균에 못 미치는 게시물',
     body: (
       <>
-        열 건 중 아홉 건은 약속한 단가보다 1회당 더 비싸게 사요. 많게는 {Math.floor(worstCostMultiple())}배예요.<sup>3</sup>
+        열 건 중 아홉 건은 약속한 단가보다 비싸게 사고, 많게는 {Math.floor(worstCostMultiple())}배까지 내요.
       </>
     ),
-    range: [0.52, 0.66],
+    range: [0.56, 0.7],
   },
   {
     value: Math.round(hitProbability(10) * 100),
@@ -58,19 +59,7 @@ const STATS: Stat[] = [
         1 − 0.8<sup>10</sup>. 조회수만큼만 내니까 빗나간 영상의 비용은 0원이에요.
       </>
     ),
-    range: [0.62, 0.76],
-  },
-  {
-    value: 2,
-    from: 1,
-    unit: '배',
-    title: '2027년 쇼츠 수익창출 문턱',
-    body: (
-      <>
-        90일 쇼츠 조회수 1,000만 회에서 2,000만 회로.<sup>4</sup> 첫 1,000회부터 정산되는 캠페인에 크리에이터가 모여요.
-      </>
-    ),
-    range: [0.72, 0.84],
+    range: [0.68, 0.82],
   },
 ];
 
@@ -149,7 +138,7 @@ export default function ViewsStory() {
                 공평하지 않아요
               </h2>
               <p>
-                틱톡 추천 영상 265만 개를 분석하면, 영상 20%가 조회수의 80%를 가져가요.<sup>1</sup> 협찬비는 평균 조회수에 매겨지지만, 대부분의 게시물은 그
+                틱톡 추천 영상 265만 개를 분석하면, 영상 20%가 조회수의 80%를 가져가요. 협찬비는 평균 조회수에 매겨지지만, 대부분의 게시물은 그
                 평균에 닿지 못해요.
               </p>
             </div>
@@ -168,7 +157,6 @@ export default function ViewsStory() {
                   <b />
                   나머지 80편이 20%
                 </span>
-                <span className="cl-views__src">출처 1</span>
               </figcaption>
             </figure>
             <div className="cl-views__stats">
@@ -191,27 +179,6 @@ export default function ViewsStory() {
           </div>
         </div>
       </div>
-      <ol className="cl-views__notes">
-        <li>
-          1. 2023년 11월~2024년 9월 실제 사용자에게 추천된 틱톡 영상 265만 개. Masood 외,{' '}
-          <a href="https://arxiv.org/abs/2605.05188" rel="noreferrer" target="_blank">
-            SILC
-          </a>
-          , UIUC·MIT, 2026.
-        </li>
-        <li>2. 릴스·쇼츠 협찬 단가 공식 (평균 조회수 ÷ 1,000) × 20,000원. 태그바이, 「2026 인플루언서 마케팅 제품 협찬 vs 원고료 지급 결정 가이드」.</li>
-        <li>
-          3. 1의 80:20 분포를 파레토 분포(α = log5/log4 ≈ 1.16)로 놓고, 한 크리에이터의 게시물도 같은 분포를 따른다고 가정한 계산. 중앙값/평균 = (α−1)/α · 2
-          <sup>1/α</sup> ≈ 0.25, 평균 미만 확률 = 1 − (α/(α−1))<sup>−α</sup> ≈ 0.90.
-        </li>
-        <li>
-          4.{' '}
-          <a href="https://support.google.com/youtube/answer/12843009" rel="noreferrer" target="_blank">
-            YouTube 고객센터, 「YouTube 파트너 프로그램 변경사항」
-          </a>
-          , 2027년 2월 1일 시행. 기존 파트너 채널은 해당 없음.
-        </li>
-      </ol>
     </section>
   );
 }

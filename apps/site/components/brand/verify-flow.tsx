@@ -27,9 +27,7 @@ export default function VerifyFlow() {
   return (
     <section aria-labelledby="verify-title" className="cl-landing-section">
       <h2 className="cl-landing-section__title" id="verify-title">
-        검증된 조회수에만
-        <br />
-        예산이 쓰여요
+        조회수는 이렇게 확인해요
       </h2>
       <div className="cl-verify-flow">
         <div aria-hidden className="cl-verify-flow__mesh">
