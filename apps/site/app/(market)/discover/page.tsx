@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Search, Sparkles } from 'lucide-react';
 import { INTEREST_GROUPS, extractYouTubeVideoId, interestGroupOfCategory } from '@clipers/db';
-import { Card, CardGrid, EmptyState, Page, SectionHeader, Stack, formatCompactNumber } from '@clipers/ui';
+import { Card, CardGrid, EmptyState, Page, SectionHeader, Stack, Starfield, formatCompactNumber } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
 import JsonLd from '@/components/json-ld';
 import SiteShell, { discoverHref } from '@/components/site-shell';
@@ -32,6 +32,9 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
 
   return (
     <SiteShell activeGroup={activeGroup?.id}>
+      <div className="cl-sky">
+        <Starfield className="cl-sky__canvas" />
+      </div>
       <Page>
         <section className="cl-market-hero">
           <h1 className="cl-market-hero__title">{activeGroup ? `${activeGroup.label} 캠페인` : '지금 참여할 수 있는 캠페인'}</h1>

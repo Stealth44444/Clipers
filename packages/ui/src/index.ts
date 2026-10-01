@@ -25,6 +25,7 @@ export * from './components/ProgressBar';
 export * from './components/RankMedal';
 export * from './components/SectionHeader';
 export * from './components/Sidebar';
+export * from './components/Starfield';
 export * from './components/StatCard';
 export * from './components/StickyFooter';
 export * from './components/Switch';
