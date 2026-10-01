@@ -19,12 +19,42 @@ const sliderFromViews = (views: number) => Math.round(Math.max(0, (Math.log10(Ma
 const compact = (views: number) =>
   views >= 10_000 ? `${(views / 10_000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만` : views.toLocaleString('ko-KR');
 
-// What plays on the phone: three clips for the same campaign; the feed swipes to the next one each loop.
-// Photos: Unsplash License (credits in public/media/clips/CREDITS.md). The player chrome is neutral, not any one app's.
+// What plays on the phone: three creator clips, each from its own campaign; the feed swipes to the next one
+// each loop. Videos: 540×960, muted, ~9s (public/media/clips). The player chrome is neutral, not any one app's.
 const CLIPS = [
-  { src: '/media/clips/clip-660.jpg', platform: 'youtube_shorts', handle: 'haru.night', caption: '불꽃이랑 같이 부른 여름밤 후렴 15초', likes: '2.4만', comments: '312' },
-  { src: '/media/clips/clip-453.jpg', platform: 'instagram_reels', handle: 'indie.stage', caption: '어제 공연에서 부른 여름밤 라이브', likes: '1.1만', comments: '186' },
-  { src: '/media/clips/clip-823.jpg', platform: 'tiktok', handle: 'mina.films', caption: '필름 카메라로 담은 여름밤 브이로그', likes: '8,420', comments: '97' },
+  {
+    video: '/media/clips/beauty.mp4',
+    poster: '/media/clips/beauty.jpg',
+    platform: 'instagram_reels',
+    handle: 'yuna.glow',
+    caption: '아침 5분이면 끝나는 속눈썹 루틴',
+    tag: '#데일리마스카라',
+    likes: '3.2만',
+    comments: '418',
+    campaign: '데일리 마스카라 루틴 챌린지',
+  },
+  {
+    video: '/media/clips/pet.mp4',
+    poster: '/media/clips/pet.jpg',
+    platform: 'tiktok',
+    handle: 'mochi.daily',
+    caption: '반다나 하나로 달라진 우리 집 모찌',
+    tag: '#펫스타그램',
+    likes: '5.8만',
+    comments: '1,204',
+    campaign: '반려견 반다나 신상 챌린지',
+  },
+  {
+    video: '/media/clips/sky.mp4',
+    poster: '/media/clips/sky.jpg',
+    platform: 'youtube_shorts',
+    handle: 'sky.jun',
+    caption: '헬기에서 뛰어내린 날, 액션캠 시점',
+    tag: '#액션캠',
+    likes: '12만',
+    comments: '2,310',
+    campaign: '액션캠 1인칭 클립 캠페인',
+  },
 ];
 
 const SCALE: [number, string][] = [
@@ -39,6 +69,20 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
   const [views, setViews] = useState(48_200);
   const [manual, setManual] = useState(false);
   const [clip, setClip] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    videoRefs.current.forEach((video, index) => {
+      if (!video) return;
+      if (index === clip) {
+        video.currentTime = 0;
+        void video.play().catch(() => undefined);
+      } else {
+        video.pause();
+      }
+    });
+  }, [clip]);
 
   useEffect(() => {
     if (manual || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -78,8 +122,8 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
         <div className="cl-earn__card cl-earn__card--campaign">
           <p className="cl-earn__label">참여 중인 캠페인</p>
           <p className="cl-earn__campaign">
-            <Avatar name="여름밤 챌린지" size="sm" />
-            신곡 &apos;여름밤&apos; 후렴 챌린지
+            <Avatar name={CLIPS[clip].campaign} size="sm" />
+            {CLIPS[clip].campaign}
           </p>
           <p className="cl-earn__rate">
             1천 회당 <strong>{formatKRW(rate)}</strong>
@@ -90,8 +134,19 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
           <DeviceFrame>
             <div className="cl-short">
               {CLIPS.map((item, index) => (
-                <div className="cl-short__slide" data-state={index === clip ? 'active' : index === (clip + CLIPS.length - 1) % CLIPS.length ? 'past' : 'next'} key={item.src}>
-                  <img alt="" className="cl-short__media" src={item.src} />
+                <div className="cl-short__slide" data-state={index === clip ? 'active' : index === (clip + CLIPS.length - 1) % CLIPS.length ? 'past' : 'next'} key={item.video}>
+                  <video
+                    className="cl-short__media"
+                    loop
+                    muted
+                    playsInline
+                    poster={item.poster}
+                    preload={index === clip || index === (clip + 1) % CLIPS.length ? 'auto' : 'none'}
+                    ref={(element) => {
+                      videoRefs.current[index] = element;
+                    }}
+                    src={item.video}
+                  />
                   <span className="cl-short__scrim" />
                   <div className="cl-short__rail">
                     <span className="cl-short__avatar">
@@ -119,12 +174,14 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
                       @{item.handle} <span>팔로우</span>
                     </p>
                     <p className="cl-short__caption">
-                      {item.caption} <b>#여름밤챌린지</b>
+                      {item.caption} <b>{item.tag}</b>
                     </p>
                     <p className="cl-short__audio">
                       <Music2 size={11} />
                       <span>
-                        <span>여름밤 · 데모 레코즈 · 여름밤 · 데모 레코즈 · </span>
+                        <span>
+                          오리지널 사운드 · @{item.handle} · 오리지널 사운드 · @{item.handle} ·{' '}
+                        </span>
                       </span>
                     </p>
                   </div>
