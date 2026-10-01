@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { Heart, MessageCircle, Music2, Plus, Send } from 'lucide-react';
 import { Avatar, DeviceFrame, PlatformIcon, StatusDot, formatKRW } from '@clipers/ui';
 
 // Creator hero visual: a clip plays on a phone while its views climb, and the payout beside it climbs with them.
@@ -18,6 +19,14 @@ const sliderFromViews = (views: number) => Math.round(Math.max(0, (Math.log10(Ma
 const compact = (views: number) =>
   views >= 10_000 ? `${(views / 10_000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만` : views.toLocaleString('ko-KR');
 
+// What plays on the phone: three clips for the same campaign; the feed swipes to the next one each loop.
+// Photos: Unsplash License (credits in public/media/clips/CREDITS.md). The player chrome is neutral, not any one app's.
+const CLIPS = [
+  { src: '/media/clips/clip-660.jpg', platform: 'youtube_shorts', handle: 'haru.night', caption: '불꽃이랑 같이 부른 여름밤 후렴 15초', likes: '2.4만', comments: '312' },
+  { src: '/media/clips/clip-453.jpg', platform: 'instagram_reels', handle: 'indie.stage', caption: '어제 공연에서 부른 여름밤 라이브', likes: '1.1만', comments: '186' },
+  { src: '/media/clips/clip-823.jpg', platform: 'tiktok', handle: 'mina.films', caption: '필름 카메라로 담은 여름밤 브이로그', likes: '8,420', comments: '97' },
+];
+
 const SCALE: [number, string][] = [
   [0, '1천'],
   [33.33, '1만'],
@@ -29,6 +38,7 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
   const rootRef = useRef<HTMLDivElement>(null);
   const [views, setViews] = useState(48_200);
   const [manual, setManual] = useState(false);
+  const [clip, setClip] = useState(0);
 
   useEffect(() => {
     if (manual || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -36,7 +46,9 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
     let visible = false;
     let start = performance.now();
     const tick = (now: number) => {
-      const t = (Math.max(0, now - start) % LOOP_MS) / LOOP_MS;
+      const elapsed = Math.max(0, now - start);
+      const t = (elapsed % LOOP_MS) / LOOP_MS;
+      setClip(Math.floor(elapsed / LOOP_MS) % CLIPS.length);
       // Climb for 80% of the loop (slow start, like a clip catching on), then hold.
       const climb = Math.min(1, t / 0.8);
       setViews(Math.round(MIN_VIEWS + (AUTO_PEAK - MIN_VIEWS) * Math.pow(climb, 2.2)));
@@ -76,21 +88,54 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
 
         <div className="cl-earn__phone">
           <DeviceFrame>
-            <div className="cl-earn__screen cl-clip-screen">
-              <span className="cl-clip-screen__rail">
-                <i />
-                <i />
-                <i />
-              </span>
-              <span className="cl-clip-screen__lines">
-                <i />
-                <i />
-              </span>
-              <span className="cl-clip-screen__progress" />
+            <div className="cl-short">
+              {CLIPS.map((item, index) => (
+                <div className="cl-short__slide" data-state={index === clip ? 'active' : index === (clip + CLIPS.length - 1) % CLIPS.length ? 'past' : 'next'} key={item.src}>
+                  <img alt="" className="cl-short__media" src={item.src} />
+                  <span className="cl-short__scrim" />
+                  <div className="cl-short__rail">
+                    <span className="cl-short__avatar">
+                      <Avatar name={item.handle} size="sm" />
+                      <i>
+                        <Plus size={9} strokeWidth={3} />
+                      </i>
+                    </span>
+                    <span className="cl-short__action">
+                      <Heart fill="currentColor" size={22} strokeWidth={0} />
+                      {item.likes}
+                    </span>
+                    <span className="cl-short__action">
+                      <MessageCircle fill="currentColor" size={21} strokeWidth={0} />
+                      {item.comments}
+                    </span>
+                    <span className="cl-short__action">
+                      <Send size={19} />
+                      공유
+                    </span>
+                    <span className="cl-short__disc" />
+                  </div>
+                  <div className="cl-short__info">
+                    <p className="cl-short__handle">
+                      @{item.handle} <span>팔로우</span>
+                    </p>
+                    <p className="cl-short__caption">
+                      {item.caption} <b>#여름밤챌린지</b>
+                    </p>
+                    <p className="cl-short__audio">
+                      <Music2 size={11} />
+                      <span>
+                        <span>여름밤 · 데모 레코즈 · 여름밤 · 데모 레코즈 · </span>
+                      </span>
+                    </p>
+                  </div>
+                  {index === clip && <Heart className="cl-short__burst" fill="currentColor" key={`burst-${clip}`} size={64} strokeWidth={0} />}
+                  <span className="cl-short__progress" key={`progress-${index === clip ? clip : 'idle'}`} />
+                </div>
+              ))}
             </div>
           </DeviceFrame>
           <p className="cl-earn__views">
-            <PlatformIcon platform="youtube_shorts" size={16} />
+            <PlatformIcon platform={CLIPS[clip].platform} size={16} />
             조회수 {compact(views)}
           </p>
         </div>

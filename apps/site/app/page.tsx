@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, Coins, Eye, ScanSearch, Wallet } from 'lucide-react';
 import { DEFAULT_PRICING, MIN_PAYOUT_VIEWS } from '@clipers/db';
-import { ButtonLink, MeshGradient, Rail, buttonClass, formatKRW } from '@clipers/ui';
+import { ButtonLink, MeshGradient, Rail, StatusDot, buttonClass, formatKRW } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
 import CampaignTypes from '@/components/campaign-types';
 import EarningsPhone from '@/components/earnings-phone';
@@ -103,7 +103,13 @@ export default async function HomePage() {
                 <p className="cl-mock-withdraw__amount">{formatKRW(38_560)}</p>
                 <p className="cl-mock-withdraw__title">받을 금액이 있어요</p>
                 <p className="cl-mock-withdraw__body">3,000원이 넘으면 언제든 지급을 요청할 수 있어요.</p>
-                <span className={buttonClass({ variant: 'primary', size: 'lg', block: true })}>지급 요청</span>
+                <span className={buttonClass({ variant: 'primary', size: 'lg', block: true, className: 'cl-mock-withdraw__button' })}>
+                  <span>지급 요청</span>
+                  <span>요청 완료</span>
+                </span>
+                <span className="cl-mock-withdraw__toast">
+                  <StatusDot tone="green">지급을 요청했어요</StatusDot>
+                </span>
                 <svg className="cl-mock-withdraw__cursor" height="26" viewBox="0 0 16 22" width="19">
                   <path d="M1 1v17.5l4.6-4.4 3.1 7 2.9-1.3-3-6.8h6.2z" fill="#000" stroke="#fff" strokeLinejoin="round" strokeWidth="1.4" />
                 </svg>
@@ -116,6 +122,7 @@ export default async function HomePage() {
           <article className="cl-bento5__card">
             <div aria-hidden className="cl-bento5__visual">
               <ul className="cl-mock-menu">
+                <li className="cl-mock-menu__focus" />
                 <li>
                   분야 <ChevronRight size={15} />
                 </li>
@@ -133,7 +140,10 @@ export default async function HomePage() {
           <article className="cl-bento5__card">
             <div aria-hidden className="cl-bento5__visual">
               <div className="cl-mock-ring">
-                <span>72시간</span>
+                <span>
+                  <i>72시간</i>
+                  <i>승인</i>
+                </span>
               </div>
             </div>
             <h3>빠르게</h3>
@@ -143,8 +153,8 @@ export default async function HomePage() {
           <article className="cl-bento5__card">
             <div aria-hidden className="cl-bento5__visual">
               <div className="cl-mock-bars">
-                {BARS.map((height) => (
-                  <span key={height} style={{ height: `${height * 100}%` }} />
+                {BARS.map((height, index) => (
+                  <span key={height} style={{ height: `${height * 100}%`, animationDelay: `${index * 0.12}s` }} />
                 ))}
               </div>
             </div>
@@ -155,15 +165,24 @@ export default async function HomePage() {
           <article className="cl-bento5__card">
             <div aria-hidden className="cl-bento5__visual">
               <div className="cl-mock-chips">
-                <span>
-                  <Wallet size={16} /> <b>{formatKRW(38_560)}</b> 정산
-                </span>
-                <span>
-                  <Coins size={16} /> <b>{formatKRW(800)}</b> 1천 회당
-                </span>
-                <span>
-                  <Eye size={16} /> <b>4.8만</b> 조회수
-                </span>
+                <div className="cl-mock-chips__track">
+                  {[0, 1].map((copy) => (
+                    <div className="cl-mock-chips__set" key={copy}>
+                      <span>
+                        <Wallet size={16} /> <b>{formatKRW(38_560)}</b> 정산
+                      </span>
+                      <span>
+                        <Coins size={16} /> <b>{formatKRW(800)}</b> 1천 회당
+                      </span>
+                      <span>
+                        <Eye size={16} /> <b>4.8만</b> 조회수
+                      </span>
+                      <span>
+                        <Wallet size={16} /> <b>{formatKRW(12_400)}</b> 이번 주
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             <h3>투명하게</h3>
