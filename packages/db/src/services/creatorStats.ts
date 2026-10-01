@@ -114,3 +114,13 @@ export function viewTrend(series: ClipSnapshotSeries[], days: number, now: Date 
     return point;
   });
 }
+
+/** Running total of events (ISO timestamps) at the end of each KST day in `dayKeys` (YYYY-MM-DD, ascending). */
+export function cumulativeCountByDay(events: string[], dayKeys: string[]): number[] {
+  const eventDays = events.map((event) => seoulDateKey(new Date(event))).sort();
+  let index = 0;
+  return dayKeys.map((day) => {
+    while (index < eventDays.length && eventDays[index] <= day) index += 1;
+    return index;
+  });
+}

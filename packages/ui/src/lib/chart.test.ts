@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildLineChart, niceMax } from './chart';
+import { buildLineChart, niceMax, smoothLinePath } from './chart';
 
 describe('niceMax', () => {
   it('rounds up to a readable axis maximum', () => {
@@ -38,5 +38,20 @@ describe('buildLineChart', () => {
     const chart = buildLineChart(points, 600, 200);
     expect(chart.xLabels.at(-1)?.label).toBe('d29');
     expect(chart.xLabels.length).toBeLessThanOrEqual(6);
+  });
+});
+
+describe('smoothLinePath', () => {
+  it('draws straight segments for two points', () => {
+    expect(smoothLinePath([{ x: 0, y: 10 }, { x: 10, y: 0 }])).toBe('M0,10 C3.33,6.67 6.67,3.33 10,0');
+  });
+
+  it('keeps flat runs flat (no overshoot)', () => {
+    const path = smoothLinePath([{ x: 0, y: 5 }, { x: 10, y: 5 }, { x: 20, y: 0 }]);
+    expect(path.startsWith('M0,5 C3.33,5 6.67,5 10,5')).toBe(true);
+  });
+
+  it('returns an empty path without points', () => {
+    expect(smoothLinePath([])).toBe('');
   });
 });

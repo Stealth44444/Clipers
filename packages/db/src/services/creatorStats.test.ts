@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { countByStatus, creatorChecklist, settlementPeriodLabel, summarizeEarnings, viewTrend } from './creatorStats';
+import { countByStatus, creatorChecklist, cumulativeCountByDay, settlementPeriodLabel, summarizeEarnings, viewTrend } from './creatorStats';
 
 // 2026-10-01 10:00 KST (Thursday). Previous settlement week starts Monday 2026-09-21.
 const NOW = new Date('2026-10-01T01:00:00Z');
@@ -84,5 +84,14 @@ describe('viewTrend', () => {
       { date: '2026-09-30', cumulative: 0, daily: 0 },
       { date: '2026-10-01', cumulative: 0, daily: 0 },
     ]);
+  });
+});
+
+describe('cumulativeCountByDay', () => {
+  it('counts events up to the end of each Korean calendar day', () => {
+    const days = ['2026-09-29', '2026-09-30', '2026-10-01'];
+    // 09-29T16:00Z is 09-30 01:00 KST.
+    const events = ['2026-09-28T03:00:00Z', '2026-09-29T16:00:00Z', '2026-10-01T01:00:00Z'];
+    expect(cumulativeCountByDay(events, days)).toEqual([1, 2, 3]);
   });
 });

@@ -14,7 +14,8 @@
     "vitest": "^2.1.0"
   },
   "dependencies": {
-    "lucide-react": "^1.49.0"
+    "lucide-react": "^1.49.0",
+    "simple-icons": "^16.33.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"

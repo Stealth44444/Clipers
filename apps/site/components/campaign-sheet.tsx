@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, Expand, Link2, X } from 'lucide-react';
-import { IconButton } from '@clipers/ui';
+import { ArrowLeft, Check, Expand, Link2 } from 'lucide-react';
 
 /** Campaign detail opened over the marketplace grid (intercepted route). Closing returns to the grid. */
 export default function CampaignSheet({ campaignId, children }: { campaignId: string; children: ReactNode }) {
@@ -39,16 +38,16 @@ export default function CampaignSheet({ campaignId, children }: { campaignId: st
       ref={ref}
     >
       <div className="cl-sheet__bar">
-        <IconButton label="닫기" onClick={close}>
-          <X size={18} />
-        </IconButton>
+        <button aria-label="닫기" className="cl-float-button" onClick={close} type="button">
+          <ArrowLeft size={18} />
+        </button>
         <div className="cl-inline">
-          <IconButton label={copied ? '복사했어요' : '링크 복사'} onClick={() => void copyLink()}>
-            {copied ? <Check size={18} /> : <Link2 size={18} />}
-          </IconButton>
-          <IconButton label="전체 화면으로 보기" onClick={() => window.location.assign(fullPageUrl)}>
-            <Expand size={18} />
-          </IconButton>
+          <button aria-label="전체 화면으로 보기" className="cl-float-button" onClick={() => window.location.assign(fullPageUrl)} type="button">
+            <Expand size={16} />
+          </button>
+          <button aria-label={copied ? '복사했어요' : '링크 복사'} className="cl-float-button" onClick={() => void copyLink()} type="button">
+            {copied ? <Check size={16} /> : <Link2 size={16} />}
+          </button>
         </div>
       </div>
       <div className="cl-sheet__content">{children}</div>
