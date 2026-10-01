@@ -157,7 +157,7 @@ export type DepositState = { status: DepositStatus; sending: boolean; cursor: st
 
 /** Same labels and tones as the brand app's CAMPAIGN_STATUS (apps/app/lib/status.ts); leads as the app words them. */
 export const DEPOSIT_STATUS: Record<DepositStatus, { label: string; tone: 'neutral' | 'amber' | 'brand'; lead: string }> = {
-  draft: { label: '입금 전', tone: 'neutral', lead: '입금을 마치고 아래 버튼을 누르면 운영팀이 확인한 뒤 캠페인을 공개해요.' },
+  draft: { label: '입금 전', tone: 'neutral', lead: '입금을 마치고 아래 버튼을 누르면 운영팀이 확인한 뒤 캠페인을 공개하고, 세금계산서를 발행해요.' },
   pending_escrow: { label: '입금 확인 중', tone: 'amber', lead: '운영팀이 입금을 확인하고 있어요. 확인되면 캠페인이 공개돼요.' },
   live: { label: '진행 중', tone: 'brand', lead: '캠페인이 공개됐어요. 크리에이터 지원을 받기 시작해요.' },
 };
