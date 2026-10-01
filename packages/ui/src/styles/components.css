@@ -885,7 +885,8 @@
 
 @media (max-width: 860px) {
   .cl-landing-nav__links { display: none; }
-  .cl-bento,   .cl-landing-hero { padding: 64px var(--space-4) 88px; }
+  .cl-bento { grid-template-columns: minmax(0, 1fr); }
+  .cl-landing-hero { padding: 64px var(--space-4) 88px; }
   .cl-landing-section { padding: 48px 0; }
 }
 @media (max-width: 480px) {
@@ -1004,15 +1005,12 @@
 @keyframes cl-dot-pulse { from { transform: scale(0.6); opacity: 0.45; } to { transform: scale(1.8); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .cl-status-dot--pulse .cl-status-dot__dot::after { animation: none; } }
 
-/* ---------- partner logo marquee (landing) — logos only, one neutral colour ---------- */
-.cl-marquee { width: min(880px, 100%); margin-top: var(--space-7); overflow: hidden; color: var(--color-text-subtle); -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
-.cl-marquee__track { display: flex; width: max-content; gap: 64px; margin: 0; padding: var(--space-2) 32px; list-style: none; animation: cl-marquee 38s linear infinite; }
-.cl-marquee:hover .cl-marquee__track { animation-play-state: paused; }
-.cl-marquee__item { display: inline-flex; align-items: center; opacity: 0.75; transition: opacity 0.2s ease; }
-.cl-marquee__item:hover { opacity: 1; }
-@keyframes cl-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) {
-  .cl-marquee { -webkit-mask-image: none; mask-image: none; }
-  .cl-marquee__track { width: auto; flex-wrap: wrap; justify-content: center; gap: var(--space-6); animation: none; }
-  .cl-marquee__item[aria-hidden="true"] { display: none; }
+/* ---------- partner logo wall (landing) — static, logos only, one warm neutral colour ---------- */
+.cl-logo-wall { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-7) 72px; width: min(860px, 100%); margin: var(--space-8) 0 0; padding: 0; color: #a49689; list-style: none; }
+.cl-logo-wall li { display: inline-flex; align-items: center; justify-content: center; width: 104px; }
+.cl-logo-wall svg { display: block; width: auto; height: 36px; max-width: 100%; }
+@media (max-width: 640px) {
+  .cl-logo-wall { gap: var(--space-6) var(--space-6); }
+  .cl-logo-wall li { width: 64px; }
+  .cl-logo-wall svg { height: 28px; }
 }

@@ -4,7 +4,7 @@ import { BadgeCheck, Eye, Gauge, Layers, ScanSearch } from 'lucide-react';
 import { PLATFORMS } from '@clipers/db';
 import { Avatar, ButtonLink, PlatformIcon, ProgressBar } from '@clipers/ui';
 import JsonLd from '@/components/json-ld';
-import LogoMarquee from '@/components/logo-marquee';
+import LogoWall from '@/components/logo-wall';
 import ProductTour from '@/components/product-tour';
 import { appUrl, siteUrl } from '@/lib/urls';
 
@@ -70,7 +70,7 @@ export default function HomePage() {
               크리에이터로 수익 내기
             </ButtonLink>
           </div>
-          <LogoMarquee />
+          <LogoWall />
         </section>
 
         <section aria-labelledby="features-title" className="cl-landing-section">
