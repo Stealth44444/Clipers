@@ -857,16 +857,14 @@
 .cl-mock-budget strong { color: var(--color-text); font-size: var(--font-size-5); font-weight: 600; }
 .cl-mock-logos { display: grid; grid-template-columns: repeat(4, auto); gap: var(--space-4) var(--space-6); }
 
-.cl-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
-.cl-steps li { display: grid; align-content: start; gap: var(--space-2); padding: var(--space-5); border-radius: 20px; background: var(--color-panel); }
-.cl-steps h3 { font-size: var(--font-size-5); }
-.cl-steps p { color: var(--color-text-muted); }
-.cl-steps__number { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-bottom: var(--space-2); border-radius: var(--radius-4); background: var(--brand-9); color: var(--brand-contrast); font-weight: 600; }
 
 .cl-audiences { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
 .cl-audience { display: grid; align-content: start; justify-items: start; gap: var(--space-4); padding: var(--space-6); border-radius: 20px; background: var(--color-panel); scroll-margin-top: 88px; }
 .cl-audience h2 { font-size: clamp(24px, 3vw, 32px); letter-spacing: -0.03em; }
-.cl-audience .cl-checks svg { color: var(--brand-11); }
+.cl-audience__lead { max-width: 440px; color: var(--color-text-muted); font-size: var(--font-size-3); line-height: 1.65; }
+.cl-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); width: 100%; margin: var(--space-2) 0 var(--space-3); }
+.cl-figures dt { font-size: clamp(22px, 2.6vw, 28px); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.cl-figures dd { margin: 2px 0 0; color: var(--color-text-subtle); font-size: var(--font-size-2); }
 
 .cl-faq { display: grid; gap: var(--space-2); max-width: 820px; margin: 0 auto; scroll-margin-top: 88px; }
 .cl-faq details { border-radius: var(--radius-5); background: var(--color-panel); }
@@ -889,8 +887,7 @@
 
 @media (max-width: 860px) {
   .cl-landing-nav__links { display: none; }
-  .cl-bento, .cl-steps, .cl-audiences { grid-template-columns: minmax(0, 1fr); }
-  .cl-landing-hero { padding: 64px var(--space-4) 88px; }
+  .cl-bento,   .cl-landing-hero { padding: 64px var(--space-4) 88px; }
   .cl-landing-section { padding: 48px 0; }
 }
 @media (max-width: 480px) {

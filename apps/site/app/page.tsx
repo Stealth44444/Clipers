@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { BadgeCheck, CircleCheck, Eye, Gauge, Layers, ScanSearch } from 'lucide-react';
+import { BadgeCheck, Eye, Gauge, Layers, ScanSearch } from 'lucide-react';
 import { PLATFORMS } from '@clipers/db';
 import { Avatar, ButtonLink, PlatformIcon, ProgressBar } from '@clipers/ui';
 import JsonLd from '@/components/json-ld';
@@ -15,12 +15,6 @@ export const metadata: Metadata = {
 };
 
 const START_CAMPAIGN = appUrl('/login?mode=sign-up');
-
-const STEPS = [
-  { title: '캠페인 열기', body: '예산과 플랫폼, 꼭 지켜야 할 조건을 정하고 예산을 입금해요. 운영팀이 확인하면 바로 공개돼요.' },
-  { title: '크리에이터 참여', body: '크리에이터가 지원하고, 승인되면 영상을 올린 뒤 링크를 제출해요.' },
-  { title: '조회수만큼 정산', body: '검수를 통과한 영상의 검증된 조회수만큼 예산이 쓰이고, 크리에이터는 매주 정산받아요.' },
-];
 
 const FAQ = [
   { q: '최소 예산이 있나요?', a: '캠페인은 100만 원부터 열 수 있어요. 상한은 없어요.' },
@@ -156,52 +150,49 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section aria-labelledby="steps-title" className="cl-landing-section">
-          <h2 className="cl-landing-section__title" id="steps-title">
-            이렇게 진행돼요
-          </h2>
-          <ol className="cl-steps">
-            {STEPS.map((step, index) => (
-              <li key={step.title}>
-                <span className="cl-steps__number">{index + 1}</span>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-
         <section className="cl-landing-section cl-audiences">
           <article className="cl-audience" id="creators">
             <h2>좋아하는 콘텐츠로 수익을</h2>
-            <ul className="cl-checks">
-              <li>
-                <CircleCheck aria-hidden size={16} /> 가입과 지원은 무료예요
-              </li>
-              <li>
-                <CircleCheck aria-hidden size={16} /> 조회수 1,000회부터 정산돼요. 그전 조회수도 함께요
-              </li>
-              <li>
-                <CircleCheck aria-hidden size={16} /> 매주 정산되고, 3,000원부터 지급을 요청할 수 있어요
-              </li>
-            </ul>
+            <p className="cl-audience__lead">
+              마음에 드는 캠페인에 지원하고 영상을 올리면, 검수를 통과한 영상의 조회수만큼 매주 정산돼요.
+            </p>
+            <dl className="cl-figures">
+              <div>
+                <dt>1,000회</dt>
+                <dd>조회수부터 정산</dd>
+              </div>
+              <div>
+                <dt>3,000원</dt>
+                <dd>부터 지급 요청</dd>
+              </div>
+              <div>
+                <dt>무료</dt>
+                <dd>가입과 지원</dd>
+              </div>
+            </dl>
             <ButtonLink href="/discover" variant="secondary">
               캠페인 둘러보기
             </ButtonLink>
           </article>
           <article className="cl-audience" id="brands">
             <h2>다음 캠페인을 Clipers에서</h2>
-            <ul className="cl-checks">
-              <li>
-                <CircleCheck aria-hidden size={16} /> 100만 원부터 캠페인을 열 수 있어요
-              </li>
-              <li>
-                <CircleCheck aria-hidden size={16} /> 검증된 조회수만큼만 예산이 쓰여요
-              </li>
-              <li>
-                <CircleCheck aria-hidden size={16} /> 남은 예산과 조회수를 실시간으로 확인해요
-              </li>
-            </ul>
+            <p className="cl-audience__lead">
+              예산과 플랫폼, 꼭 지켜야 할 조건만 정하면 돼요. 입금이 확인되면 캠페인이 공개되고, 검증된 조회수만큼만 예산이 쓰여요.
+            </p>
+            <dl className="cl-figures">
+              <div>
+                <dt>100만 원</dt>
+                <dd>부터 캠페인 시작</dd>
+              </div>
+              <div>
+                <dt>7개</dt>
+                <dd>숏폼 플랫폼</dd>
+              </div>
+              <div>
+                <dt>24~72시간</dt>
+                <dd>안에 영상 검수</dd>
+              </div>
+            </dl>
             <ButtonLink href={START_CAMPAIGN} variant="primary">
               캠페인 시작하기
             </ButtonLink>
