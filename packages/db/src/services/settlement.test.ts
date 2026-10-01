@@ -16,7 +16,8 @@ function createInput(overrides: Partial<WeeklySettlementInput> = {}): WeeklySett
     cpmRate: 100,
     perClipCap: 500,
     campaignBudget: 1000,
-    previouslySettledClipAmount: 0,
+    // A clip that has been paid before, so only this week's growth is due.
+    previouslySettledClipAmount: 100,
     previouslySettledCampaignAmount: 0,
     snapshots: [
       { capturedAt: '2026-09-20T14:00:00.000Z', viewCount: 1000 },
@@ -91,5 +92,35 @@ describe('calculateWeeklySettlementDrafts', () => {
       expect.objectContaining({ clipId: 'clip-a', amount: 200 }),
       expect.objectContaining({ clipId: 'clip-b', amount: 50 }),
     ]);
+  });
+
+  it('does not pay a never-paid clip until it reaches 1,000 verified views', () => {
+    const input = createInput({
+      previouslySettledClipAmount: 0,
+      reviewedAt: '2026-09-22T00:00:00.000Z',
+      snapshots: [{ capturedAt: '2026-09-23T00:00:00.000Z', viewCount: 800 }],
+    });
+    expect(calculateWeeklySettlementDrafts([input], PERIOD)).toEqual([]);
+  });
+
+  it('carries earlier unpaid views over once a clip crosses 1,000 views', () => {
+    const input = createInput({
+      previouslySettledClipAmount: 0,
+      snapshots: [
+        { capturedAt: '2026-09-20T14:00:00.000Z', viewCount: 800 },
+        { capturedAt: '2026-09-25T00:00:00.000Z', viewCount: 1500 },
+      ],
+    });
+    expect(calculateWeeklySettlementDrafts([input], PERIOD)[0]).toMatchObject({ verifiedViews: 1500, amount: 150 });
+  });
+
+  it('keeps paying weekly growth below 1,000 views once a clip has been paid', () => {
+    const input = createInput({
+      snapshots: [
+        { capturedAt: '2026-09-20T14:00:00.000Z', viewCount: 2000 },
+        { capturedAt: '2026-09-25T00:00:00.000Z', viewCount: 2300 },
+      ],
+    });
+    expect(calculateWeeklySettlementDrafts([input], PERIOD)[0]).toMatchObject({ verifiedViews: 300, amount: 30 });
   });
 });

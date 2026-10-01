@@ -1,4 +1,4 @@
-import { MIN_CAMPAIGN_BUDGET, type CampaignPricing } from './pricing';
+import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET, MIN_PAYOUT_VIEWS, type CampaignPricing } from './pricing';
 
 export const CAMPAIGN_TITLE_MAX = 80;
 export const CAMPAIGN_DESCRIPTION_MAX = 2000;
@@ -74,6 +74,9 @@ export function campaignDraftErrors(draft: CampaignDraft): Partial<Record<Campai
   const cap = Number(draft.maxPayoutPerClip);
   if (!draft.maxPayoutPerClip.trim() || !Number.isFinite(cap) || cap <= 0) {
     errors.maxPayoutPerClip = '클립당 최대 예산을 입력해 주세요.';
+  } else if (cap < (DEFAULT_PRICING.brandCpm * MIN_PAYOUT_VIEWS) / 1000) {
+    // A cap below the 1,000-view minimum payout would make every clip unpayable.
+    errors.maxPayoutPerClip = `클립당 최대 예산은 최소 ${won((DEFAULT_PRICING.brandCpm * MIN_PAYOUT_VIEWS) / 1000)}(조회수 1천 회분)부터예요.`;
   } else if (!errors.totalBudget && cap > budget) {
     errors.maxPayoutPerClip = `클립당 최대 예산은 총예산(${won(budget)})을 넘을 수 없어요.`;
   }

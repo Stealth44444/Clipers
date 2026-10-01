@@ -42,7 +42,7 @@ export default async function CreatorEarningsPage() {
 
   return (
     <Page>
-      <PageHeader description="검수를 통과한 클립의 조회수는 매주 정산돼요. 금액은 원천징수 전 기준이에요." title="수익" />
+      <PageHeader description="검수를 통과한 클립은 조회수 1,000회부터 매주 정산돼요. 금액은 원천징수 전 기준이에요." title="수익" />
       <Stack>
         <StatGrid>
           <StatCard highlight icon={<Wallet {...ICON} />} label="받을 금액" tone="brand" value={formatKRW(summary.unpaid)} />

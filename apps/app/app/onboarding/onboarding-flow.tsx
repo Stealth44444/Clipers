@@ -108,7 +108,7 @@ export default function OnboardingFlow() {
                 tone="sky"
               />
               <ListRow
-                description="운영팀 검수를 통과한 클립의 조회수만 정산돼요."
+                description="검수를 통과한 클립은 조회수 1,000회부터 정산되고, 그전 조회수도 함께 정산돼요."
                 icon={<BadgeCheck {...ICON} />}
                 title="검수와 정산"
                 tone="violet"

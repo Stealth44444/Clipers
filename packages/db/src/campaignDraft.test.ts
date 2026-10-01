@@ -48,6 +48,12 @@ describe('campaignDraftErrors', () => {
     );
   });
 
+  it('needs the per-clip cap to cover at least the 1,000-view minimum payout', () => {
+    expect(campaignDraftErrors({ ...valid, maxPayoutPerClip: '2999' }).maxPayoutPerClip).toBe(
+      '클립당 최대 예산은 최소 3,000원(조회수 1천 회분)부터예요.'
+    );
+  });
+
   it('converts the per-clip cap between brand spend and creator payout', () => {
     expect(clipCapToCreatorPayout(300_000, DEFAULT_PRICING)).toBe(80_000);
     expect(creatorPayoutToClipCap(80_000, DEFAULT_PRICING)).toBe(300_000);

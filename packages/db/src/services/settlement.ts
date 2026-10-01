@@ -1,3 +1,5 @@
+import { MIN_PAYOUT_VIEWS } from '../pricing';
+
 export type SettlementSnapshot = {
   capturedAt: string;
   viewCount: number;
@@ -111,7 +113,11 @@ export function calculateWeeklySettlementDrafts(
 
       if (!closingSnapshot) continue;
 
-      const openingViews = openingSnapshot?.viewCount ?? (reviewedAt >= periodStart ? 0 : null);
+      // Minimum payout: a never-paid clip is settled only once it reaches MIN_PAYOUT_VIEWS, and then for
+      // every view so far (earlier weeks below the threshold carry over). Paid clips settle weekly growth.
+      const neverPaid = input.previouslySettledClipAmount <= 0;
+      if (neverPaid && closingSnapshot.viewCount < MIN_PAYOUT_VIEWS) continue;
+      const openingViews = neverPaid ? 0 : openingSnapshot?.viewCount ?? (reviewedAt >= periodStart ? 0 : null);
       if (openingViews === null) continue;
 
       const verifiedViews = Math.max(0, closingSnapshot.viewCount - openingViews);

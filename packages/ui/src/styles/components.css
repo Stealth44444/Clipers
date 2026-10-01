@@ -28,7 +28,7 @@
 .cl-topbar__end { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
 
 .cl-shell__body { display: grid; grid-template-columns: 264px minmax(0, 1fr); }
-.cl-shell__main { position: relative; min-width: 0; isolation: isolate; }
+.cl-shell__main { position: relative; min-width: 0; overflow-x: clip; isolation: isolate; }
 /* Scoped to the top bar so it outranks .cl-icon-button, which is declared later. */
 .cl-topbar .cl-menu-toggle { display: none; }
 .cl-scrim { display: none; }
@@ -674,10 +674,7 @@
 .cl-search { position: relative; max-width: 520px; margin-top: var(--space-5); }
 .cl-search svg { position: absolute; top: 50%; left: 14px; color: var(--color-text-subtle); transform: translateY(-50%); pointer-events: none; }
 .cl-search .cl-input { height: 46px; padding-left: 42px; border-radius: var(--radius-5); background: var(--gray-3); }
-.cl-rail { display: grid; grid-auto-columns: minmax(300px, 380px); grid-auto-flow: column; gap: var(--space-4); overflow-x: auto; padding-bottom: var(--space-2); scroll-snap-type: x mandatory; scrollbar-width: thin; }
-.cl-rail > * { scroll-snap-align: start; }
 .cl-card-brand { display: flex; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: var(--font-size-2); }
-.cl-clip-rail { display: grid; grid-auto-columns: 168px; grid-auto-flow: column; gap: var(--space-3); overflow-x: auto; padding-bottom: var(--space-2); }
 .cl-clip { display: grid; gap: var(--space-2); }
 .cl-clip__thumb { position: relative; aspect-ratio: 9 / 16; overflow: hidden; border-radius: var(--radius-5); background: var(--gray-3); }
 .cl-clip__thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -724,10 +721,10 @@
 .cl-checks li { display: flex; gap: var(--space-2); }
 .cl-checks svg { flex: 0 0 auto; margin-top: 3px; color: var(--brand-11); }
 
-.cl-rate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-3); }
+.cl-rate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-3); }
 .cl-rate { overflow: hidden; border-radius: var(--radius-5); background: var(--gray-3); }
 .cl-rate__head { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); font-weight: 600; box-shadow: inset 0 -1px 0 var(--gray-a2); }
-.cl-rate__cells { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; }
+.cl-rate__cells { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
 .cl-rate__cells > div { padding: var(--space-3) var(--space-4); }
 .cl-rate__cells > div + div { box-shadow: inset 1px 0 0 var(--gray-a2); }
 .cl-rate__cells dt { color: var(--color-text-subtle); font-size: var(--font-size-1); }
@@ -767,3 +764,13 @@
 /* ---------- minimal chart ---------- */
 .cl-chart--minimal .cl-chart__grid { stroke: var(--gray-a2); }
 .cl-chart__last { stroke: var(--color-panel); stroke-width: 2; }
+
+/* ---------- rails (horizontal rows paged by arrows; scrollbar hidden) ---------- */
+.cl-rail { display: grid; grid-auto-columns: minmax(280px, 340px); grid-auto-flow: column; gap: var(--space-4); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
+.cl-rail::-webkit-scrollbar { display: none; }
+.cl-rail > * { scroll-snap-align: start; }
+.cl-rail--clips { grid-auto-columns: 168px; gap: var(--space-3); }
+.cl-rail__arrows { display: inline-flex; gap: var(--space-2); }
+.cl-rail__arrow { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 0; border-radius: var(--radius-full); background: var(--gray-4); color: var(--color-text); cursor: pointer; transition: background-color 0.15s ease, opacity 0.15s ease; }
+.cl-rail__arrow:hover:not(:disabled) { background: var(--gray-5); }
+.cl-rail__arrow:disabled { cursor: default; opacity: 0.35; }

@@ -269,7 +269,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
                   value={draft.totalBudget}
                 />
               </Field>
-              <Field hint="영상 하나가 예산을 독차지하지 않도록 막아요." htmlFor="campaign-clip-cap" label="클립당 최대 예산 (원)">
+              <Field hint="영상 하나가 예산을 독차지하지 않도록 막아요. 최소 3,000원" htmlFor="campaign-clip-cap" label="클립당 최대 예산 (원)">
                 <Input
                   id="campaign-clip-cap"
                   inputMode="numeric"

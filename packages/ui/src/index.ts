@@ -22,6 +22,7 @@ export * from './components/OptionCard';
 export * from './components/PageHeader';
 export * from './components/PlatformIcon';
 export * from './components/ProgressBar';
+export * from './components/Rail';
 export * from './components/RankMedal';
 export * from './components/SectionHeader';
 export * from './components/Sidebar';

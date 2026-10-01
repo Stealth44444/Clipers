@@ -47,6 +47,10 @@ export default function CampaignDetail({ campaign }: { campaign: Detail }) {
                   <dd>{formatKRW(campaign.creatorCpm)}</dd>
                 </div>
                 <div>
+                  <dt>최소 지급</dt>
+                  <dd>1천 회부터</dd>
+                </div>
+                <div>
                   <dt>클립당 최대</dt>
                   <dd>{cap ? formatKRW(cap.maxPayout) : '—'}</dd>
                 </div>

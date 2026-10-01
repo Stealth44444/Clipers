@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Search, Sparkles } from 'lucide-react';
 import { INTEREST_GROUPS, extractYouTubeVideoId, interestGroupOfCategory } from '@clipers/db';
-import { Card, CardGrid, EmptyState, Page, SectionHeader, Stack, Starfield, formatCompactNumber } from '@clipers/ui';
+import { Card, CardGrid, EmptyState, Page, Rail, SectionHeader, Stack, Starfield, formatCompactNumber } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
 import JsonLd from '@/components/json-ld';
 import SiteShell, { discoverHref } from '@/components/site-shell';
@@ -48,14 +48,11 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
 
         <Stack>
           {featured.length > 0 && (
-            <section>
-              <SectionHeader description="남은 예산이 많은 캠페인부터 보여요." title="추천 캠페인" />
-              <div className="cl-rail">
-                {featured.map((campaign) => (
-                  <CampaignCard campaign={campaign} key={campaign.id} />
-                ))}
-              </div>
-            </section>
+            <Rail description="남은 예산이 많은 캠페인부터 보여요." title="추천 캠페인">
+              {featured.map((campaign) => (
+                <CampaignCard campaign={campaign} key={campaign.id} />
+              ))}
+            </Rail>
           )}
 
           <section>
@@ -86,9 +83,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
           </section>
 
           {topClips.length > 0 && (
-            <section>
-              <SectionHeader description="캠페인에 올라온 영상 중 조회수가 높은 순서예요." title="인기 클립" />
-              <div className="cl-clip-rail">
+            <Rail description="캠페인에 올라온 영상 중 조회수가 높은 순서예요." title="인기 클립" variant="clips">
                 {topClips.map((clip) => {
                   const videoId = extractYouTubeVideoId(clip.url);
                   return (
@@ -101,8 +96,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
                     </a>
                   );
                 })}
-              </div>
-            </section>
+            </Rail>
           )}
         </Stack>
       </Page>
