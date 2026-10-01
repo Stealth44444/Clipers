@@ -101,7 +101,7 @@
 /* ---------- page ---------- */
 .cl-page { width: min(1080px, 100% - 48px); margin: 0 auto; padding: var(--space-6) 0 var(--space-9); }
 .cl-page-header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-6); }
-.cl-page-header__title { font-size: var(--font-size-7); }
+.cl-page-header__title { font-size: var(--font-size-7); line-height: 1.2; }
 .cl-page-header__description { margin-top: var(--space-1); color: var(--color-text-muted); font-size: var(--font-size-3); }
 .cl-page-header__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 @media (max-width: 640px) {
@@ -116,19 +116,20 @@
   justify-content: center;
   gap: var(--space-2);
   border: 0;
-  border-radius: var(--radius-4);
-  font-weight: 550;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  letter-spacing: -0.01em;
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 .cl-button:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-.cl-button--sm { height: 30px; padding: 0 var(--space-3); border-radius: var(--radius-3); font-size: var(--font-size-1); }
-.cl-button--md { height: 36px; padding: 0 var(--space-4); font-size: var(--font-size-2); }
-.cl-button--lg { height: 44px; padding: 0 var(--space-5); border-radius: var(--radius-5); font-size: var(--font-size-3); }
+.cl-button--sm { height: 30px; padding: 0 var(--space-3); font-size: var(--font-size-1); }
+.cl-button--md { height: 38px; padding: 0 var(--space-4); font-size: var(--font-size-2); }
+.cl-button--lg { height: 48px; padding: 0 var(--space-6); font-size: var(--font-size-3); }
 .cl-button--block { width: 100%; }
-.cl-button--primary { background: var(--brand-9); color: var(--brand-contrast); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 1px 2px rgba(0, 0, 0, 0.35); }
-.cl-button--primary:hover { background: var(--brand-10); }
+.cl-button--primary { background: var(--button-primary-surface); color: var(--brand-contrast); box-shadow: var(--button-primary-edge); }
+.cl-button--primary:hover { background: var(--button-primary-surface-hover); }
 .cl-button--secondary { background: var(--gray-4); color: var(--color-text); box-shadow: inset 0 0 0 1px var(--gray-a4), var(--shadow-control); }
 .cl-button--secondary:hover { background: var(--gray-5); }
 .cl-button--ghost { background: transparent; color: var(--color-text-muted); }

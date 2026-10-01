@@ -1,6 +1,7 @@
 # Clipers — UI/UX 리디자인 설계 (Whop Content Rewards 벤치마크)
 
 > 근거 자료: 사용자 제공 Whop Content Rewards 스크린샷 18장(크리에이터 온보딩·홈·분석·제출·수익, 브랜드 홈·캠페인 생성 모달·캠페인 생성 폼, 디스커버·캠페인 상세), Whop 공식 디자인 시스템 `whopio/frosted-ui`(MIT) 토큰 소스, 공식 Clipers 로고(`packages/ui/brand/`).
+> 추가 근거(2026-10-01): Content Rewards 공식 사이트(https://contentrewards.com/) 스크린샷과 배포 CSS — 제목 Suisse Int'l Medium(500), 본문 Inter, 자간 전 크기 -0.02em·제목 -0.03em, 제목 행간 0.85~1, 주 CTA는 pill + 촉감형 표면(라디얼 하이라이트 + 하단 립), 마케팅 페이지는 따뜻한 라이트 톤(#fffdfb 배경, #2d2518 텍스트). 회사 소개 페이지(`apps/site` `/`)를 만들 때 이 사이트를 기준으로 삼는다.
 > 방향 결정(2026-10-01): `frosted-ui` 패키지를 직접 설치하지 않고 **토큰·컴포넌트 구조를 `packages/ui`로 이식**한다. 이유: 해당 패키지는 정식 릴리스 없이 카나리(`0.0.1-canary.161`)로만 배포되고 Tailwind v4를 요구한다.
 
 ## 1. 목표와 범위
@@ -23,11 +24,11 @@
 - 라운드 `--radius-1..6` = 3, 4, 6, 8, 12, 16px, `--radius-full` = 9999px
 - 타이포 `--font-size-0..9` = 10~40px. 폰트는 Pretendard Variable(Inter 기반 라틴 + 본고딕 기반 한글, Apple SD 산돌고딕 Neo 대체용으로 설계) — 한국어 서비스에서 macOS 시스템 폰트와 가장 가까운 인상
 - 그레이(다크) `--gray-1..12` = `#111111` … `#eeeeee` (Frosted dark gray 스케일 그대로)
-- 브랜드 그린 스케일: 공식 로고 `#58B982`를 9단계로 두고 파생(solid/hover/text/alpha). 주 CTA는 단색 + 얇은 상단 하이라이트(macOS 버튼 질감), 그라디언트는 쓰지 않는다
+- 브랜드 그린 스케일: 공식 로고 `#58B982`를 9단계로 두고 파생(solid/hover/text/alpha). 주 CTA는 촉감형 표면(상단 라디얼 하이라이트 + 하단 립), 장식용 선형 그라디언트는 쓰지 않는다
 - 시맨틱: 성공=브랜드 그린, 경고/대기=Frosted amber, 위험=Frosted tomato, 정보=Frosted sky. 스탯 아이콘 틴트(그린/스카이/바이올렛/앰버)는 Whop 수익 화면 배색을 따름
 
 **컴포넌트** (`packages/ui/src/components`, 스타일은 `cl-` 접두 클래스로 `packages/ui/src/styles/*.css`에 둔다)
-- 기본: `Button`(8px 라운드 사각형 — primary 단색 / secondary 회색 + 1px 베젤 / ghost, 비활성 상태), `IconButton`, `Badge`, `Avatar`, `Card`, `ProgressBar`
+- 기본: `Button`(pill — primary는 Content Rewards식 촉감형: 상단 라디얼 하이라이트 + 하단 어두운 립 / secondary 회색 + 1px 베젤 / ghost, 비활성 상태), `IconButton`, `Badge`, `Avatar`, `Card`, `ProgressBar`
 - 입력: `Field`(라벨 + 글자수 카운터 + 오류), `Input`, `Textarea`, `Select`, `Switch`, `Chip`(멀티선택), `OptionCard`(아이콘 원 + 우상단 라디오, 선택 시 브랜드색), `Dropzone`
 - 데이터: `StatCard`(컬러 원형 아이콘 + 큰 숫자 + 라벨, 강조형은 그라디언트 틴트), `Tabs`(카운트 붙은 pill 세그먼트), `DataTable`, `EmptyState`(컬러 원 아이콘 + 제목 + 설명), `Timeline`(세로선 + 점 + 우측 합계), `Checklist`(완료 원 아이콘, `n of m` 카운터 + 진행바, 현재 단계 강조), `SummaryList`(키-값 행), `LineChart`(SVG, 격자선·축 라벨·마지막 날짜 강조)
 - 오버레이: `Dialog`(네이티브 `<dialog>` 기반)
@@ -44,7 +45,7 @@
 
 **질감 규칙 (Apple·Notion·Slack식 절제)**
 - 굵기는 400/500/600만 쓴다(버튼 550). 700 이상 금지.
-- 한글 본문 자간 -0.006em, 제목 -0.022em, `word-break: keep-all`. 숫자(금액·조회수·표)는 `tabular-nums`.
+- 자간은 Content Rewards 기준으로 모든 크기 -0.02em, 제목 -0.03em, `word-break: keep-all`. 숫자(금액·조회수·표)는 `tabular-nums`.
 - 장식용 그라디언트·글로우·네온·큰 그림자 금지. 그림자는 컨트롤의 1px 베젤과 팝오버에만.
 - 상단바·팝오버는 반투명 + 배경 블러(macOS vibrancy). 포커스는 3px 브랜드 알파 링.
 - 탭은 세그먼트 컨트롤, 설정·동의 항목은 그룹 리스트(`List`/`ListRow`), 태그성 선택만 pill(`Chip`).

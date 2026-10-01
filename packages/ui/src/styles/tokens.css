@@ -88,12 +88,17 @@
   /* Pretendard: Inter-based Latin + Source Han Sans Korean, built as a cross-platform stand-in for Apple SD Gothic Neo. */
   --font-body: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", system-ui, "Segoe UI", Roboto, "Noto Sans KR", "Malgun Gothic", sans-serif;
   --font-heading: var(--font-body);
-  --tracking-body: -0.006em;
-  --tracking-heading: -0.022em;
+  /* Content Rewards (Whop) tracks every size at -0.02em and headings at -0.03em. */
+  --tracking-body: -0.02em;
+  --tracking-heading: -0.03em;
 
   --shadow-control: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-popover: 0 0 0 1px var(--gray-a4), 0 12px 32px rgba(0, 0, 0, 0.5);
   --focus-ring: 0 0 0 3px var(--brand-a4);
+  /* Tactile CTA, after Content Rewards' primary button: soft top highlight, darker bottom lip. */
+  --button-primary-surface: radial-gradient(50% 64% at 50% 1%, #9fe6bd 0%, rgba(159, 230, 189, 0) 100%), var(--brand-9);
+  --button-primary-surface-hover: radial-gradient(50% 64% at 50% 1%, #b3edcb 0%, rgba(179, 237, 203, 0) 100%), var(--brand-10);
+  --button-primary-edge: inset 0 -1px 0 #3c8a5c, 0 1px 2px rgba(0, 0, 0, 0.35);
 
   /* The wordmark's lettering is only ~53% of its height (the symbol sets the full height),
      so size it by the text: 32px renders the lettering at roughly a 17px heading. */
