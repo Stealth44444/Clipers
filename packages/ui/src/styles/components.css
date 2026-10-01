@@ -1272,46 +1272,42 @@
 .cl-kinds__text { display: flex; gap: var(--space-4); max-width: 520px; color: var(--color-text-subtle); font-size: clamp(22px, 2.6vw, 32px); line-height: 1.45; letter-spacing: -0.03em; opacity: 0; transform: translateY(28px); transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .cl-kinds__text strong { color: var(--color-text); font-weight: 600; }
 .cl-kinds__stack { position: relative; justify-self: center; width: min(620px, 100%); height: 560px; pointer-events: none; }
-/* Each card: placed by top/left per kind; moved by --dx/--dy (entering or leaving), turned by --rot, sized by --sc */
-.cl-kinds__card { position: absolute; width: 350px; opacity: 0; transform-origin: var(--origin, 50% 50%); transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--rot, 0deg)) scale(var(--sc, 1)); transition: opacity 0.5s ease, transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.cl-kinds__card .cl-ccard, .cl-kinds__card .cl-ccard:hover { background: #fff; transform: none; box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.06), 0 24px 60px rgba(31, 26, 20, 0.12); }
+/* Cards are placed per kind (top/left, rest scale --s); between kinds they only fade and drift vertically */
+.cl-kinds__card { position: absolute; width: 350px; opacity: 0; transform: translateY(var(--dy, 0px)) scale(var(--s, 1)); transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.cl-kinds__card .cl-ccard, .cl-kinds__card .cl-ccard:hover { background: #fff; transform: none; box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.06), 0 20px 50px rgba(31, 26, 20, 0.1); }
 .cl-kinds__card:nth-child(2) { --n: 1; }
 .cl-kinds__card:nth-child(3) { --n: 2; z-index: 1; }
-.cl-kinds__item[data-state="next"] .cl-kinds__card { --dx: var(--enter-x, 0px); --dy: 60px; --rot: var(--r-enter, var(--r)); --sc: var(--sc-enter, 1); }
-.cl-kinds__item[data-state="active"] .cl-kinds__card { --rot: var(--r); opacity: 1; transition-delay: calc(var(--n, 0) * 80ms); }
-.cl-kinds__item[data-state="past"] .cl-kinds__card { --dx: calc(var(--enter-x, 0px) * -1); --dy: -60px; --rot: var(--r-enter, var(--r)); --sc: var(--sc-enter, 1); }
+.cl-kinds__item[data-state="next"] .cl-kinds__card { --dy: 40px; }
+.cl-kinds__item[data-state="active"] .cl-kinds__card { opacity: 1; transition-delay: calc(var(--n, 0) * 70ms); }
+.cl-kinds__item[data-state="past"] .cl-kinds__card { --dy: -40px; }
 .cl-kinds__item[data-state="active"] { pointer-events: auto; }
 .cl-kinds__item[data-state="active"] .cl-kinds__text { opacity: 1; transform: none; }
 .cl-kinds__item[data-state="past"] .cl-kinds__text { transform: translateY(-28px); }
 
-/* Clipping: a timeline cascade, easing in from the right */
-.cl-kinds__item[data-kind="clipping"] .cl-kinds__card { --enter-x: 60px; }
-.cl-kinds__item[data-kind="clipping"] .cl-kinds__card:nth-child(1) { top: 0; left: 0; --r: -2deg; }
-.cl-kinds__item[data-kind="clipping"] .cl-kinds__card:nth-child(2) { top: 90px; left: 135px; --r: 1deg; }
-.cl-kinds__item[data-kind="clipping"] .cl-kinds__card:nth-child(3) { top: 180px; left: 270px; --r: 0deg; }
-/* UGC: loose snapshots on a desk */
-.cl-kinds__item[data-kind="ugc"] .cl-kinds__card:nth-child(1) { top: 30px; left: 0; --r: -6deg; }
-.cl-kinds__item[data-kind="ugc"] .cl-kinds__card:nth-child(2) { top: 0; left: 270px; --r: 5deg; }
-.cl-kinds__item[data-kind="ugc"] .cl-kinds__card:nth-child(3) { top: 175px; left: 120px; --r: -1deg; }
-/* Music: a hand of cards fanned from one point below, closed while entering or leaving */
-.cl-kinds__item[data-kind="music"] .cl-kinds__card { top: 120px; left: calc(50% - 175px); --origin: 50% 150%; --r-enter: 0deg; }
-.cl-kinds__item[data-kind="music"] .cl-kinds__card:nth-child(1) { --r: -11deg; }
-.cl-kinds__item[data-kind="music"] .cl-kinds__card:nth-child(2) { --r: 11deg; }
-.cl-kinds__item[data-kind="music"] .cl-kinds__card:nth-child(3) { --r: 0deg; }
+/* Clipping: a cascade from top left to bottom right */
+.cl-kinds__item[data-kind="clipping"] .cl-kinds__card:nth-child(1) { top: 0; left: 0; }
+.cl-kinds__item[data-kind="clipping"] .cl-kinds__card:nth-child(2) { top: 90px; left: 135px; }
+.cl-kinds__item[data-kind="clipping"] .cl-kinds__card:nth-child(3) { top: 180px; left: 270px; }
+/* UGC: the same cascade, mirrored */
+.cl-kinds__item[data-kind="ugc"] .cl-kinds__card:nth-child(1) { top: 0; left: 270px; }
+.cl-kinds__item[data-kind="ugc"] .cl-kinds__card:nth-child(2) { top: 90px; left: 135px; }
+.cl-kinds__item[data-kind="ugc"] .cl-kinds__card:nth-child(3) { top: 180px; left: 0; }
+/* Music: one card in front, two smaller ones behind it either side */
+.cl-kinds__item[data-kind="music"] .cl-kinds__card:nth-child(1) { top: 70px; left: 20px; --s: 0.88; }
+.cl-kinds__item[data-kind="music"] .cl-kinds__card:nth-child(2) { top: 70px; left: 250px; --s: 0.88; }
+.cl-kinds__item[data-kind="music"] .cl-kinds__card:nth-child(3) { top: 150px; left: 135px; }
 
 @media (max-width: 860px) {
   .cl-kinds { height: auto; padding: 24px 0; }
   .cl-kinds__stage { position: static; display: grid; gap: 64px; height: auto; }
   .cl-kinds__item { position: static; grid-template-columns: minmax(0, 1fr); pointer-events: auto; }
   .cl-kinds__item .cl-kinds__text { opacity: 1; transform: none; }
-  .cl-kinds__stack { width: 100%; height: 420px; overflow: hidden; }
+  .cl-kinds__stack { width: 100%; height: 400px; overflow: hidden; }
   .cl-kinds__card { width: min(280px, 72vw); }
-  .cl-kinds__item[data-state] .cl-kinds__card { --dx: 0px; --dy: 0px; --rot: var(--r); --sc: 1; opacity: 1; }
-  .cl-kinds__item[data-kind="clipping"] .cl-kinds__card:nth-child(2) { top: 70px; left: 12%; }
-  .cl-kinds__item[data-kind="clipping"] .cl-kinds__card:nth-child(3) { top: 140px; left: auto; right: 0; }
-  .cl-kinds__item[data-kind="ugc"] .cl-kinds__card:nth-child(2) { top: 20px; left: auto; right: 0; }
-  .cl-kinds__item[data-kind="ugc"] .cl-kinds__card:nth-child(3) { top: 150px; left: 14%; }
-  .cl-kinds__item[data-kind="music"] .cl-kinds__card { top: 90px; left: calc(50% - min(140px, 36vw)); }
+  .cl-kinds__item[data-state] .cl-kinds__card { --dy: 0px; opacity: 1; }
+  .cl-kinds__item[data-kind] .cl-kinds__card:nth-child(1) { top: 0; left: 0; }
+  .cl-kinds__item[data-kind] .cl-kinds__card:nth-child(2) { top: 60px; left: auto; right: 0; }
+  .cl-kinds__item[data-kind] .cl-kinds__card:nth-child(3) { top: 130px; left: calc(50% - min(140px, 36vw)); }
 }
 @property --ring { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
 @keyframes cl-ring { 0% { --ring: 0%; } 55%, 92% { --ring: 100%; } 100% { --ring: 0%; } }

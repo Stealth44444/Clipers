@@ -26,8 +26,8 @@ type Source = {
 };
 
 const SOURCES: Record<ShowcaseKind, Source> = {
-  // Clipping campaigns cut long streams into shorts: Kai Cenat's long uploads.
-  clipping: { channel: '@KaiCenat', minSeconds: 10 * 60 },
+  // Clipping campaigns cut long streams into shorts: long-form gaming videos, with Kai Cenat's latest in front.
+  clipping: { categoryId: '20', minSeconds: 10 * 60, front: '@KaiCenat' },
   // UGC: vlogs, reviews and hauls (People & Blogs).
   ugc: { categoryId: '22', minSeconds: 60 },
   // Music videos, with Drake's latest in front.
