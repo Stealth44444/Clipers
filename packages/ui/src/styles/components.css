@@ -1048,38 +1048,15 @@
 .cl-earn__slider-scale span:last-child { transform: translateX(-100%); }
 .cl-earn__note { color: var(--color-text-subtle); font-size: var(--font-size-1); }
 
-/* Brand hero: the campaign dashboard running in a macOS window */
-.cl-landing-hero--window { padding: 64px var(--space-5) 32px; }
-.cl-landing-hero--window .cl-landing-hero__title { font-size: clamp(40px, 6vw, 72px); }
-.cl-landing-hero--window::after { inset: 30% -15% -15%; }
-.cl-live { width: min(1080px, 100%); margin-top: 32px; text-align: left; }
-.cl-live .cl-demo__body { min-height: 0; }
-.cl-live__content { display: grid; align-content: start; gap: var(--space-3); min-width: 0; padding: var(--space-5) var(--space-6) var(--space-6); }
 .cl-live__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); }
 .cl-live__eyebrow { color: var(--color-text-subtle); font-size: var(--font-size-1); }
 .cl-live__title { font-size: var(--font-size-5); font-weight: 600; letter-spacing: -0.02em; }
 .cl-live__head .cl-status-dot { font-size: var(--font-size-1); }
-.cl-live__stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); margin: 0; }
-.cl-live__stats > div { padding: var(--space-3) var(--space-4); border-radius: 14px; background: var(--color-panel); }
-.cl-live__stats dt { color: var(--color-text-subtle); font-size: var(--font-size-1); }
-.cl-live__stats dd { margin: 4px 0 0; font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
-.cl-live__grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--space-3); }
-.cl-live__panel { min-width: 0; padding: var(--space-3) var(--space-4); border-radius: 14px; background: var(--color-panel); }
-.cl-live__panel-title { margin-bottom: var(--space-1); color: var(--color-text-muted); font-size: var(--font-size-1); }
-.cl-live__panel .cl-chart svg { height: 200px; }
-.cl-live__feed { display: grid; margin: 0; padding: 0; list-style: none; }
-.cl-live__feed li { display: flex; align-items: center; gap: var(--space-3); padding: 10px 0; font-size: 13px; box-shadow: inset 0 -1px 0 var(--gray-a3); animation: cl-feed-in 0.45s ease both; }
-.cl-live__feed li:last-child { box-shadow: none; }
-.cl-live__feed-text { display: grid; flex: 1 1 auto; min-width: 0; }
-.cl-live__feed-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cl-live__feed-meta { display: inline-flex; align-items: center; gap: 4px; color: var(--color-text-subtle); font-size: 11px; }
-.cl-live__feed .cl-status-dot { font-size: var(--font-size-1); white-space: nowrap; }
 @keyframes cl-feed-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 
 
 
 @media (max-width: 960px) {
-  .cl-live__grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 860px) {
   .cl-landing-hero--split { grid-template-columns: minmax(0, 1fr); min-height: 0; padding: 48px 0 32px; text-align: center; }
@@ -1091,15 +1068,9 @@
   .cl-earn__card { position: static; }
   .cl-earn__stage { gap: var(--space-3); }
   .cl-earn__phone { width: 200px; }
-  .cl-live .cl-demo__body { grid-template-columns: minmax(0, 1fr); }
-  .cl-live .cl-demo__nav { display: none; }
-  .cl-live__content { padding: var(--space-4); }
-  .cl-live__stats { gap: var(--space-2); }
-  .cl-live__stats > div { padding: var(--space-3); }
-  .cl-live__stats dd { font-size: 15px; white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cl-clip-screen, .cl-clip-screen__progress, .cl-live__feed li { animation: none; }
+  .cl-clip-screen, .cl-clip-screen__progress { animation: none; }
 }
 
 /* ---------- clipping explainer (creator landing): copy on the left; a long-form watch page in a macOS window and the
@@ -1247,8 +1218,7 @@
 }
 /* Closing section: the hero's mesh again, faded on every side so it melts into the page (no box, no edge). */
 .cl-hero-mesh--closing { top: 0; bottom: 0; -webkit-mask-image: radial-gradient(42% 46% at 50% 58%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%); mask-image: radial-gradient(42% 46% at 50% 58%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%); }
-.cl-hero-mesh--window { -webkit-mask-image: radial-gradient(58% 50% at 50% 66%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 14%, #000 52%, transparent 94%); mask-image: radial-gradient(58% 50% at 50% 66%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 14%, #000 52%, transparent 94%); -webkit-mask-composite: source-in; mask-composite: intersect; }
-.cl-landing-hero--split::after, .cl-landing-hero--window::after { display: none; }
+.cl-landing-hero--split::after { display: none; }
 @media (max-width: 860px) {
   .cl-hero-mesh--split { -webkit-mask-image: radial-gradient(80% 42% at 50% 68%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 14%, #000 52%, transparent 94%); mask-image: radial-gradient(80% 42% at 50% 68%, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 14%, #000 52%, transparent 94%); -webkit-mask-composite: source-in; mask-composite: intersect; }
 }

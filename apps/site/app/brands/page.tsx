@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ButtonLink, MeshGradient } from '@clipers/ui';
-import BrandLiveWindow from '@/components/brand-live-window';
 import CompareTable from '@/components/brand/compare-table';
+import HorizonHero from '@/components/brand/horizon-hero';
 import ControlsBento from '@/components/brand/controls-bento';
 import SolutionCards from '@/components/brand/solution-cards';
 import StartCard, { CONTACT } from '@/components/brand/start-card';
@@ -31,30 +31,7 @@ export default async function BrandsPage() {
 
   return (
     <LandingChrome cta="캠페인 시작하기" path="/brands">
-      <section className="cl-landing-hero cl-landing-hero--window">
-        <div aria-hidden className="cl-hero-mesh cl-hero-mesh--window">
-          <MeshGradient />
-        </div>
-        <h1 className="cl-landing-hero__title">
-          조회수가 난 만큼만,
-          <br />
-          예산을 쓰세요
-        </h1>
-        <p className="cl-landing-hero__lead">
-          크리에이터들이 각자 숏폼을 만들어 올려요.
-          <br />
-          예산은 검증된 조회수에만 쓰여요.
-        </p>
-        <div className="cl-landing-hero__actions">
-          <ButtonLink href={SIGN_UP} size="lg" variant="primary">
-            캠페인 시작하기
-          </ButtonLink>
-          <ButtonLink href="/discover" size="lg" variant="secondary">
-            진행 중인 캠페인 보기
-          </ButtonLink>
-        </div>
-        <BrandLiveWindow />
-      </section>
+      <HorizonHero signUpHref={SIGN_UP} />
 
       <section aria-label="함께 쓰는 플랫폼" className="cl-landing-logos">
         <LogoWall />
