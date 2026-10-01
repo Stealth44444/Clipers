@@ -1512,3 +1512,19 @@
 .cl-faq-more { margin: calc(var(--space-6) * -1) auto var(--space-8); color: var(--color-text-muted); font-size: var(--font-size-3); text-align: center; }
 .cl-faq-more a { color: var(--color-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .cl-clipping__copy > .cl-link { justify-self: start; font-weight: 500; }
+
+/* Terms and privacy (apps/app/app/legal-document.tsx): a single reading column. */
+.cl-legal { display: grid; gap: var(--space-5); width: min(760px, 100% - 32px); margin: 0 auto; padding: var(--space-7) 0 var(--space-9); }
+.cl-legal__logo img { height: 26px; width: auto; }
+.cl-legal h1 { font-size: var(--font-size-7); font-weight: 600; letter-spacing: -0.02em; }
+.cl-legal__body { display: grid; gap: var(--space-3); color: var(--color-text); font-size: var(--font-size-3); line-height: 1.75; }
+.cl-legal__body h2 { margin-top: var(--space-6); font-size: var(--font-size-5); font-weight: 600; }
+.cl-legal__body h3 { margin-top: var(--space-4); font-size: var(--font-size-3); font-weight: 600; }
+.cl-legal__body ol, .cl-legal__body ul { display: grid; gap: var(--space-2); padding-left: 1.4em; }
+.cl-legal__body ol { list-style: decimal; }
+.cl-legal__body ul { list-style: disc; }
+.cl-legal__body li::marker { color: var(--color-text-subtle); }
+.cl-legal__table { overflow-x: auto; border-radius: var(--radius-4); box-shadow: inset 0 0 0 1px var(--gray-a4); }
+.cl-legal__table table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: var(--font-size-2); line-height: 1.6; }
+.cl-legal__table th, .cl-legal__table td { padding: var(--space-3); text-align: left; vertical-align: top; box-shadow: inset 0 -1px 0 var(--gray-a3); }
+.cl-legal__table th { color: var(--color-text-muted); font-weight: 600; white-space: nowrap; }
