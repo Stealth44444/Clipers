@@ -2,12 +2,13 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-// Section title above the creator logo wall: a fixed lead and a phrase that rolls up to the next one.
-// The slot's width follows the active phrase so the centred line never jumps. Reduced motion shows one
-// static sentence; screen readers always get the full sentence.
+// Section title above the creator logo wall: a phrase that rolls up to the next one, then a fixed tail that
+// points at the platform marks below. The slot's width follows the active phrase so the centred line never jumps.
+// Reduced motion shows one static sentence; screen readers always get the full sentence.
 
-const LEAD = 'Clipers에서';
-const PHRASES = ['캠페인에 참여하세요', '영상을 제출하세요', '빠르게 정산받으세요'];
+const PHRASES = ['새 채널이어도', '수익창출 전이어도', '숏폼이 처음이어도'];
+const TAIL = '여기에 올리면 돼요';
+const SENTENCE = `${PHRASES.join(', ')} ${TAIL}`;
 const STEP_MS = 2600;
 
 export default function RotatingHeadline() {
@@ -41,19 +42,10 @@ export default function RotatingHeadline() {
     return () => window.removeEventListener('resize', measure);
   }, [active]);
 
-  if (still) {
-    return (
-      <h2 className="cl-rotator">
-        <span className="cl-rotator__lead">{LEAD}</span> 캠페인에 참여하고, 영상을 제출하고, 빠르게 정산받으세요
-      </h2>
-    );
-  }
+  if (still) return <h2 className="cl-rotator">{SENTENCE}</h2>;
 
   return (
-    <h2 aria-label={`${LEAD} 캠페인에 참여하고, 영상을 제출하고, 빠르게 정산받으세요`} className="cl-rotator" ref={rootRef}>
-      <span aria-hidden className="cl-rotator__lead">
-        {LEAD}
-      </span>{' '}
+    <h2 aria-label={SENTENCE} className="cl-rotator" ref={rootRef}>
       <span aria-hidden className="cl-rotator__slot" style={{ width }}>
         {PHRASES.map((phrase, index) => (
           <span
@@ -67,6 +59,9 @@ export default function RotatingHeadline() {
             {phrase}
           </span>
         ))}
+      </span>{' '}
+      <span aria-hidden className="cl-rotator__tail">
+        {TAIL}
       </span>
     </h2>
   );
