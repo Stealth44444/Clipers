@@ -4,17 +4,20 @@ import CampaignCard from '@/components/campaign-card';
 import JsonLd from '@/components/json-ld';
 import { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import type { MarketCampaign } from '@/lib/campaigns';
-import { faqById } from '@/lib/creator-faq';
-import { CAVEATS, START_STEPS } from '@/lib/guides/common';
+import { ADVERTISER_NOTES, CAVEATS, START_STEPS } from '@/lib/guides/common';
 import { RATE, earningsFor } from '@/lib/guides/facts';
-import { guideBySlug, type Guide } from '@/lib/guides';
+import { guideBySlug, guideFaqs, type Guide } from '@/lib/guides';
 import { siteUrl } from '@/lib/urls';
 
-// One guide, in a calm reading column: the question, a quotable answer, the body, honest caveats, how to start,
-// open campaigns, the FAQ and related guides. Everything comes from the guide data; no widgets.
+// One guide, in a calm reading column: the question, a quotable answer, the body, then a short closing block for its
+// audience (creators: caveats, how to start, open campaigns; advertisers: two notes and a contact button), the FAQ,
+// a link to the other audience's matching guide and related guides. Everything comes from the guide data; no widgets.
 
 export default function GuideArticle({ guide, campaigns }: { guide: Guide; campaigns: MarketCampaign[] }) {
   const path = `/guides/${guide.slug}`;
+  const advertiser = guide.audience === 'advertiser';
+  const counterpart = guide.counterpart ? guideBySlug(guide.counterpart) : undefined;
+  const contactHref = `/contact?from=${path}${guide.industry ? `&industry=${encodeURIComponent(guide.industry)}` : ''}`;
   return (
     <>
       <article className="cl-guide">
@@ -78,34 +81,60 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
           </section>
         ))}
 
-        <section className="cl-guide__section">
-          <h2>알아둘 점</h2>
-          <ul>
-            {CAVEATS.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
+        {advertiser ? (
+          <section className="cl-guide__section">
+            <h2>시작하기 전에</h2>
+            <ul>
+              {ADVERTISER_NOTES.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <div className="cl-guide__actions">
+              <ButtonLink href={SIGN_UP} size="lg" variant="primary">
+                캠페인 시작하기
+              </ButtonLink>
+              <ButtonLink href={contactHref} size="lg" variant="secondary">
+                상담 문의
+              </ButtonLink>
+            </div>
+          </section>
+        ) : (
+          <>
+            <section className="cl-guide__section">
+              <h2>알아둘 점</h2>
+              <ul>
+                {CAVEATS.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+            <section className="cl-guide__section">
+              <h2>시작하는 법</h2>
+              <ul>
+                {START_STEPS.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ul>
+              <div className="cl-guide__actions">
+                <ButtonLink href={SIGN_UP} size="lg" variant="primary">
+                  무료로 시작하기
+                </ButtonLink>
+                <ButtonLink href="/discover" size="lg" variant="secondary">
+                  캠페인 둘러보기
+                </ButtonLink>
+              </div>
+            </section>
+          </>
+        )}
 
-        <section className="cl-guide__section">
-          <h2>시작하는 법</h2>
-          <ol>
-            {START_STEPS.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ol>
-          <div className="cl-guide__actions">
-            <ButtonLink href={SIGN_UP} size="lg" variant="primary">
-              무료로 시작하기
-            </ButtonLink>
-            <ButtonLink href="/discover" size="lg" variant="secondary">
-              캠페인 둘러보기
-            </ButtonLink>
-          </div>
-        </section>
+        {counterpart && (
+          <p className="cl-guide__counterpart">
+            {advertiser ? '크리에이터라면' : '광고주라면'} <Link href={`/guides/${counterpart.slug}`}>{counterpart.title}</Link>
+          </p>
+        )}
       </article>
 
-      {campaigns.length > 0 && (
+      {!advertiser && campaigns.length > 0 && (
         <section aria-labelledby="guide-campaigns" className="cl-guide-campaigns">
           <h2 id="guide-campaigns">지금 참여할 수 있는 캠페인</h2>
           <div className="cl-guide-campaigns__grid">
@@ -116,7 +145,7 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
         </section>
       )}
 
-      <LandingFaq compact items={guide.faqIds.map(faqById)} path={path} />
+      <LandingFaq compact items={guideFaqs(guide)} path={path} />
 
       <nav aria-labelledby="guide-related" className="cl-guide cl-guide__related">
         <h2 id="guide-related">함께 보면 좋은 가이드</h2>

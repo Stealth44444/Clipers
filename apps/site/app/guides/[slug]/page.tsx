@@ -26,9 +26,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
   const guide = guideBySlug((await params).slug);
   if (!guide) notFound();
-  const campaigns = (await loadLiveCampaigns()).sort((left, right) => right.remainingBudget - left.remainingBudget).slice(0, 3);
+  const advertiser = guide.audience === 'advertiser';
+  const campaigns = advertiser ? [] : (await loadLiveCampaigns()).sort((left, right) => right.remainingBudget - left.remainingBudget).slice(0, 3);
   return (
-    <LandingChrome cta="무료로 시작하기" path="/guides">
+    <LandingChrome cta={advertiser ? '캠페인 시작하기' : '무료로 시작하기'} path={advertiser ? '/brands' : '/guides'}>
       <GuideArticle campaigns={campaigns} guide={guide} />
     </LandingChrome>
   );
