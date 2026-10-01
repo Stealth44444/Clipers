@@ -48,7 +48,7 @@ export default function LandingChrome({ path, cta, children }: { path: string; c
         </nav>
         <p>© 2026 Clipers</p>
         <p className="cl-landing-footer__company">
-          대표 {COMPANY.representative} · 사업자등록번호 {COMPANY.registrationNumber} · {COMPANY.address}
+          {COMPANY.legalName} · 대표 {COMPANY.representative} · 사업자등록번호 {COMPANY.registrationNumber} · {COMPANY.address}
         </p>
       </footer>
     </div>

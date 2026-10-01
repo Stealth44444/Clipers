@@ -22,6 +22,7 @@ const ORGANIZATION = {
       '@type': 'Organization',
       '@id': `${siteUrl('/')}#organization`,
       name: 'Clipers',
+      legalName: COMPANY.legalName,
       url: siteUrl('/'),
       logo: siteUrl('/logo/clipers-mark.svg'),
       description: '검증된 조회수 기반으로 정산하는 국내 숏폼 클리핑 캠페인 플랫폼',
