@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Captions, Heart, Maximize, MessageCircle, Music2, Pause, Plus, Send, Settings, SkipForward, Volume2 } from 'lucide-react';
-import { Avatar, DeviceFrame, PlatformIcon, StatusDot, formatKRW } from '@clipers/ui';
+import { Avatar, DeviceFrame, PlatformIcon, formatKRW } from '@clipers/ui';
 
 // Clipping explainer visual. Left: a long video in a macOS window, dressed as a long-form watch page (player controls,
 // a progress bar with the clipped stretch marked, title and channel). Right: that stretch edited into a short on a
@@ -195,7 +195,6 @@ export default function ClippingStage({ rate }: { rate: number }) {
         </DeviceFrame>
       </div>
       <div aria-hidden className="cl-clip-stage__result">
-        <StatusDot tone="green">검수 통과</StatusDot>
         <p className="cl-clip-stage__views">
           <PlatformIcon platform="naver_clip" size={16} />
           조회수 {compact(views)}

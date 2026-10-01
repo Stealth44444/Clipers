@@ -1187,12 +1187,11 @@
 
 /* ---------- clipping explainer (creator landing): copy on the left; a long-form watch page in a macOS window and the
    clipped stretch as a captioned short on the right. The window stretches to the phone's height so their edges line up. ---------- */
-.cl-clipping { display: grid; grid-template-columns: minmax(0, 320px) auto; align-items: center; justify-content: space-between; gap: 56px; }
-.cl-clipping__copy { display: grid; gap: var(--space-4); }
-.cl-clipping__title { font-size: clamp(30px, 4.4vw, 44px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
-.cl-clipping__lead { color: var(--color-text-muted); font-size: var(--font-size-4); line-height: 1.65; }
-.cl-clipping__note { color: var(--color-text-muted); font-size: var(--font-size-3); line-height: 1.65; }
-.cl-clip-stage { display: grid; grid-template-columns: 520px 220px; grid-template-areas: "window phone" ". result"; gap: var(--space-4) 32px; }
+.cl-clipping { display: grid; grid-template-columns: minmax(0, 360px) auto; align-items: center; justify-content: space-between; gap: 48px; }
+.cl-clipping__copy { display: grid; gap: var(--space-5); }
+.cl-clipping__title { margin-bottom: var(--space-1); font-size: clamp(30px, 4.4vw, 44px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; }
+.cl-clipping__lead { color: var(--color-text-muted); font-size: 17px; letter-spacing: -0.01em; line-height: 1.75; text-wrap: pretty; }
+.cl-clip-stage { display: grid; grid-template-columns: 500px 220px; grid-template-areas: "window phone" ". result"; gap: var(--space-4) 32px; }
 .cl-clip-window { display: flex; flex-direction: column; grid-area: window; width: 100%; }
 .cl-clip-window__body { display: flex; flex: 1; flex-direction: column; gap: var(--space-3); min-height: 0; padding: var(--space-3); }
 .cl-clip-window__player { position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 10px; background: #000; }
@@ -1201,9 +1200,9 @@
 
 /* Long-form player chrome: a progress bar with the clipped stretch marked, then the control row. */
 .cl-yt { position: absolute; right: 0; bottom: 0; left: 0; display: grid; gap: 6px; padding: 28px 12px 8px; background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.62)); color: #fff; }
-.cl-yt__bar { position: relative; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.28); }
+.cl-yt__bar { position: relative; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.28); }
 .cl-yt__played { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 2px; background: #ff0033; }
-.cl-yt__range { position: absolute; top: -2px; bottom: -2px; border-radius: 2px; background: var(--brand-9); box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.35); }
+.cl-yt__range { position: absolute; top: 0; bottom: 0; border-radius: 2px; background: var(--brand-9); }
 .cl-yt__scrubber { position: absolute; top: 50%; width: 11px; height: 11px; border-radius: 50%; background: #ff0033; transform: translate(-50%, -50%); }
 .cl-yt__controls { display: flex; align-items: center; gap: 14px; height: 22px; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35)); }
 .cl-yt__time { font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; }
