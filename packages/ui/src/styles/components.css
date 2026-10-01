@@ -29,7 +29,8 @@
 
 .cl-shell__body { display: grid; grid-template-columns: 264px minmax(0, 1fr); }
 .cl-shell__main { min-width: 0; }
-.cl-menu-toggle { display: none; }
+/* Scoped to the top bar so it outranks .cl-icon-button, which is declared later. */
+.cl-topbar .cl-menu-toggle { display: none; }
 .cl-scrim { display: none; }
 
 .cl-sidebar {
@@ -73,7 +74,7 @@
 @media (max-width: 768px) {
   :root { --logo-height: 28px; }
   .cl-topbar { padding: 0 var(--space-4); }
-  .cl-menu-toggle { display: inline-flex; }
+  .cl-topbar .cl-menu-toggle { display: inline-flex; }
   .cl-shell__body { grid-template-columns: minmax(0, 1fr); }
   .cl-shell__nav .cl-sidebar {
     position: fixed;
@@ -662,3 +663,5 @@
   .cl-editor__body { width: min(100% - 32px, 1120px); padding-top: var(--space-5); }
   .cl-form-row { grid-template-columns: minmax(0, 1fr); }
 }
+.cl-count-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-full); background: var(--amber-a3); color: var(--amber-11); font-size: var(--font-size-1); font-weight: 600; font-variant-numeric: tabular-nums; }
+.cl-clamp { display: -webkit-box; max-width: 320px; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
