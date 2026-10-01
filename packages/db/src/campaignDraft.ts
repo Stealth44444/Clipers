@@ -4,7 +4,8 @@ export const CAMPAIGN_TITLE_MAX = 80;
 export const CAMPAIGN_DESCRIPTION_MAX = 2000;
 export const CAMPAIGN_REQUIREMENTS_MAX = 2000;
 export const MAX_REFERENCE_LINKS = 10;
-export const REVIEW_SLA_OPTIONS = [24, 48, 72] as const;
+// The creator page promises review within 48 hours, so brands cannot pick longer.
+export const REVIEW_SLA_OPTIONS = [24, 48] as const;
 
 export type CampaignDraft = {
   title: string;

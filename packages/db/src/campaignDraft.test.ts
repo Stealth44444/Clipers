@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET } from './pricing';
 import {
+  REVIEW_SLA_OPTIONS,
   campaignDraftErrors,
   campaignDraftProgress,
   clipCapToCreatorPayout,
@@ -79,5 +80,12 @@ describe('campaignDraftProgress', () => {
     expect(campaignDraftProgress(emptyCampaignDraft())).toEqual({ done: 0, total: 6 });
     expect(campaignDraftProgress(valid)).toEqual({ done: 6, total: 6 });
     expect(campaignDraftProgress({ ...emptyCampaignDraft(), title: '이름', platforms: ['tiktok'] })).toEqual({ done: 1, total: 6 });
+  });
+});
+
+describe('REVIEW_SLA_OPTIONS', () => {
+  it('caps review at 48 hours, which the creator page promises', () => {
+    expect(REVIEW_SLA_OPTIONS).toEqual([24, 48]);
+    expect(REVIEW_SLA_OPTIONS).toContain(Number(emptyCampaignDraft().reviewSlaHours));
   });
 });

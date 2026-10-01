@@ -119,7 +119,7 @@ export default function BrandsPage() {
                   <li>
                     <span className="cl-shot__row-text">
                       <span>영상 검수</span>
-                      <small>올라온 지 72시간 안에</small>
+                      <small>올라온 지 48시간 안에</small>
                     </span>
                     <StatusDot pulse tone="yellow">
                       3개 검수 중
@@ -343,7 +343,7 @@ export default function BrandsPage() {
               <dd>숏폼 플랫폼</dd>
             </div>
             <div>
-              <dt>24~72시간</dt>
+              <dt>48시간</dt>
               <dd>안에 영상 검수</dd>
             </div>
           </dl>
