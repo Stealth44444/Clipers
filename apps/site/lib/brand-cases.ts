@@ -1,5 +1,13 @@
 import type { ShowcaseKind, ShowcaseVideo } from '@/lib/youtube-showcase';
 
+/** The site's own short-form clips (public/media/clips), used where a real YouTube thumbnail is missing. */
+export const CLIP_POSTERS = {
+  beauty: '/media/clips/beauty.jpg',
+  drive: '/media/clips/drive.jpg',
+  pet: '/media/clips/pet.jpg',
+  sky: '/media/clips/sky.jpg',
+} as const;
+
 // The brand page's use cases, each shown as a campaign in the brand app's 제출 영상 screen. Brands, creators, counts
 // and views are illustrative and fixed. No budget amounts here: next to views they would reveal the brand rate.
 
@@ -16,6 +24,8 @@ export type BrandCase = {
   counts: { all: number; pending: number; approved: number };
   /** Which real YouTube showcase videos (lib/youtube-showcase) give the tiles their thumbnails. */
   showcase: ShowcaseKind;
+  /** Clip posters that fit the case, cycled to fill tiles the showcase videos leave empty. */
+  posters: string[];
   clips: BrandCaseClip[];
 };
 
@@ -29,6 +39,7 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '데일리 뷰티',
     counts: { all: 128, pending: 6, approved: 122 },
     showcase: 'ugc',
+    posters: [CLIP_POSTERS.beauty, CLIP_POSTERS.pet],
     clips: [
       { creator: '민지', platform: 'instagram_reels', views: 82_000 },
       { creator: '도윤', platform: 'youtube_shorts', views: 31_000 },
@@ -46,6 +57,7 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '데모 레코즈',
     counts: { all: 221, pending: 8, approved: 213 },
     showcase: 'music',
+    posters: [CLIP_POSTERS.sky, CLIP_POSTERS.beauty],
     clips: [
       { creator: '하루', platform: 'tiktok', views: 213_000 },
       { creator: '민지', platform: 'instagram_reels', views: 98_000 },
@@ -63,6 +75,7 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '스튜디오 하루',
     counts: { all: 39, pending: 2, approved: 37 },
     showcase: 'clipping',
+    posters: [CLIP_POSTERS.drive, CLIP_POSTERS.sky],
     clips: [
       { creator: '편집왕', platform: 'youtube_shorts', views: 310_000 },
       { creator: '클립데일리', platform: 'tiktok', views: 186_000 },
@@ -73,12 +86,9 @@ export const BRAND_CASES: BrandCase[] = [
   },
 ];
 
-/** The site's own short-form clips (public/media/clips), used where a real YouTube thumbnail is missing. */
-export const CLIP_POSTERS = ['/media/clips/beauty.jpg', '/media/clips/drive.jpg', '/media/clips/pet.jpg', '/media/clips/sky.jpg'] as const;
-
-/** One image per tile: the kind's real YouTube thumbnails first, then clip posters shifted by `offset` so cases differ. */
-export function caseThumbnails(videos: ShowcaseVideo[] | undefined, count: number, offset: number): string[] {
+/** One image per tile: the kind's real YouTube thumbnails first, then the case's posters in turn. */
+export function caseThumbnails(videos: ShowcaseVideo[] | undefined, count: number, posters: readonly string[]): string[] {
   const real = (videos ?? []).map((video) => video.thumbnail);
-  const posters = Array.from({ length: count }, (_, index) => CLIP_POSTERS[(index + offset) % CLIP_POSTERS.length]);
-  return [...real, ...posters].slice(0, count);
+  const fill = Array.from({ length: count }, (_, index) => posters[index % posters.length]);
+  return [...real, ...fill].slice(0, count);
 }

@@ -23,23 +23,27 @@ describe('BRAND_CASES', () => {
     }
   });
 
-  it('draws thumbnails from the matching showcase kind', () => {
+  it('draws thumbnails from the matching showcase kind, with fitting fallback posters', () => {
     expect(BRAND_CASES.map((item) => item.showcase)).toEqual(['ugc', 'music', 'clipping']);
+    expect(BRAND_CASES[0].posters[0]).toBe(CLIP_POSTERS.beauty);
+    expect(BRAND_CASES[2].posters[0]).toBe(CLIP_POSTERS.drive);
   });
 });
 
 describe('caseThumbnails', () => {
-  it('puts real thumbnails first and fills the rest with clip posters', () => {
-    expect(caseThumbnails([video('a'), video('b')], 5, 0)).toEqual([
+  const posters = [CLIP_POSTERS.beauty, CLIP_POSTERS.pet];
+
+  it('puts real thumbnails first and fills the rest with the case posters', () => {
+    expect(caseThumbnails([video('a'), video('b')], 5, posters)).toEqual([
       'https://i.ytimg.com/vi/a/maxresdefault.jpg',
       'https://i.ytimg.com/vi/b/maxresdefault.jpg',
-      CLIP_POSTERS[0],
-      CLIP_POSTERS[1],
-      CLIP_POSTERS[2],
+      CLIP_POSTERS.beauty,
+      CLIP_POSTERS.pet,
+      CLIP_POSTERS.beauty,
     ]);
   });
 
-  it('uses posters only without videos, shifted per case', () => {
-    expect(caseThumbnails(undefined, 5, 1)).toEqual([CLIP_POSTERS[1], CLIP_POSTERS[2], CLIP_POSTERS[3], CLIP_POSTERS[0], CLIP_POSTERS[1]]);
+  it('uses only the case posters without videos', () => {
+    expect(caseThumbnails(undefined, 3, posters)).toEqual([CLIP_POSTERS.beauty, CLIP_POSTERS.pet, CLIP_POSTERS.beauty]);
   });
 });
