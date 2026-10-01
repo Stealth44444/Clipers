@@ -15,8 +15,17 @@ export default function GuidesPage() {
       <div className="cl-guides">
         <h1>Clipers 가이드</h1>
         <p className="cl-guides__lead">크리에이터와 광고주가 자주 묻는 질문에 답했어요.</p>
+        {/* Jump links instead of tabs: every guide stays in the page for people and crawlers alike. */}
+        <nav aria-label="대상별 가이드" className="cl-guides__jump">
+          {GUIDE_AUDIENCES.map((audience) => (
+            <a href={`#${audience.id}`} key={audience.id}>
+              <strong>{audience.label} 가이드</strong>
+              <span>{GUIDES.filter((guide) => guide.audience === audience.id).length}개</span>
+            </a>
+          ))}
+        </nav>
         {GUIDE_AUDIENCES.map((audience) => (
-          <div className="cl-guides__audience" key={audience.id}>
+          <div className="cl-guides__audience" id={audience.id} key={audience.id}>
             <h2>{audience.label}</h2>
             {GUIDE_GROUPS.filter((group) => group.audience === audience.id).map((group) => (
               <section className="cl-guides__group" key={group.id}>
