@@ -16,7 +16,7 @@
 .cl-bdemo .cl-input,
 .cl-bdemo .cl-select { height: 38px; font-size: 13px; }
 .cl-bdemo .cl-textarea { min-height: 84px; font-size: 13px; resize: none; }
-.cl-bdemo .cl-option-grid { gap: 8px; }
+.cl-bdemo .cl-option-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .cl-bdemo .cl-option-card { gap: 2px; padding: 10px 12px; }
 .cl-bdemo .cl-option-card__icon { width: 28px; height: 28px; }
 .cl-bdemo .cl-chip-group { gap: 6px; }
