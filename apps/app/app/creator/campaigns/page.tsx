@@ -1,4 +1,4 @@
-import { MegaphoneIcon } from '@phosphor-icons/react/ssr';
+import { Megaphone } from 'lucide-react';
 import { platformLabels } from '@clipers/db';
 import {
   Badge,
@@ -81,7 +81,7 @@ export default async function CreatorCampaignsPage() {
                 return (
                   <ListRow
                     description={campaign ? `${campaign.category} · ${platformLabels(campaign.allowed_platforms)}` : undefined}
-                    icon={<MegaphoneIcon size={16} />}
+                    icon={<Megaphone size={16} />}
                     key={application.id}
                     title={campaign?.title ?? '캠페인'}
                     tone={status.tone}
@@ -139,7 +139,7 @@ export default async function CreatorCampaignsPage() {
                 description={
                   campaigns.length > 0 ? '지금 열린 캠페인에는 모두 지원했어요. 새 캠페인이 열리면 여기에 보여요.' : '새 캠페인이 열리면 여기에 보여요.'
                 }
-                icon={<MegaphoneIcon size={24} />}
+                icon={<Megaphone size={24} />}
                 title="지원할 수 있는 캠페인이 없어요"
                 tone="neutral"
               />

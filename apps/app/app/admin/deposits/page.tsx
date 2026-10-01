@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BankIcon } from '@phosphor-icons/react/ssr';
+import { Landmark } from 'lucide-react';
 import { Card, DataTable, EmptyState, Page, PageHeader, formatKRW } from '@clipers/ui';
 import { getSession } from '@/lib/session';
 import { ConfirmDepositAction } from '../review-actions';
@@ -48,7 +48,7 @@ export default async function AdminDepositsPage() {
         />
       ) : (
         <Card>
-          <EmptyState description="브랜드가 입금을 알리면 여기에 보여요." icon={<BankIcon size={24} />} title="확인할 입금이 없어요" tone="neutral" />
+          <EmptyState description="브랜드가 입금을 알리면 여기에 보여요." icon={<Landmark size={24} />} title="확인할 입금이 없어요" tone="neutral" />
         </Card>
       )}
     </Page>

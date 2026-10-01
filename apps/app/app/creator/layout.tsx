@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { WalletIcon } from '@phosphor-icons/react/ssr';
+import { Wallet } from 'lucide-react';
 import { formatKRW } from '@clipers/ui';
 import { getSession } from '@/lib/session';
 import WorkspaceShell from '../workspace-shell';
@@ -20,7 +20,7 @@ export default async function CreatorLayout({ children }: { children: ReactNode 
       role="creator"
       topbarExtra={
         <Link aria-label={`받을 금액 ${formatKRW(balance)}`} className="cl-balance" href="/creator/earnings">
-          <WalletIcon size={15} />
+          <Wallet size={15} />
           {formatKRW(balance)}
         </Link>
       }

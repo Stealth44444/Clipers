@@ -1,7 +1,6 @@
 import type { ElementType, ReactNode } from 'react';
 
-/** `activeIcon` (e.g. the filled weight) replaces `icon` on the current page, like iOS tab bars. */
-export type SidebarItem = { href: string; label: string; icon?: ReactNode; activeIcon?: ReactNode; badge?: ReactNode; exact?: boolean };
+export type SidebarItem = { href: string; label: string; icon?: ReactNode; badge?: ReactNode; exact?: boolean };
 export type SidebarSection = { title?: string; items: SidebarItem[] };
 
 function isActive(item: SidebarItem, activePath: string): boolean {
@@ -22,16 +21,18 @@ export function Sidebar({ header, sections, footer, activePath = '', LinkCompone
       {sections.map((section, index) => (
         <div className="cl-sidebar__section" key={section.title ?? index}>
           {section.title && <p className="cl-sidebar__section-title">{section.title}</p>}
-          {section.items.map((item) => {
-            const active = isActive(item, activePath);
-            return (
-              <LinkComponent aria-current={active ? 'page' : undefined} className="cl-sidebar__item" href={item.href} key={item.href}>
-                {active ? (item.activeIcon ?? item.icon) : item.icon}
-                {item.label}
-                {item.badge && <span className="cl-sidebar__badge">{item.badge}</span>}
-              </LinkComponent>
-            );
-          })}
+          {section.items.map((item) => (
+            <LinkComponent
+              aria-current={isActive(item, activePath) ? 'page' : undefined}
+              className="cl-sidebar__item"
+              href={item.href}
+              key={item.href}
+            >
+              {item.icon}
+              {item.label}
+              {item.badge && <span className="cl-sidebar__badge">{item.badge}</span>}
+            </LinkComponent>
+          ))}
         </div>
       ))}
       {footer && <div className="cl-sidebar__footer">{footer}</div>}

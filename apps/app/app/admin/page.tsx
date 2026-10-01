@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BankIcon, ClipboardTextIcon, ScalesIcon, UserCheckIcon } from '@phosphor-icons/react/ssr';
+import { ClipboardCheck, Landmark, MessageSquareWarning, UserCheck } from 'lucide-react';
 import { campaignEconomics, campaignPricing, getViewSpikeFlags } from '@clipers/db';
 import { Badge, DataTable, Page, PageHeader, ProgressBar, SectionHeader, Stack, StatCard, StatGrid, formatKRW } from '@clipers/ui';
 import { getAdminQueueCounts } from '@/lib/admin-data';
@@ -78,10 +78,10 @@ export default async function AdminOverviewPage() {
         )}
 
         <StatGrid>
-          <StatCard icon={<BankIcon {...ICON} />} label="입금 확인 대기" tone="amber" value={counts.deposits} />
-          <StatCard icon={<UserCheckIcon {...ICON} />} label="검토할 지원서" tone="sky" value={counts.applications} />
-          <StatCard icon={<ClipboardTextIcon {...ICON} />} label="검수할 클립" tone="violet" value={counts.clips} />
-          <StatCard icon={<ScalesIcon {...ICON} />} label="조회수 신고·이의제기" tone="tomato" value={counts.viewReports + counts.disputes} />
+          <StatCard icon={<Landmark {...ICON} />} label="입금 확인 대기" tone="amber" value={counts.deposits} />
+          <StatCard icon={<UserCheck {...ICON} />} label="검토할 지원서" tone="sky" value={counts.applications} />
+          <StatCard icon={<ClipboardCheck {...ICON} />} label="검수할 클립" tone="violet" value={counts.clips} />
+          <StatCard icon={<MessageSquareWarning {...ICON} />} label="조회수 신고·이의제기" tone="tomato" value={counts.viewReports + counts.disputes} />
         </StatGrid>
 
         <section>

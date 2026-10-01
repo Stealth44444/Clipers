@@ -34,7 +34,7 @@
 - 오버레이: `Dialog`(네이티브 `<dialog>` 기반)
 - 레이아웃: `AppShell`(상단바 + 사이드바 + 콘텐츠), `Sidebar`(섹션 그룹·활성 항목·배지), `PageHeader`(제목 + 우측 사용자 pill), `UserMenu`(로그아웃 포함), `StickyFooter`(검증 메시지 + 액션)
 
-아이콘은 **Phosphor Icons**(`@phosphor-icons/react/ssr`, MIT — SF Symbols는 라이선스상 웹 사용 불가라 가장 가까운 대안)를 쓴다. 기본은 regular, 사이드바 현재 메뉴는 fill(iOS 탭바 방식). 플랫폼 로고는 브랜드 제공 PNG(`packages/ui/brand/platforms`). 파일 출처 표기: 이식한 토큰 파일 상단에 Frosted UI MIT 저작권 고지를 남긴다.
+아이콘은 `lucide-react`(MIT)를 사용한다. 파일 출처 표기: 이식한 토큰 파일 상단에 Frosted UI MIT 저작권 고지를 남긴다.
 
 **타이포·카피 규칙 (Whop 기준, 위반 금지)**
 - 대문자 전용 라벨(`text-transform: uppercase`), 넓은 자간, 굵은 브랜드색 "아이브로(eyebrow)" 라벨을 쓰지 않는다. AI 템플릿처럼 보이는 가장 흔한 패턴이다.

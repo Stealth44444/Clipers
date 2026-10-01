@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ArrowSquareOutIcon, FilmStripIcon } from '@phosphor-icons/react/ssr';
+import { ExternalLink, Film } from 'lucide-react';
 import { countByStatus, extractYouTubeVideoId, platformLabel } from '@clipers/db';
 import { Badge, Card, DataTable, EmptyState, Tabs, formatCompactNumber, type Column } from '@clipers/ui';
 import { CLIP_STATUS, statusDisplay } from '@/lib/status';
@@ -35,7 +35,7 @@ export default function SubmissionsView({ rows, creatorId }: { rows: SubmissionR
       <Card>
         <EmptyState
           description="승인된 캠페인에서 영상 링크를 제출하면 여기에서 검수 상태를 볼 수 있어요."
-          icon={<FilmStripIcon size={24} />}
+          icon={<Film size={24} />}
           title="아직 제출한 클립이 없어요"
         />
       </Card>
@@ -76,7 +76,7 @@ export default function SubmissionsView({ rows, creatorId }: { rows: SubmissionR
       align: 'right',
       render: (row) => (
         <a aria-label="영상 열기" className="cl-icon-button" href={row.url} rel="noreferrer" target="_blank">
-          <ArrowSquareOutIcon size={16} />
+          <ExternalLink size={16} />
         </a>
       ),
     },

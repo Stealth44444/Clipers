@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon, ArrowsOutIcon, CheckIcon, LinkIcon } from '@phosphor-icons/react/ssr';
+import { ArrowLeft, Check, Expand, Link2 } from 'lucide-react';
 
 /** Campaign detail opened over the marketplace grid (intercepted route). Closing returns to the grid. */
 export default function CampaignSheet({ campaignId, children }: { campaignId: string; children: ReactNode }) {
@@ -39,14 +39,14 @@ export default function CampaignSheet({ campaignId, children }: { campaignId: st
     >
       <div className="cl-sheet__bar">
         <button aria-label="닫기" className="cl-float-button" onClick={close} type="button">
-          <ArrowLeftIcon size={18} />
+          <ArrowLeft size={18} />
         </button>
         <div className="cl-inline">
           <button aria-label="전체 화면으로 보기" className="cl-float-button" onClick={() => window.location.assign(fullPageUrl)} type="button">
-            <ArrowsOutIcon size={16} />
+            <Expand size={16} />
           </button>
           <button aria-label={copied ? '복사했어요' : '링크 복사'} className="cl-float-button" onClick={() => void copyLink()} type="button">
-            {copied ? <CheckIcon size={16} /> : <LinkIcon size={16} />}
+            {copied ? <Check size={16} /> : <Link2 size={16} />}
           </button>
         </div>
       </div>

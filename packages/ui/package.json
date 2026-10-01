@@ -14,7 +14,7 @@
     "vitest": "^2.1.0"
   },
   "dependencies": {
-    "@phosphor-icons/react": "^2.1.10"
+    "lucide-react": "^1.49.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"

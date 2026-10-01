@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ImageIcon } from '@phosphor-icons/react/ssr';
+import { ImageIcon } from 'lucide-react';
 
 export function MediaCard({ image, title, meta, children, footer }: {
   image?: string | null;

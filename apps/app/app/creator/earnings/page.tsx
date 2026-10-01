@@ -1,4 +1,4 @@
-import { CalendarDotsIcon, ClockIcon, MoneyIcon, WalletIcon } from '@phosphor-icons/react/ssr';
+import { Banknote, CalendarDays, Clock, Wallet } from 'lucide-react';
 import { settlementPeriodLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
@@ -45,10 +45,10 @@ export default async function CreatorEarningsPage() {
       <PageHeader description="검수를 통과한 클립은 조회수 1,000회부터 매주 정산돼요. 금액은 원천징수 전 기준이에요." title="수익" />
       <Stack>
         <StatGrid>
-          <StatCard highlight icon={<WalletIcon {...ICON} />} label="받을 금액" tone="brand" value={formatKRW(summary.unpaid)} />
-          <StatCard icon={<ClockIcon {...ICON} />} label="지난주 정산액" tone="sky" value={formatKRW(summary.lastWeek)} />
-          <StatCard icon={<CalendarDotsIcon {...ICON} />} label="이번 달 정산액" tone="violet" value={formatKRW(summary.thisMonth)} />
-          <StatCard icon={<MoneyIcon {...ICON} />} label="누적 정산액" tone="amber" value={formatKRW(summary.total)} />
+          <StatCard highlight icon={<Wallet {...ICON} />} label="받을 금액" tone="brand" value={formatKRW(summary.unpaid)} />
+          <StatCard icon={<Clock {...ICON} />} label="지난주 정산액" tone="sky" value={formatKRW(summary.lastWeek)} />
+          <StatCard icon={<CalendarDays {...ICON} />} label="이번 달 정산액" tone="violet" value={formatKRW(summary.thisMonth)} />
+          <StatCard icon={<Banknote {...ICON} />} label="누적 정산액" tone="amber" value={formatKRW(summary.total)} />
         </StatGrid>
 
         <Card description="정산 대기 건은 지급 요청을 보내면 운영팀이 확인 후 지급해요." title="지급 단계">
@@ -109,7 +109,7 @@ export default async function CreatorEarningsPage() {
             <Card>
               <EmptyState
                 description="승인된 클립의 조회수가 쌓이면 다음 정산부터 여기에 표시돼요."
-                icon={<WalletIcon size={24} />}
+                icon={<Wallet size={24} />}
                 title="아직 정산 내역이 없어요"
                 tone="neutral"
               />

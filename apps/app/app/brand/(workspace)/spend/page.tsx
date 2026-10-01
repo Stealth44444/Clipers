@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CurrencyKrwIcon, ReceiptIcon, WalletIcon } from '@phosphor-icons/react/ssr';
+import { CircleDollarSign, Receipt, Wallet } from 'lucide-react';
 import { Card, DataTable, EmptyState, Page, PageHeader, Stack, StatCard, StatGrid, formatCompactNumber, formatKRW } from '@clipers/ui';
 import { getBrandCampaigns } from '@/lib/brand-data';
 
@@ -21,9 +21,9 @@ export default async function BrandSpendPage() {
       <PageHeader description="예산은 운영팀 검수를 통과한 클립의 검증 조회수만큼만 쓰여요." title="예산 사용 내역" />
       <Stack>
         <StatGrid>
-          <StatCard icon={<WalletIcon {...ICON} />} label="입금한 예산" tone="sky" value={formatKRW(totals.budget)} />
-          <StatCard highlight icon={<ReceiptIcon {...ICON} />} label="사용한 예산" tone="brand" value={formatKRW(totals.spent)} />
-          <StatCard icon={<CurrencyKrwIcon {...ICON} />} label="남은 예산" tone="violet" value={formatKRW(totals.remaining)} />
+          <StatCard icon={<Wallet {...ICON} />} label="입금한 예산" tone="sky" value={formatKRW(totals.budget)} />
+          <StatCard highlight icon={<Receipt {...ICON} />} label="사용한 예산" tone="brand" value={formatKRW(totals.spent)} />
+          <StatCard icon={<CircleDollarSign {...ICON} />} label="남은 예산" tone="violet" value={formatKRW(totals.remaining)} />
         </StatGrid>
         {campaigns.length > 0 ? (
           <DataTable
@@ -56,7 +56,7 @@ export default async function BrandSpendPage() {
           <Card>
             <EmptyState
               description="입금이 확인된 캠페인부터 예산 사용 내역이 쌓여요."
-              icon={<ReceiptIcon size={24} />}
+              icon={<Receipt size={24} />}
               title="아직 사용 내역이 없어요"
               tone="neutral"
             />

@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { CaretLeftIcon, FileTextIcon, FilmSlateIcon, MegaphoneIcon, ScissorsIcon, SealCheckIcon, ShieldIcon, WalletIcon } from '@phosphor-icons/react/ssr';
+import { BadgeCheck, ChevronLeft, Clapperboard, FileText, Megaphone, Scissors, Shield, Wallet } from 'lucide-react';
 import {
   EXPERIENCE_OPTIONS,
   MAX_INTERESTS,
@@ -76,14 +76,14 @@ export default function OnboardingFlow() {
               <OptionCard
                 badge={<Badge tone="brand">추천</Badge>}
                 description="브랜드 캠페인에 숏폼을 올리고, 검증된 조회수만큼 정산받아요."
-                icon={<WalletIcon {...ICON} />}
+                icon={<Wallet {...ICON} />}
                 onSelect={() => update({ role: 'creator' })}
                 selected={answers.role === 'creator'}
                 title="수익 창출 시작하기"
               />
               <OptionCard
                 description="예산을 걸고 크리에이터들의 숏폼으로 조회수를 모아요."
-                icon={<MegaphoneIcon {...ICON} />}
+                icon={<Megaphone {...ICON} />}
                 onSelect={() => update({ role: 'brand' })}
                 selected={answers.role === 'brand'}
                 title="캠페인 개설하기"
@@ -97,19 +97,19 @@ export default function OnboardingFlow() {
             <List>
               <ListRow
                 description="브랜드나 아티스트가 제공한 영상을 짧게 편집해 올려요."
-                icon={<ScissorsIcon {...ICON} />}
+                icon={<Scissors {...ICON} />}
                 title="클리핑"
                 tone="brand"
               />
               <ListRow
                 description="제품이나 서비스를 직접 소개하는 영상을 만들어요."
-                icon={<FilmSlateIcon {...ICON} />}
+                icon={<Clapperboard {...ICON} />}
                 title="UGC"
                 tone="sky"
               />
               <ListRow
                 description="검수를 통과한 클립은 조회수 1,000회부터 정산되고, 그전 조회수도 함께 정산돼요."
-                icon={<SealCheckIcon {...ICON} />}
+                icon={<BadgeCheck {...ICON} />}
                 title="검수와 정산"
                 tone="violet"
               />
@@ -165,13 +165,13 @@ export default function OnboardingFlow() {
             <List>
               <ListRow
                 description={<a className="cl-link" href="/terms" rel="noreferrer" target="_blank">내용 보기</a>}
-                icon={<FileTextIcon {...ICON} />}
+                icon={<FileText {...ICON} />}
                 title="이용약관 동의 (필수)"
                 trailing={<Switch checked={answers.termsAgreed} label="이용약관 동의" onChange={(termsAgreed) => update({ termsAgreed })} />}
               />
               <ListRow
                 description={<a className="cl-link" href="/privacy" rel="noreferrer" target="_blank">내용 보기</a>}
-                icon={<ShieldIcon {...ICON} />}
+                icon={<Shield {...ICON} />}
                 title="개인정보 수집·이용 동의 (필수)"
                 trailing={<Switch checked={answers.privacyAgreed} label="개인정보 수집·이용 동의" onChange={(privacyAgreed) => update({ privacyAgreed })} />}
               />
@@ -183,7 +183,7 @@ export default function OnboardingFlow() {
 
       <footer className="cl-flow__footer">
         {stepIndex > 0 ? (
-          <Button icon={<CaretLeftIcon size={16} />} onClick={() => setStepIndex(stepIndex - 1)} size="lg" variant="secondary">
+          <Button icon={<ChevronLeft size={16} />} onClick={() => setStepIndex(stepIndex - 1)} size="lg" variant="secondary">
             이전
           </Button>
         ) : (

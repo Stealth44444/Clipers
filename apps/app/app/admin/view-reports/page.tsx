@@ -1,4 +1,4 @@
-import { ScrollIcon } from '@phosphor-icons/react/ssr';
+import { ScrollText } from 'lucide-react';
 import { platformLabel } from '@clipers/db';
 import { Card, DataTable, EmptyState, Page, PageHeader } from '@clipers/ui';
 import { getSession } from '@/lib/session';
@@ -70,7 +70,7 @@ export default async function AdminViewReportsPage() {
         />
       ) : (
         <Card>
-          <EmptyState description="크리에이터가 조회수를 신고하면 여기에 보여요." icon={<ScrollIcon size={24} />} title="검토할 신고가 없어요" tone="neutral" />
+          <EmptyState description="크리에이터가 조회수를 신고하면 여기에 보여요." icon={<ScrollText size={24} />} title="검토할 신고가 없어요" tone="neutral" />
         </Card>
       )}
     </Page>

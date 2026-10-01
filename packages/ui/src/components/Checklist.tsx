@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { CheckIcon } from '@phosphor-icons/react/ssr';
+import { Check } from 'lucide-react';
 import { checklistProgress } from '../lib/checklist';
 import { Card } from './Card';
 import { ProgressBar } from './ProgressBar';
@@ -16,7 +16,7 @@ export function Checklist({ title, description, items }: { title: ReactNode; des
       <ol className="cl-checklist__items">
         {items.map((item) => (
           <li className="cl-checklist__item" data-current={item.id === currentId} data-done={item.done} key={item.id}>
-            <span className="cl-checklist__icon">{item.done ? <CheckIcon size={18} weight="bold" /> : item.icon}</span>
+            <span className="cl-checklist__icon">{item.done ? <Check size={18} strokeWidth={3} /> : item.icon}</span>
             <div className="cl-checklist__text">
               <p className="cl-checklist__title">{item.title}</p>
               {item.description && <p className="cl-checklist__description">{item.description}</p>}

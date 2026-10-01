@@ -1,19 +1,19 @@
 import type { ReactNode } from 'react';
-import { EyeSlashIcon, FootprintsIcon, PlantIcon, QuestionIcon, ShuffleIcon, TrendUpIcon, TrophyIcon, UserFocusIcon } from '@phosphor-icons/react/ssr';
+import { CircleHelp, EyeOff, Footprints, Shuffle, Smile, Sprout, TrendingUp, Trophy } from 'lucide-react';
 import type { ExperienceLevel, OnCamera } from '@clipers/db';
 
 const ICON = { size: 18 };
 
 export const ON_CAMERA_ICONS: Record<OnCamera, ReactNode> = {
-  always: <UserFocusIcon {...ICON} />,
-  sometimes: <ShuffleIcon {...ICON} />,
-  never: <EyeSlashIcon {...ICON} />,
-  undecided: <QuestionIcon {...ICON} />,
+  always: <Smile {...ICON} />,
+  sometimes: <Shuffle {...ICON} />,
+  never: <EyeOff {...ICON} />,
+  undecided: <CircleHelp {...ICON} />,
 };
 
 export const EXPERIENCE_ICONS: Record<ExperienceLevel, ReactNode> = {
-  new: <PlantIcon {...ICON} />,
-  beginner: <FootprintsIcon {...ICON} />,
-  intermediate: <TrendUpIcon {...ICON} />,
-  pro: <TrophyIcon {...ICON} />,
+  new: <Sprout {...ICON} />,
+  beginner: <Footprints {...ICON} />,
+  intermediate: <TrendingUp {...ICON} />,
+  pro: <Trophy {...ICON} />,
 };

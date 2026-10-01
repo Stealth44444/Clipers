@@ -1,4 +1,4 @@
-import { ScalesIcon } from '@phosphor-icons/react/ssr';
+import { MessageSquareWarning } from 'lucide-react';
 import { Card, DataTable, EmptyState, Page, PageHeader } from '@clipers/ui';
 import { getSession } from '@/lib/session';
 import { DisputeResolveAction } from '../review-actions';
@@ -68,7 +68,7 @@ export default async function AdminDisputesPage() {
         <Card>
           <EmptyState
             description="반려된 클립에 이의제기가 들어오면 여기에 보여요."
-            icon={<ScalesIcon size={24} />}
+            icon={<MessageSquareWarning size={24} />}
             title="처리할 이의제기가 없어요"
             tone="neutral"
           />

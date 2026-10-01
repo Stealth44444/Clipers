@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { CaretLeftIcon, FilmSlateIcon, PlusIcon, ScissorsIcon, XIcon } from '@phosphor-icons/react/ssr';
+import { ChevronLeft, Clapperboard, Plus, Scissors, X } from 'lucide-react';
 import {
   CAMPAIGN_DESCRIPTION_MAX,
   CAMPAIGN_REQUIREMENTS_MAX,
@@ -42,8 +42,8 @@ import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 const MAX_COVER_BYTES = 5 * 1024 * 1024;
 const CONTENT_TYPES = [
-  { id: 'clipping', label: '클리핑', description: '제공한 영상을 크리에이터가 짧게 편집해 올려요.', icon: <ScissorsIcon size={18} /> },
-  { id: 'ugc', label: 'UGC', description: '크리에이터가 제품·서비스를 직접 소개하는 영상을 만들어요.', icon: <FilmSlateIcon size={18} /> },
+  { id: 'clipping', label: '클리핑', description: '제공한 영상을 크리에이터가 짧게 편집해 올려요.', icon: <Scissors size={18} /> },
+  { id: 'ugc', label: 'UGC', description: '크리에이터가 제품·서비스를 직접 소개하는 영상을 만들어요.', icon: <Clapperboard size={18} /> },
 ] as const;
 
 type Props = {
@@ -153,7 +153,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
     <div className="cl-editor">
       <header className="cl-editor__header">
         <Link className="cl-editor__back" href={campaignId ? `/brand/campaigns/${campaignId}` : '/brand/campaigns'}>
-          <CaretLeftIcon size={18} />
+          <ChevronLeft size={18} />
           {campaignId ? '캠페인' : '캠페인 목록'}
         </Link>
         <h1 className="cl-editor__title">{campaignId ? '캠페인 수정' : '새 캠페인'}</h1>
@@ -309,14 +309,14 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
                     label={`참고 링크 ${index + 1} 삭제`}
                     onClick={() => update({ referenceLinks: draft.referenceLinks.filter((_, position) => position !== index) })}
                   >
-                    <XIcon size={16} />
+                    <X size={16} />
                   </IconButton>
                 )}
               </div>
             ))}
             {draft.referenceLinks.length < MAX_REFERENCE_LINKS && (
               <div>
-                <Button icon={<PlusIcon size={15} />} onClick={() => update({ referenceLinks: [...draft.referenceLinks, ''] })} size="sm" variant="ghost">
+                <Button icon={<Plus size={15} />} onClick={() => update({ referenceLinks: [...draft.referenceLinks, ''] })} size="sm" variant="ghost">
                   링크 추가
                 </Button>
               </div>

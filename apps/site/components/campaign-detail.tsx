@@ -1,4 +1,4 @@
-import { CheckCircleIcon } from '@phosphor-icons/react/ssr';
+import { CircleCheck } from 'lucide-react';
 import { platformLabel } from '@clipers/db';
 import { Avatar, ButtonLink, PlatformIcon, ProgressBar, RankMedal, formatCompactKRW, formatKRW } from '@clipers/ui';
 import type { CampaignDetail as Detail } from '@/lib/campaigns';
@@ -87,7 +87,7 @@ export default function CampaignDetail({ campaign }: { campaign: Detail }) {
                 .filter(Boolean)
                 .map((line) => (
                   <li key={line}>
-                    <CheckCircleIcon aria-hidden size={16} />
+                    <CircleCheck aria-hidden size={16} />
                     {line}
                   </li>
                 ))}
