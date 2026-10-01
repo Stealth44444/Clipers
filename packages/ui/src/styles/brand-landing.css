@@ -22,3 +22,34 @@
 .cl-bdemo .cl-chip { height: 30px; padding: 0 10px; font-size: 12.5px; }
 .cl-bdemo__big { font-size: 26px; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
 .cl-bdemo__big small { color: var(--color-text-subtle); font-size: 14px; font-weight: 400; }
+
+/* Comparison table: the Clipers column raised as one white slab (pricing-table style) */
+.cl-compare { position: relative; width: min(960px, 100%); margin: 0 auto; }
+.cl-compare::before { position: absolute; top: -12px; right: 0; bottom: -12px; left: 61%; border-radius: 20px; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 12px 40px rgba(0, 0, 0, 0.08); content: ""; }
+.cl-compare table { position: relative; width: 100%; border-collapse: collapse; table-layout: fixed; }
+.cl-compare caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cl-compare__col-label { width: 22%; }
+.cl-compare th,
+.cl-compare td { padding: 18px 24px; font-size: 17px; font-weight: 400; line-height: 1.45; text-align: left; vertical-align: top; }
+.cl-compare thead th { padding-bottom: 22px; font-size: 18px; font-weight: 600; }
+.cl-compare thead .cl-compare__us span { display: inline-flex; align-items: center; gap: 10px; }
+.cl-compare tbody th { color: var(--color-text-subtle); font-size: 15px; }
+.cl-compare tbody th,
+.cl-compare tbody td { box-shadow: inset 0 1px 0 var(--gray-a3); }
+.cl-compare .cl-compare__them { color: var(--color-text-muted); }
+.cl-compare tbody .cl-compare__us { font-weight: 500; }
+@media (max-width: 800px) {
+  .cl-compare::before,
+  .cl-compare thead { display: none; }
+  .cl-compare table,
+  .cl-compare tbody,
+  .cl-compare tr,
+  .cl-compare th,
+  .cl-compare td { display: block; }
+  .cl-compare tr { margin-bottom: 12px; padding: 18px; border-radius: 18px; background: var(--color-panel); }
+  .cl-compare tbody th,
+  .cl-compare tbody td { padding: 4px 0; box-shadow: none; }
+  .cl-compare tbody th { margin-bottom: 6px; color: var(--color-text); font-size: 16px; font-weight: 600; }
+  .cl-compare td::before { display: block; color: var(--color-text-subtle); font-size: 12px; font-weight: 400; content: attr(data-label); }
+  .cl-compare td.cl-compare__us { margin-top: 8px; padding: 12px 14px; border-radius: 12px; background: #fff; }
+}
