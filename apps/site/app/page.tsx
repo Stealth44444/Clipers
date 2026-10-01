@@ -4,6 +4,7 @@ import { BadgeCheck, Eye, Gauge, Layers, ScanSearch } from 'lucide-react';
 import { PLATFORMS } from '@clipers/db';
 import { Avatar, ButtonLink, PlatformIcon, ProgressBar } from '@clipers/ui';
 import JsonLd from '@/components/json-ld';
+import ProductTour from '@/components/product-tour';
 import { appUrl, siteUrl } from '@/lib/urls';
 
 // Copy draft: docs/superpowers/specs/2026-10-01-landing-copy-draft.md (under review).
@@ -148,6 +149,14 @@ export default function HomePage() {
               <p>한 캠페인으로 국내에서 많이 쓰는 숏폼 플랫폼에 한 번에 퍼뜨려요.</p>
             </article>
           </div>
+        </section>
+
+        <section aria-labelledby="tour-title" className="cl-landing-section">
+          <h2 className="cl-landing-section__title" id="tour-title">
+            캠페인이 열리고 정산되기까지
+          </h2>
+          <p className="cl-landing-section__lead">브랜드와 크리에이터가 실제로 보는 화면이에요.</p>
+          <ProductTour />
         </section>
 
         <section className="cl-landing-section cl-audiences">
