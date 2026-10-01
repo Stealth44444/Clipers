@@ -1223,12 +1223,12 @@
 .cl-bento5__card > h3 { font-size: clamp(22px, 2.2vw, 28px); font-weight: 600; letter-spacing: -0.03em; }
 .cl-bento5__card > p { color: var(--color-text-muted); font-size: var(--font-size-3); line-height: 1.6; }
 .cl-bento5__visual { display: grid; place-items: center; min-height: 150px; }
-.cl-mock-withdraw { position: relative; display: grid; gap: var(--space-2); width: calc(100% + var(--space-6)); margin-right: calc(var(--space-6) * -1); padding: var(--space-6); border-radius: 22px 0 0 22px; background: #fff; box-shadow: 0 10px 40px rgba(31, 26, 20, 0.06); justify-self: start; }
+.cl-mock-withdraw { position: relative; display: grid; gap: var(--space-2); justify-self: center; width: 100%; max-width: 360px; padding: var(--space-6) var(--space-5); border-radius: 20px; background: #fff; box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.06), 0 12px 40px rgba(31, 26, 20, 0.07); }
 .cl-mock-withdraw__amount { margin-bottom: var(--space-4); color: var(--brand-11); font-size: var(--font-size-6); font-weight: 600; font-variant-numeric: tabular-nums; }
 .cl-mock-withdraw__title { font-size: var(--font-size-5); font-weight: 600; }
 .cl-mock-withdraw__body { margin-bottom: var(--space-4); color: var(--color-text-muted); }
-.cl-mock-withdraw .cl-button { max-width: 280px; }
-.cl-mock-withdraw__cursor { position: absolute; bottom: 10px; left: 190px; z-index: 2; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35)); animation: cl-wd-cursor 6s ease-in-out infinite; }
+.cl-mock-withdraw .cl-button { width: 100%; }
+.cl-mock-withdraw__cursor { position: absolute; bottom: 14px; left: 56%; z-index: 2; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35)); animation: cl-wd-cursor 6s ease-in-out infinite; }
 .cl-mock-menu { position: relative; width: min(300px, 90%); margin: 0; padding: var(--space-2); border-radius: 16px; background: #fff; box-shadow: 0 10px 40px rgba(31, 26, 20, 0.06); list-style: none; -webkit-mask-image: linear-gradient(180deg, #000 50%, transparent); mask-image: linear-gradient(180deg, #000 50%, transparent); }
 .cl-mock-menu li { display: flex; align-items: center; justify-content: space-between; padding: var(--space-2) var(--space-3); border-radius: 10px; font-size: var(--font-size-2); font-weight: 500; }
 .cl-mock-menu li svg { color: var(--color-text-subtle); }
@@ -1237,10 +1237,14 @@
 .cl-mock-ring > span { position: relative; display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(closest-side, #fff 76%, transparent 77%), conic-gradient(var(--brand-9) 0 var(--ring), var(--gray-a3) var(--ring) 100%); color: var(--brand-11); font-size: var(--font-size-4); font-weight: 600; animation: cl-ring 6s ease-in-out infinite; }
 .cl-mock-bars { display: flex; align-items: flex-end; gap: 14px; height: 150px; }
 .cl-mock-bars span { width: 30px; border-radius: 15px 15px 0 0; background: linear-gradient(180deg, var(--brand-9), rgba(88, 185, 130, 0)); transform-origin: bottom; animation: cl-bar 2.8s ease-in-out infinite alternate; }
-.cl-mock-chips { display: flex; width: calc(100% + var(--space-6) * 2); margin-inline: calc(var(--space-6) * -1); overflow: hidden; justify-self: stretch; -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent); mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent); }
-.cl-mock-chips span { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; padding: 12px 16px; border-radius: 14px; background: var(--brand-9); color: #fff; font-size: var(--font-size-1); white-space: nowrap; box-shadow: 0 8px 20px rgba(47, 125, 82, 0.25); }
-.cl-mock-chips span:nth-child(2) { background: #1f1a14; box-shadow: 0 8px 20px rgba(31, 26, 20, 0.2); }
-.cl-mock-chips b { font-size: var(--font-size-3); font-weight: 600; }
+.cl-mock-chips { display: flex; width: calc(100% + var(--space-6) * 2); margin-inline: calc(var(--space-6) * -1); padding: 12px 0 18px; overflow: hidden; justify-self: stretch; -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); }
+.cl-stat { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 10px; padding: 10px 16px 10px 10px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.07), 0 8px 22px rgba(31, 26, 20, 0.06); white-space: nowrap; }
+.cl-stat > i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--gray-a2); color: var(--color-text-muted); }
+.cl-stat[data-tone="brand"] > i { background: rgba(88, 185, 130, 0.12); color: var(--brand-11); }
+.cl-stat > span { display: grid; gap: 1px; text-align: left; }
+.cl-stat small { color: var(--color-text-subtle); font-size: 11px; font-weight: 500; }
+.cl-stat b { color: var(--color-text); font-size: var(--font-size-3); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.cl-stat[data-tone="brand"] b { color: var(--brand-11); }
 /* Campaign kinds: sticky stage on wide screens, stacked on phones */
 .cl-kinds { position: relative; height: calc(var(--kinds) * 80vh + 20vh); }
 .cl-kinds__stage { position: sticky; top: 64px; width: min(1160px, 100% - 40px); height: calc(100vh - 64px); margin: 0 auto; }
@@ -1327,7 +1331,7 @@
 .cl-mock-withdraw__button > span { grid-area: 1 / 1; }
 .cl-mock-withdraw__button > span:first-child { animation: cl-wd-a 6s ease-in-out infinite; }
 .cl-mock-withdraw__button > span:last-child { animation: cl-wd-b 6s ease-in-out infinite; }
-.cl-mock-withdraw__toast { position: absolute; top: var(--space-5); right: var(--space-5); padding: 6px 10px; border-radius: 10px; background: #fff; font-size: var(--font-size-1); box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.08), 0 8px 24px rgba(31, 26, 20, 0.1); animation: cl-wd-toast 6s ease-in-out infinite; }
+.cl-mock-withdraw__toast { position: absolute; top: var(--space-5); right: var(--space-4); padding: 6px 10px; border-radius: 10px; background: #fff; font-size: var(--font-size-1); box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.08), 0 8px 24px rgba(31, 26, 20, 0.1); animation: cl-wd-toast 6s ease-in-out infinite; }
 @keyframes cl-wd-cursor { 0% { opacity: 0; transform: translate(150px, 110px); } 12% { opacity: 1; } 40% { transform: translate(0, 0); } 45% { transform: translate(0, 0) scale(0.84); } 50%, 82% { opacity: 1; transform: translate(0, 0); } 96%, 100% { opacity: 0; transform: translate(40px, 60px); } }
 @keyframes cl-wd-press { 0%, 44% { transform: none; filter: none; } 46% { transform: scale(0.97); } 50%, 90% { transform: none; filter: saturate(0.25) brightness(1.08); } 100% { filter: none; } }
 @keyframes cl-wd-a { 0%, 46% { opacity: 1; transform: none; } 52%, 92% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: none; } }

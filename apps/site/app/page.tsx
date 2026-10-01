@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ChevronRight, Coins, Eye, ScanSearch, Wallet } from 'lucide-react';
+import { ChevronRight, Coins, Eye, ScanSearch, TrendingUp, Wallet } from 'lucide-react';
 import { DEFAULT_PRICING, MIN_PAYOUT_VIEWS } from '@clipers/db';
 import { ButtonLink, MeshGradient, Rail, StatusDot, buttonClass, formatKRW } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
@@ -36,6 +36,14 @@ const FAQ = [
 
 
 
+
+// Figures drifting through the "투명하게" card (illustrative).
+const STATS = [
+  { label: '이번 달 정산', value: formatKRW(38_560), icon: <Wallet size={15} />, tone: 'brand' },
+  { label: '검증 조회수', value: '48,200회', icon: <Eye size={15} />, tone: 'neutral' },
+  { label: '1천 회당', value: formatKRW(800), icon: <Coins size={15} />, tone: 'neutral' },
+  { label: '지난주 대비', value: '+18.4%', icon: <TrendingUp size={15} />, tone: 'brand' },
+];
 
 const BARS = [0.12, 0.22, 0.36, 0.52, 0.7, 0.92];
 
@@ -168,18 +176,15 @@ export default async function HomePage() {
                 <div className="cl-mock-chips__track">
                   {[0, 1].map((copy) => (
                     <div className="cl-mock-chips__set" key={copy}>
-                      <span>
-                        <Wallet size={16} /> <b>{formatKRW(38_560)}</b> 정산
-                      </span>
-                      <span>
-                        <Coins size={16} /> <b>{formatKRW(800)}</b> 1천 회당
-                      </span>
-                      <span>
-                        <Eye size={16} /> <b>4.8만</b> 조회수
-                      </span>
-                      <span>
-                        <Wallet size={16} /> <b>{formatKRW(12_400)}</b> 이번 주
-                      </span>
+                      {STATS.map((stat) => (
+                        <span className="cl-stat" data-tone={stat.tone} key={stat.label}>
+                          <i>{stat.icon}</i>
+                          <span>
+                            <small>{stat.label}</small>
+                            <b>{stat.value}</b>
+                          </span>
+                        </span>
+                      ))}
                     </div>
                   ))}
                 </div>
