@@ -4,6 +4,7 @@ import { Avatar, ButtonLink, DeviceFrame, MeshGradient, PlatformIcon, ProgressBa
 import BrandLiveWindow from '@/components/brand-live-window';
 import LandingChrome, { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
 import LogoWall from '@/components/logo-wall';
+import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
 
 // Brand landing. Copy draft: docs/superpowers/specs/2026-10-01-landing-copy-draft.md. The brand rate is never shown,
 // and no visual pairs spend with views (that pair would reveal it).
@@ -13,18 +14,6 @@ export const metadata: Metadata = {
   description: '예산과 조건만 정하면 크리에이터들이 숏폼을 올려요. 검수를 통과한 영상의 검증된 조회수만큼만 예산이 쓰이는 숏폼 클리핑 캠페인.',
   alternates: { canonical: '/brands' },
 };
-
-const FAQ = [
-  { q: '최소 예산이 있나요?', a: '캠페인은 100만 원부터 열 수 있어요. 상한은 없어요.' },
-  { q: '비용은 어떻게 계산되나요?', a: '검수를 통과한 영상의 검증된 조회수만큼만 예산이 쓰여요. 조회수가 나오지 않으면 예산도 쓰이지 않아요.' },
-  { q: '어떤 플랫폼을 지원하나요?', a: '유튜브 쇼츠, 틱톡, 인스타그램 릴스, 페이스북, X, 네이버 클립, 카카오 숏폼이에요. 캠페인마다 올릴 플랫폼을 고를 수 있어요.' },
-  {
-    q: '조회수는 어떻게 확인하나요?',
-    a: '유튜브는 조회수를 자동으로 수집하고, 다른 플랫폼은 크리에이터가 낸 화면 캡처를 운영팀이 대조해요. 짧은 시간에 비정상적으로 늘어난 조회수는 따로 확인해요.',
-  },
-  { q: '캠페인은 언제 시작되나요?', a: '캠페인을 만들고 예산을 입금하면, 운영팀이 입금을 확인한 뒤 바로 공개돼요.' },
-  { q: '어떤 크리에이터가 참여하나요?', a: '크리에이터는 캠페인마다 지원하고, 운영팀이 승인한 사람만 영상을 올릴 수 있어요.' },
-];
 
 const SCREENS = [
   'radial-gradient(60% 40% at 30% 28%, #e4f5a8cc, transparent 70%), linear-gradient(160deg, #163a2a, #58b982)',
@@ -374,7 +363,7 @@ export default function BrandsPage() {
         </article>
       </section>
 
-      <LandingFaq items={FAQ} path="/brands" />
+      <LandingFaq items={ADVERTISER_FAQ} path="/brands" />
 
       <section className="cl-landing-cta">
         <h2>다음 캠페인을 Clipers에서 시작하세요</h2>
