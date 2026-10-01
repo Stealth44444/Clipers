@@ -47,15 +47,17 @@ export default function CampaignTypes({ videos = {} }: { videos?: Partial<Record
       const rect = root.getBoundingClientRect();
       const travel = rect.height - window.innerHeight;
       const scrolled = -rect.top;
-      if (travel <= 0 || scrolled < -1 || scrolled > travel + 1) return;
+      const down = event.deltaY > 0;
+      // Only while the stage is pinned, and only in the direction that still has kinds ahead.
+      if (travel <= 0 || (down ? scrolled < -1 || scrolled >= travel - 1 : scrolled <= 1 || scrolled > travel + 1)) return;
       event.preventDefault();
       if (locked) return;
       const top = rect.top + window.scrollY;
-      const current = Math.min(KINDS.length - 1, Math.floor(Math.min(0.999, Math.max(0, scrolled / travel)) * KINDS.length));
-      const target = current + Math.sign(event.deltaY);
-      if (target < 0) go(top - 1);
-      else if (target >= KINDS.length) go(top + travel + 1);
-      else go(top + travel * ((target + 0.5) / KINDS.length));
+      const centers = KINDS.map((_, index) => travel * ((index + 0.5) / KINDS.length));
+      // The next kind's centre in the scroll direction; past the first or last, leave the section.
+      const target = down ? centers.find((center) => center > scrolled + 4) : [...centers].reverse().find((center) => center < scrolled - 4);
+      if (target !== undefined) go(top + target);
+      else go(down ? top + travel + window.innerHeight * 0.6 : top - window.innerHeight * 0.6);
     };
     measure();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -82,7 +84,7 @@ export default function CampaignTypes({ videos = {} }: { videos?: Partial<Record
     <section aria-label="캠페인 종류" className="cl-kinds" ref={rootRef} style={{ '--kinds': KINDS.length } as CSSProperties}>
       <div className="cl-kinds__stage">
         {KINDS.map((kind, index) => (
-          <article className="cl-kinds__item" data-state={index < active ? 'past' : index === active ? 'active' : 'next'} key={kind.id}>
+          <article className="cl-kinds__item" data-kind={kind.id} data-state={index < active ? 'past' : index === active ? 'active' : 'next'} key={kind.id}>
             <p className="cl-kinds__text">
               <span aria-hidden className="cl-kinds__icon">
                 {kind.icon}
