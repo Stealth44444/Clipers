@@ -194,7 +194,7 @@
 .cl-card__description { margin-top: 2px; color: var(--color-text-muted); }
 
 /* ---------- progress ---------- */
-.cl-progress { height: 6px; overflow: hidden; border-radius: var(--radius-full); background: var(--gray-4); }
+.cl-progress { height: 4px; overflow: hidden; border-radius: var(--radius-full); background: var(--gray-4); }
 .cl-progress__fill { height: 100%; border-radius: inherit; background: var(--tone-solid); transition: width 0.3s ease; }
 .cl-progress--bare { background: transparent; }
 
@@ -676,11 +676,7 @@
 .cl-search .cl-input { height: 46px; padding-left: 42px; border-radius: var(--radius-5); background: var(--gray-3); }
 .cl-rail { display: grid; grid-auto-columns: minmax(300px, 380px); grid-auto-flow: column; gap: var(--space-4); overflow-x: auto; padding-bottom: var(--space-2); scroll-snap-type: x mandatory; scrollbar-width: thin; }
 .cl-rail > * { scroll-snap-align: start; }
-.cl-card-link { display: block; border-radius: var(--radius-5); transition: transform 0.2s ease; }
-.cl-card-link:hover { transform: translateY(-2px); }
-.cl-card-link:hover .cl-media-card { background: var(--gray-3); }
 .cl-card-brand { display: flex; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: var(--font-size-2); }
-.cl-card-stats { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
 .cl-clip-rail { display: grid; grid-auto-columns: 168px; grid-auto-flow: column; gap: var(--space-3); overflow-x: auto; padding-bottom: var(--space-2); }
 .cl-clip { display: grid; gap: var(--space-2); }
 .cl-clip__thumb { position: relative; aspect-ratio: 9 / 16; overflow: hidden; border-radius: var(--radius-5); background: var(--gray-3); }
@@ -688,23 +684,31 @@
 .cl-clip__views { position: absolute; bottom: var(--space-2); left: var(--space-2); padding: 2px var(--space-2); border-radius: var(--radius-full); background: rgba(0, 0, 0, 0.62); color: #fff; font-size: var(--font-size-1); font-weight: 600; font-variant-numeric: tabular-nums; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .cl-clip__title { overflow: hidden; color: var(--color-text-muted); font-size: var(--font-size-1); text-overflow: ellipsis; white-space: nowrap; }
 
-/* ---------- marketplace card (after Whop campaign cards) ---------- */
-.cl-mcard { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-2); border-radius: var(--radius-6); background: var(--color-panel); transition: background-color 0.2s ease, transform 0.2s ease; }
-.cl-mcard:hover { background: var(--gray-3); transform: translateY(-2px); }
-.cl-mcard__media { display: grid; aspect-ratio: 16 / 9; place-items: center; overflow: hidden; border-radius: var(--radius-5); background: var(--gray-3); color: var(--gray-8); }
-.cl-mcard__media img { width: 100%; height: 100%; object-fit: cover; }
-.cl-mcard__body { display: grid; gap: var(--space-3); padding: 0 var(--space-2) var(--space-2); }
-.cl-mcard__meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
-.cl-mcard__brand { display: inline-flex; min-width: 0; align-items: center; gap: var(--space-2); color: var(--color-text); font-size: var(--font-size-2); font-weight: 500; }
-.cl-mcard__brand-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cl-mcard__age { flex: 0 0 auto; color: var(--color-text-subtle); font-weight: 400; }
-.cl-mcard__title { overflow: hidden; font-size: var(--font-size-4); text-overflow: ellipsis; white-space: nowrap; }
-.cl-mcard__stats { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
-.cl-mcard__budget { color: var(--color-text-muted); font-size: var(--font-size-2); font-variant-numeric: tabular-nums; }
-.cl-mcard__budget strong { color: var(--color-text); font-weight: 600; }
+/* ---------- marketplace card ---------- */
+.cl-ccard { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-2) var(--space-2) var(--space-4); border-radius: var(--radius-6); background: var(--color-panel); transition: background-color 0.25s ease, transform 0.25s ease; }
+.cl-ccard:hover { background: var(--gray-3); transform: translateY(-2px); }
+.cl-ccard__cover { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-5); background: var(--glow-brand), var(--gray-3); }
+.cl-ccard__image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.cl-ccard:hover .cl-ccard__image { transform: scale(1.03); }
+.cl-ccard__rate, .cl-ccard__platform { background: rgba(17, 17, 17, 0.55); color: #fff; -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); }
+.cl-ccard__rate { position: absolute; bottom: var(--space-2); left: var(--space-2); display: inline-flex; align-items: baseline; gap: 4px; height: 28px; padding: 0 10px; border-radius: var(--radius-full); color: rgba(255, 255, 255, 0.78); font-size: var(--font-size-1); line-height: 28px; font-variant-numeric: tabular-nums; }
+.cl-ccard__rate strong { color: #fff; font-size: var(--font-size-2); font-weight: 600; }
+.cl-ccard__platforms { position: absolute; top: var(--space-2); right: var(--space-2); display: inline-flex; gap: 4px; }
+.cl-ccard__platform { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: var(--radius-full); }
+.cl-ccard__more { width: auto; padding: 0 8px; font-size: var(--font-size-0); font-weight: 600; }
+.cl-ccard__body { display: grid; gap: 6px; padding: 0 var(--space-2); }
+.cl-ccard__brand { display: flex; min-width: 0; align-items: center; gap: 6px; color: var(--color-text-subtle); font-size: var(--font-size-1); }
+.cl-ccard__brand .cl-avatar { width: 20px; height: 20px; font-size: 10px; }
+.cl-ccard__brand-name { overflow: hidden; color: var(--color-text-muted); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.cl-ccard__dot { color: var(--gray-8); }
+.cl-ccard__title { display: -webkit-box; min-height: 2.6em; overflow: hidden; font-size: var(--font-size-3); line-height: 1.3; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.cl-ccard__footer { display: grid; gap: var(--space-2); margin-top: auto; padding: 0 var(--space-2); }
+.cl-ccard__figures { display: flex; justify-content: space-between; gap: var(--space-2); color: var(--color-text-subtle); font-size: var(--font-size-1); font-variant-numeric: tabular-nums; }
+.cl-ccard__figures strong { color: var(--color-text); font-weight: 600; }
+.cl-ccard .cl-progress { height: 3px; background: var(--gray-4); }
+.cl-rail .cl-ccard { height: 100%; }
 .cl-pill { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 var(--space-3); border-radius: var(--radius-full); background: var(--gray-4); color: var(--color-text); font-size: var(--font-size-1); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .cl-pill--brand { background: var(--brand-a4); color: var(--brand-11); }
-.cl-rail .cl-mcard { height: 100%; }
 
 /* ---------- campaign detail (page + sheet) ---------- */
 .cl-detail { display: grid; gap: var(--space-4); }

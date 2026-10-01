@@ -1,35 +1,42 @@
 import Link from 'next/link';
-import { ImageIcon, User } from 'lucide-react';
-import { Avatar, PlatformIcons, ProgressBar, formatCompactKRW, formatKRW, relativeTimeKo } from '@clipers/ui';
+import { Avatar, PlatformIcon, ProgressBar, formatCompactKRW, formatKRW, relativeTimeKo } from '@clipers/ui';
 import type { MarketCampaign } from '@/lib/campaigns';
 
+/** Rate and platforms ride on the cover as glass chips; the body keeps only brand, title and budget. */
 export default function CampaignCard({ campaign }: { campaign: MarketCampaign }) {
   return (
-    <Link className="cl-mcard" href={`/campaigns/${campaign.id}`} scroll={false}>
-      <div className="cl-mcard__media">
-        {campaign.coverImageUrl ? <img alt="" src={campaign.coverImageUrl} /> : <ImageIcon aria-hidden size={28} />}
-      </div>
-      <div className="cl-mcard__body">
-        <div className="cl-mcard__meta">
-          <span className="cl-mcard__brand">
-            <Avatar name={campaign.brandName} size="sm" />
-            <span className="cl-mcard__brand-name">{campaign.brandName}</span>
-            <span className="cl-mcard__age">· {relativeTimeKo(new Date(campaign.createdAt))}</span>
-          </span>
-          <PlatformIcons label={`플랫폼 ${campaign.platforms.length}개`} platforms={campaign.platforms} size="sm" />
-        </div>
-        <h3 className="cl-mcard__title">{campaign.title}</h3>
-        <div className="cl-mcard__stats">
-          <span className="cl-mcard__budget">
-            <strong>{formatCompactKRW(campaign.spentBudget)}</strong> / {formatCompactKRW(campaign.totalBudget)}
-          </span>
-          <span className="cl-inline">
-            <span className="cl-pill">
-              <User aria-hidden size={13} />
-              {campaign.participantCount}
+    <Link className="cl-ccard" href={`/campaigns/${campaign.id}`} scroll={false}>
+      <div className="cl-ccard__cover">
+        {campaign.coverImageUrl && <img alt="" className="cl-ccard__image" src={campaign.coverImageUrl} />}
+        <span className="cl-ccard__rate">
+          <strong>{formatKRW(campaign.creatorCpm)}</strong> / 1천 회
+        </span>
+        <span aria-label={`플랫폼 ${campaign.platforms.length}개`} className="cl-ccard__platforms" role="img">
+          {campaign.platforms.slice(0, 4).map((platform) => (
+            <span className="cl-ccard__platform" key={platform}>
+              <PlatformIcon platform={platform} size={12} />
             </span>
-            <span className="cl-pill cl-pill--brand">{formatKRW(campaign.creatorCpm)}/1K</span>
+          ))}
+          {campaign.platforms.length > 4 && <span className="cl-ccard__platform cl-ccard__more">+{campaign.platforms.length - 4}</span>}
+        </span>
+      </div>
+
+      <div className="cl-ccard__body">
+        <p className="cl-ccard__brand">
+          <Avatar name={campaign.brandName} size="sm" />
+          <span className="cl-ccard__brand-name">{campaign.brandName}</span>
+          <span className="cl-ccard__dot">·</span>
+          <span>{relativeTimeKo(new Date(campaign.createdAt))}</span>
+        </p>
+        <h3 className="cl-ccard__title">{campaign.title}</h3>
+      </div>
+
+      <div className="cl-ccard__footer">
+        <div className="cl-ccard__figures">
+          <span>
+            남은 예산 <strong>{formatCompactKRW(campaign.remainingBudget)}</strong>
           </span>
+          <span>참여 {campaign.participantCount}명</span>
         </div>
         <ProgressBar label={`${campaign.title} 예산 사용률`} value={campaign.usageRatio} />
       </div>

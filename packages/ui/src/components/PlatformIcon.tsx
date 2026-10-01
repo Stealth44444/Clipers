@@ -2,6 +2,7 @@ import { siFacebook, siInstagram, siKakaotalk, siNaver, siTiktok, siX, siYoutube
 import { cx } from '../lib/cx';
 
 // Official brand marks from Simple Icons (CC0). Keys are the platform values stored on campaigns and clips.
+// Placeholder until the brand-supplied platform PNGs arrive; swap the render below for those images then.
 const ICONS: Record<string, SimpleIcon> = {
   youtube_shorts: siYoutube,
   tiktok: siTiktok,
