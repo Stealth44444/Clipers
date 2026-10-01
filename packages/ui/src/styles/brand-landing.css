@@ -1,0 +1,24 @@
+/* ---------- brand landing (/brands) — docs/superpowers/specs/2026-10-01-brand-page-redesign-design.md ---------- */
+
+/* Demo pointer */
+.cl-demo-cursor { position: absolute; top: 0; left: 0; z-index: 3; pointer-events: none; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3)); transition: transform 0.7s cubic-bezier(0.4, 0.1, 0.2, 1); }
+.cl-demo-cursor[data-click="true"] { animation: cl-demo-press 0.25s ease; }
+@keyframes cl-demo-press { 50% { scale: 0.82; } }
+
+/* A crop of the real app (dark, via .cl-app-dark), floating on a light card */
+.cl-bdemo { position: relative; display: grid; align-content: start; gap: 12px; padding: 18px 18px 22px; border-radius: 16px; background: var(--color-background); font-size: 13px; text-align: left; box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.55), inset 0 0.5px 0 rgba(255, 255, 255, 0.14), 0 22px 60px rgba(0, 0, 0, 0.22), 0 6px 18px rgba(0, 0, 0, 0.1); }
+.cl-bdemo__head { display: flex; align-items: baseline; justify-content: space-between; }
+.cl-bdemo__title { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+.cl-bdemo__meta { color: var(--color-text-subtle); font-size: 12px; font-variant-numeric: tabular-nums; }
+.cl-bdemo__label { margin-bottom: -4px; color: var(--color-text-subtle); font-size: 12px; }
+.cl-bdemo .cl-field { gap: 6px; }
+.cl-bdemo .cl-field__label { font-size: 12px; }
+.cl-bdemo .cl-input,
+.cl-bdemo .cl-select { height: 38px; font-size: 13px; }
+.cl-bdemo .cl-textarea { min-height: 84px; font-size: 13px; resize: none; }
+.cl-bdemo .cl-option-grid { gap: 8px; }
+.cl-bdemo .cl-option-card { gap: 2px; padding: 10px 12px; }
+.cl-bdemo .cl-chip-group { gap: 6px; }
+.cl-bdemo .cl-chip { height: 30px; padding: 0 10px; font-size: 12.5px; }
+.cl-bdemo__big { font-size: 26px; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.cl-bdemo__big small { color: var(--color-text-subtle); font-size: 14px; font-weight: 400; }
