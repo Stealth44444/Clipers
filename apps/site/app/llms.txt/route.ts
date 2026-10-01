@@ -1,6 +1,7 @@
 import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET, MIN_PAYOUT_VIEWS, MIN_WITHDRAWAL, REVIEW_SLA_OPTIONS } from '@clipers/db';
 import { formatKRW } from '@clipers/ui';
 import { loadLiveCampaigns } from '@/lib/campaigns';
+import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
 import { CREATOR_FAQ } from '@/lib/creator-faq';
 import { GUIDES, GUIDE_GROUPS } from '@/lib/guides';
 import { siteUrl } from '@/lib/urls';
@@ -63,11 +64,13 @@ export async function GET() {
     ]),
     '## 자주 묻는 질문 (크리에이터)',
     ...CREATOR_FAQ.flatMap((item) => [`### ${item.q}`, item.a, '']),
-    '## 브랜드·아티스트',
-    `- 캠페인은 ${formatKRW(MIN_CAMPAIGN_BUDGET)}부터 열 수 있습니다. 검수를 통과한 영상의 검증된 조회수만큼만 예산이 쓰입니다.`,
-    '- 캠페인을 만들고 예산을 입금하면 운영팀이 확인한 뒤 공개됩니다.',
+    '## 브랜드·아티스트·광고주',
+    `- 캠페인은 ${formatKRW(MIN_CAMPAIGN_BUDGET)}부터 열 수 있고, 검수를 통과한 영상의 검증된 조회수만큼만 예산이 쓰입니다. 캠페인을 만들 때 예산을 넣으면 예상 조회수를 바로 보여 줍니다.`,
+    `- 상담이 필요하면 [상담 문의](${siteUrl('/contact')})에 남기면 운영팀이 이메일로 답합니다.`,
     `- 자세한 안내: [브랜드 안내](${siteUrl('/brands')})`,
     '',
+    '## 자주 묻는 질문 (광고주)',
+    ...ADVERTISER_FAQ.flatMap((item) => [`### ${item.q}`, item.a, '']),
     '## 페이지',
     `- [크리에이터 안내](${siteUrl('/')}): 클리핑 설명, 캠페인 종류, 정산과 지급 기준`,
     `- [캠페인 둘러보기](${siteUrl('/discover')}): 지금 참여할 수 있는 캠페인 목록`,

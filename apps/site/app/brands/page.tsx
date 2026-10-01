@@ -374,6 +374,9 @@ export default function BrandsPage() {
           <ButtonLink href="/discover" size="lg" variant="secondary">
             진행 중인 캠페인 보기
           </ButtonLink>
+          <ButtonLink href="/contact?from=/brands" size="lg" variant="secondary">
+            상담 문의
+          </ButtonLink>
         </div>
       </section>
     </LandingChrome>
