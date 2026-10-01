@@ -224,3 +224,19 @@
 @media (prefers-reduced-motion: reduce) {
   .cl-verify-flow__rings::after { animation: none; }
 }
+
+/* Start card (reference: "Run your next campaign") */
+.cl-start { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; gap: 40px; padding: 72px; overflow: hidden; border-radius: 32px; background: var(--color-panel); isolation: isolate; }
+.cl-start__title { font-size: clamp(34px, 4.4vw, 52px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.12; }
+.cl-start__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; margin: 36px 0 40px; padding: 0; list-style: none; }
+.cl-start__facts li { display: flex; align-items: center; gap: 10px; color: var(--color-text-muted); font-size: var(--font-size-3); }
+.cl-start__facts svg { flex: 0 0 auto; color: var(--color-text); }
+.cl-start__facts strong { color: var(--color-text); font-weight: 600; }
+.cl-start__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.cl-bdemo--deposit { padding: 8px; }
+.cl-bdemo--deposit .cl-card { border-radius: 12px; }
+.cl-bdemo--deposit .cl-card__header { flex-wrap: nowrap; }
+@media (max-width: 900px) {
+  .cl-start { grid-template-columns: minmax(0, 1fr); padding: 40px 24px; }
+  .cl-start__facts { grid-template-columns: minmax(0, 1fr); }
+}
