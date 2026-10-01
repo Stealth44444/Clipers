@@ -93,7 +93,7 @@ export default function CampaignTypes({ videos = {} }: { videos?: Partial<Record
                 <strong>{kind.title}</strong> {kind.body}
               </span>
             </p>
-            <div aria-hidden={videos[kind.id] ? undefined : true} className="cl-kinds__stack" inert={index !== active || undefined}>
+            <div aria-hidden className="cl-kinds__stack">
               {MOCK_CAMPAIGNS[kind.id].map((campaign, slot) => (
                 <div className="cl-kinds__card" key={campaign.title}>
                   <MockCampaignCard campaign={campaign} video={videos[kind.id]?.[slot]} />

@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react';
 import { Avatar, PlatformIcon, ProgressBar, formatCompactKRW, formatKRW } from '@clipers/ui';
 import type { ShowcaseVideo } from '@/lib/youtube-showcase';
 
 // Illustrative campaign cards for marketing visuals, in the marketplace card styles. With a real YouTube video they show
-// its thumbnail and channel, a brand-style campaign title, and link to the video on YouTube; budget, rate and participants stay illustrative.
+// its thumbnail and channel with a brand-style campaign title; budget, rate and participants stay illustrative.
+// Display only: no links, no hover.
 
 export type MockCampaign = {
   brand: string;
@@ -34,25 +34,10 @@ export const MOCK_CAMPAIGNS: Record<'clipping' | 'ugc' | 'music', MockCampaign[]
   ],
 };
 
-function Shell({ video, children }: { video?: ShowcaseVideo; children: ReactNode }) {
-  if (!video) {
-    return (
-      <div aria-hidden className="cl-ccard cl-ccard--mock">
-        {children}
-      </div>
-    );
-  }
-  return (
-    <a aria-label={`${video.title} · ${video.channel} (YouTube에서 보기)`} className="cl-ccard cl-ccard--mock" href={video.url} rel="noreferrer" target="_blank">
-      {children}
-    </a>
-  );
-}
-
 export default function MockCampaignCard({ campaign, video, rate = 800 }: { campaign: MockCampaign; video?: ShowcaseVideo; rate?: number }) {
   const brand = video?.channel ?? campaign.brand;
   return (
-    <Shell video={video}>
+    <div aria-hidden className="cl-ccard cl-ccard--mock">
       <div className="cl-ccard__cover" style={video ? undefined : { background: campaign.cover }}>
         {video && <img alt="" className="cl-ccard__image" loading="lazy" referrerPolicy="no-referrer" src={video.thumbnail} />}
       </div>
@@ -82,6 +67,6 @@ export default function MockCampaignCard({ campaign, video, rate = 800 }: { camp
         </div>
         <ProgressBar label="예산 사용률" value={1 - campaign.remaining / campaign.total} />
       </div>
-    </Shell>
+    </div>
   );
 }
