@@ -178,7 +178,6 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
                       <Send size={19} />
                       공유
                     </span>
-                    <span className="cl-short__disc" />
                   </div>
                   <div className="cl-short__info">
                     <p className="cl-short__handle">

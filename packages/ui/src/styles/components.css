@@ -1200,9 +1200,10 @@
 .cl-device__screen { position: relative; width: 100%; height: 100%; overflow: hidden; border: 3.4cqw solid #050505; border-radius: 15.7cqw; background: #0b0b0c; color: #fff; isolation: isolate; }
 .cl-device__island { position: absolute; top: 2.6cqw; left: 50%; z-index: 3; width: 31cqw; height: 9.2cqw; border-radius: 9cqw; background: #000; transform: translateX(-50%); }
 .cl-device__island::after { position: absolute; top: 50%; right: 3.4cqw; width: 4.6cqw; height: 4.6cqw; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #2b3a52, #0b0d12 60%); content: ""; transform: translateY(-50%); }
-.cl-device__status { position: absolute; top: 0; right: 0; left: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; height: 14cqw; padding: 0 8.5cqw 0 10cqw; font-size: 5.4cqw; font-weight: 600; letter-spacing: -0.01em; text-shadow: 0 0 6px rgba(0, 0, 0, 0.2); }
-.cl-device__status-icons { display: inline-flex; align-items: center; gap: 1.6cqw; }
-.cl-device__status-icons svg { height: 3.6cqw; width: auto; fill: currentColor; }
+.cl-device__status { position: absolute; top: 0; right: 0; left: 0; z-index: 2; display: grid; grid-template-columns: minmax(0, 1fr) 31cqw minmax(0, 1fr); align-items: center; height: 14.4cqw; padding: 0 3cqw; }
+.cl-device__status-icons { display: inline-flex; align-items: center; justify-self: center; gap: 1.3cqw; }
+.cl-device__status-icons svg { height: 3cqw; width: auto; fill: currentColor; }
+.cl-device__time { justify-self: center; font-size: 4.5cqw; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; line-height: 1; text-shadow: 0 0 6px rgba(0, 0, 0, 0.2); }
 .cl-device__home { position: absolute; bottom: 2.2cqw; left: 50%; z-index: 2; width: 36cqw; height: 1.4cqw; border-radius: 1cqw; background: rgba(255, 255, 255, 0.85); transform: translateX(-50%); }
 .cl-device__button { position: absolute; width: 1.1cqw; border-radius: 0.6cqw; background: linear-gradient(90deg, #7d7f84, #c7c9cd); }
 .cl-device__button--action { top: 19%; left: -0.7cqw; height: 6%; }
@@ -1341,8 +1342,6 @@
 .cl-short__avatar .cl-avatar { width: 11.5cqw; height: 11.5cqw; font-size: 4.6cqw; box-shadow: 0 0 0 0.6cqw #fff; }
 .cl-short__avatar i { position: absolute; bottom: -2.4cqw; left: 50%; display: grid; place-items: center; width: 5cqw; height: 5cqw; border-radius: 50%; background: var(--brand-9); color: #fff; transform: translateX(-50%); }
 .cl-short__avatar i svg { width: 3.2cqw; height: 3.2cqw; }
-.cl-short__disc { width: 10cqw; height: 10cqw; border-radius: 50%; background: radial-gradient(circle, #e9e9e9 0 16%, #222 18% 60%, #3a3a3a 62% 100%); box-shadow: 0 0 0 0.6cqw rgba(255, 255, 255, 0.25); animation: cl-disc 5s linear infinite; }
-@keyframes cl-disc { to { transform: rotate(360deg); } }
 .cl-short__info { position: absolute; right: 19cqw; bottom: 9cqw; left: 5cqw; display: grid; gap: 1.8cqw; color: #fff; text-align: left; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); }
 .cl-short__handle { display: flex; align-items: center; gap: 2cqw; font-size: 4.2cqw; font-weight: 600; }
 .cl-short__handle span { padding: 0.4cqw 2cqw; border-radius: 1.6cqw; box-shadow: inset 0 0 0 0.3cqw rgba(255, 255, 255, 0.85); font-size: 3.2cqw; }
@@ -1360,7 +1359,7 @@
 @keyframes cl-burst { 0%, 56% { opacity: 0; transform: translate(-50%, -50%) scale(0); } 59% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.18); } 63% { transform: translate(-50%, -50%) scale(0.94); } 68% { opacity: 0.95; transform: translate(-50%, -50%) scale(1); } 78%, 100% { opacity: 0; transform: translate(-50%, -80%) scale(1.08); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .cl-mock-ring > span, .cl-mock-ring i, .cl-mock-bars span, .cl-mock-menu__focus, .cl-mock-withdraw__cursor, .cl-mock-withdraw__button, .cl-mock-withdraw__button > span, .cl-mock-withdraw__toast, .cl-short__media, .cl-short__disc, .cl-short__audio > span > span, .cl-short__progress, .cl-short__burst { animation: none; }
+  .cl-mock-ring > span, .cl-mock-ring i, .cl-mock-bars span, .cl-mock-menu__focus, .cl-mock-withdraw__cursor, .cl-mock-withdraw__button, .cl-mock-withdraw__button > span, .cl-mock-withdraw__toast, .cl-short__media, .cl-short__audio > span > span, .cl-short__progress, .cl-short__burst { animation: none; }
   .cl-mock-ring > span { --ring: 100%; }
   .cl-mock-ring i:last-child, .cl-mock-withdraw__button > span:last-child, .cl-mock-withdraw__toast, .cl-short__burst { opacity: 0; }
 }

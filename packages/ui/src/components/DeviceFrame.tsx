@@ -4,9 +4,19 @@ import { cx } from '../lib/cx';
 /**
  * A phone frame for marketing visuals: titanium rim, black bezel, Dynamic Island, side buttons, status bar and
  * home indicator. It scales with its width (container units), so set the width on the frame or its parent.
- * The screen is dark by default; content fills it edge to edge.
+ * The screen is dark by default; content fills it edge to edge. The home indicator is off unless asked for.
  */
-export function DeviceFrame({ children, className, statusBar = true }: { children?: ReactNode; className?: string; statusBar?: boolean }) {
+export function DeviceFrame({
+  children,
+  className,
+  statusBar = true,
+  homeIndicator = false,
+}: {
+  children?: ReactNode;
+  className?: string;
+  statusBar?: boolean;
+  homeIndicator?: boolean;
+}) {
   return (
     <div aria-hidden className={cx('cl-device', className)}>
       <span className="cl-device__button cl-device__button--action" />
@@ -18,7 +28,8 @@ export function DeviceFrame({ children, className, statusBar = true }: { childre
           {children}
           {statusBar && (
             <div className="cl-device__status">
-              <span>9:41</span>
+              <span className="cl-device__time">9:41</span>
+              <span aria-hidden className="cl-device__status-gap" />
               <span className="cl-device__status-icons">
                 <svg viewBox="0 0 18 12">
                   <rect height="4" rx="1" width="3" x="0" y="8" />
@@ -40,7 +51,7 @@ export function DeviceFrame({ children, className, statusBar = true }: { childre
             </div>
           )}
           <span className="cl-device__island" />
-          <span className="cl-device__home" />
+          {homeIndicator && <span className="cl-device__home" />}
         </div>
       </div>
     </div>
