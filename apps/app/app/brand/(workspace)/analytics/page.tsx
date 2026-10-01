@@ -1,3 +1,4 @@
+import { fetchAllRowsIn } from '@clipers/db';
 import { Page, PageHeader } from '@clipers/ui';
 import ViewsAnalytics from '@/components/views-analytics';
 import { getBrandCampaigns } from '@/lib/brand-data';
@@ -7,10 +8,9 @@ import { loadSnapshotsByClip } from '@/lib/snapshots';
 export default async function BrandAnalyticsPage() {
   const { supabase } = await getSession();
   const campaigns = await getBrandCampaigns();
-  const { data } = campaigns.length
-    ? await supabase.from('clips').select('id, campaign_id, status').in('campaign_id', campaigns.map((campaign) => campaign.id))
-    : { data: [] };
-  const clips = data ?? [];
+  const clips = await fetchAllRowsIn(campaigns.map((campaign) => campaign.id), (ids) => (from, to) =>
+    supabase.from('clips').select('id, campaign_id, status').in('campaign_id', ids).order('id').range(from, to)
+  );
   const snapshots = await loadSnapshotsByClip(supabase, clips.map((clip) => clip.id));
 
   return (

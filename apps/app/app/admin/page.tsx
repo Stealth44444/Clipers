@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ClipboardCheck, Landmark, MessageSquareWarning, UserCheck } from 'lucide-react';
-import { campaignEconomics, campaignPricing, getViewSpikeFlags } from '@clipers/db';
+import { campaignEconomics, campaignPricing, fetchAllRows, fetchAllRowsIn, getViewSpikeFlags } from '@clipers/db';
 import { Badge, DataTable, Page, PageHeader, ProgressBar, SectionHeader, Stack, StatCard, StatGrid, formatKRW } from '@clipers/ui';
 import { getAdminQueueCounts } from '@/lib/admin-data';
 import { getSession } from '@/lib/session';
@@ -29,18 +29,22 @@ export default async function AdminOverviewPage() {
       .select('id, title, status, total_budget, brand_cpm, creator_cpm, brand:profiles!campaigns_brand_id_fkey(display_name)')
       .in('status', ['pending_escrow', 'live', 'paused', 'closed'])
       .order('created_at', { ascending: false }),
-    supabase
-      .from('clips')
-      .select('id, url, campaign:campaigns!clips_campaign_id_fkey(title), creator:profiles!clips_creator_id_fkey(display_name)')
-      .eq('status', 'approved'),
+    fetchAllRows((from, to) =>
+      supabase
+        .from('clips')
+        .select('id, url, campaign:campaigns!clips_campaign_id_fkey(title), creator:profiles!clips_creator_id_fkey(display_name)')
+        .eq('status', 'approved')
+        .order('id')
+        .range(from, to)
+    ),
   ]);
   const campaigns = (campaignResult.data ?? []) as unknown as CampaignRow[];
 
-  const { data: settlementRows } = campaigns.length
-    ? await supabase.from('settlements').select('campaign_id, amount').in('campaign_id', campaigns.map((campaign) => campaign.id))
-    : { data: [] };
+  const settlementRows = await fetchAllRowsIn(campaigns.map((campaign) => campaign.id), (ids) => (from, to) =>
+    supabase.from('settlements').select('campaign_id, amount').in('campaign_id', ids).order('id').range(from, to)
+  );
   const paidByCampaign = new Map<string, number>();
-  for (const row of settlementRows ?? []) paidByCampaign.set(row.campaign_id, (paidByCampaign.get(row.campaign_id) ?? 0) + Number(row.amount));
+  for (const row of settlementRows) paidByCampaign.set(row.campaign_id, (paidByCampaign.get(row.campaign_id) ?? 0) + Number(row.amount));
 
   const rows = campaigns.map((campaign) => {
     const totalBudget = Number(campaign.total_budget);
@@ -50,7 +54,7 @@ export default async function AdminOverviewPage() {
   const revenue = rows.reduce((sum, row) => sum + row.platformRevenue, 0);
 
   // Spike flags look at the last 48 hours of snapshots for approved clips.
-  const approvedClips = (approvedClipResult.data ?? []) as unknown as FlaggedClip[];
+  const approvedClips = approvedClipResult as unknown as FlaggedClip[];
   const snapshots = await loadSnapshotsByClip(supabase, approvedClips.map((clip) => clip.id));
   const since = Date.now() - 48 * 60 * 60 * 1000;
   const flags = getViewSpikeFlags(

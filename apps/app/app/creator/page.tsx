@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { CircleUserRound, Eye, Film, Megaphone, Send, Wallet } from 'lucide-react';
-import { creatorChecklist, platformLabel, summarizeEarnings } from '@clipers/db';
+import { creatorChecklist, fetchAllRows, platformLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
   ButtonLink,
@@ -29,9 +29,11 @@ const ICON = { size: 18 };
 export default async function CreatorHomePage() {
   const { supabase, user, profile } = await getSession();
   const [applications, clips, settlements, recentClips] = await Promise.all([
-    supabase.from('campaign_applications').select('status').eq('creator_id', user.id),
-    supabase.from('clips').select('status').eq('creator_id', user.id),
-    supabase.from('settlements').select('amount, status, period, verified_views').eq('creator_id', user.id),
+    fetchAllRows((from, to) => supabase.from('campaign_applications').select('status').eq('creator_id', user.id).order('id').range(from, to)),
+    fetchAllRows((from, to) => supabase.from('clips').select('status').eq('creator_id', user.id).order('id').range(from, to)),
+    fetchAllRows((from, to) =>
+      supabase.from('settlements').select('amount, status, period, verified_views').eq('creator_id', user.id).order('id').range(from, to)
+    ),
     supabase
       .from('clips')
       .select('id, platform, status, submitted_at, campaign:campaigns!clips_campaign_id_fkey(title)')
@@ -40,9 +42,9 @@ export default async function CreatorHomePage() {
       .limit(5),
   ]);
 
-  const applicationRows = applications.data ?? [];
-  const clipRows = clips.data ?? [];
-  const settlementRows = settlements.data ?? [];
+  const applicationRows = applications;
+  const clipRows = clips;
+  const settlementRows = settlements;
   const earnings = summarizeEarnings(settlementRows);
   const verifiedViews = settlementRows.reduce((sum, row) => sum + Number(row.verified_views), 0);
   const steps = creatorChecklist({

@@ -1,5 +1,5 @@
 import { Banknote, CalendarDays, Clock, Wallet } from 'lucide-react';
-import { payoutRequest, settlementPeriodLabel, summarizeEarnings } from '@clipers/db';
+import { fetchAllRows, payoutRequest, settlementPeriodLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
   Card,
@@ -32,12 +32,15 @@ const ICON = { size: 18 };
 
 export default async function CreatorEarningsPage() {
   const { supabase, user } = await getSession();
-  const { data } = await supabase
-    .from('settlements')
-    .select('id, period, amount, withholding_amount, verified_views, status, campaign:campaigns!settlements_campaign_id_fkey(title)')
-    .eq('creator_id', user.id)
-    .order('period', { ascending: false });
-  const settlements = (data ?? []) as unknown as Settlement[];
+  const settlements = (await fetchAllRows((from, to) =>
+    supabase
+      .from('settlements')
+      .select('id, period, amount, withholding_amount, verified_views, status, campaign:campaigns!settlements_campaign_id_fkey(title)')
+      .eq('creator_id', user.id)
+      .order('period', { ascending: false })
+      .order('id')
+      .range(from, to)
+  )) as unknown as Settlement[];
   const summary = summarizeEarnings(settlements);
   const payout = payoutRequest(settlements);
 

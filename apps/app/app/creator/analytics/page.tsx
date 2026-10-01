@@ -1,4 +1,4 @@
-import { platformLabel } from '@clipers/db';
+import { fetchAllRows, platformLabel } from '@clipers/db';
 import { Page, PageHeader } from '@clipers/ui';
 import ViewsAnalytics from '@/components/views-analytics';
 import { getSession } from '@/lib/session';
@@ -6,8 +6,9 @@ import { loadSnapshotsByClip } from '@/lib/snapshots';
 
 export default async function CreatorAnalyticsPage() {
   const { supabase, user } = await getSession();
-  const { data } = await supabase.from('clips').select('id, platform, status').eq('creator_id', user.id);
-  const clips = data ?? [];
+  const clips = await fetchAllRows((from, to) =>
+    supabase.from('clips').select('id, platform, status').eq('creator_id', user.id).order('id').range(from, to)
+  );
   const snapshots = await loadSnapshotsByClip(supabase, clips.map((clip) => clip.id));
 
   return (

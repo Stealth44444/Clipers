@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { campaignEconomics, campaignPricing, creatorPayoutToClipCap, platformLabels } from '@clipers/db';
+import { campaignEconomics, campaignPricing, creatorPayoutToClipCap, fetchAllRows, platformLabels } from '@clipers/db';
 import { Badge, Card, Page, PageHeader, Stack, SummaryList, formatKRW } from '@clipers/ui';
 import { getSession } from '@/lib/session';
 import { CAMPAIGN_STATUS, CONTENT_TYPE_LABEL, statusDisplay } from '@/lib/status';
@@ -16,12 +16,12 @@ export default async function AdminCampaignPage({ params }: { params: Promise<{ 
   if (!campaign) notFound();
 
   const [settlements, rates] = await Promise.all([
-    supabase.from('settlements').select('amount').eq('campaign_id', id),
+    fetchAllRows((from, to) => supabase.from('settlements').select('amount').eq('campaign_id', id).order('id').range(from, to)),
     supabase.from('campaign_platform_rates').select('max_payout').eq('campaign_id', id).limit(1),
   ]);
   const pricing = campaignPricing(campaign);
   const totalBudget = Number(campaign.total_budget);
-  const creatorPaid = (settlements.data ?? []).reduce((sum, row) => sum + Number(row.amount), 0);
+  const creatorPaid = settlements.reduce((sum, row) => sum + Number(row.amount), 0);
   const economics = campaignEconomics(totalBudget, creatorPaid, pricing);
   const clipCap = rates.data?.[0] ? Number(rates.data[0].max_payout) : null;
   const status = statusDisplay(CAMPAIGN_STATUS, campaign.status);

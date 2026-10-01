@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { budgetUsage, campaignPricing, expectedViews } from '@clipers/db';
+import { budgetUsage, campaignPricing, expectedViews, fetchAllRowsIn } from '@clipers/db';
 import { getSession } from './session';
 
 export type BrandCampaign = {
@@ -34,18 +34,20 @@ export const getBrandCampaigns = cache(async (): Promise<BrandCampaign[]> => {
 
   const ids = campaigns.map((campaign) => campaign.id);
   const [settlements, clips] = await Promise.all([
-    supabase.from('settlements').select('campaign_id, amount, verified_views').in('campaign_id', ids),
-    supabase.from('clips').select('campaign_id').in('campaign_id', ids),
+    fetchAllRowsIn(ids, (slice) => (from, to) =>
+      supabase.from('settlements').select('campaign_id, amount, verified_views').in('campaign_id', slice).order('id').range(from, to)
+    ),
+    fetchAllRowsIn(ids, (slice) => (from, to) => supabase.from('clips').select('campaign_id').in('campaign_id', slice).order('id').range(from, to)),
   ]);
 
   const paid = new Map<string, number>();
   const views = new Map<string, number>();
-  for (const row of settlements.data ?? []) {
+  for (const row of settlements) {
     paid.set(row.campaign_id, (paid.get(row.campaign_id) ?? 0) + Number(row.amount));
     views.set(row.campaign_id, (views.get(row.campaign_id) ?? 0) + Number(row.verified_views));
   }
   const clipCounts = new Map<string, number>();
-  for (const row of clips.data ?? []) clipCounts.set(row.campaign_id, (clipCounts.get(row.campaign_id) ?? 0) + 1);
+  for (const row of clips) clipCounts.set(row.campaign_id, (clipCounts.get(row.campaign_id) ?? 0) + 1);
 
   return campaigns.map((campaign) => {
     const pricing = campaignPricing(campaign);

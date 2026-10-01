@@ -2,6 +2,8 @@ import {
   budgetUsage,
   campaignPricing,
   cumulativeCountByDay,
+  fetchAllRows,
+  fetchAllRowsIn,
   rankCreatorEarnings,
   seoulDateKey,
   viewTrend,
@@ -70,16 +72,22 @@ function toMarketCampaign(row: CampaignRow, creatorPaid: number, participantCoun
 async function participantsByCampaign(campaignIds: string[]): Promise<Map<string, number>> {
   const counts = new Map<string, number>();
   if (campaignIds.length === 0) return counts;
-  const { data } = await getSupabaseServerClient().from('campaign_applications').select('campaign_id').in('campaign_id', campaignIds);
-  for (const row of data ?? []) counts.set(row.campaign_id, (counts.get(row.campaign_id) ?? 0) + 1);
+  const supabase = getSupabaseServerClient();
+  const rows = await fetchAllRowsIn(campaignIds, (ids) => (from, to) =>
+    supabase.from('campaign_applications').select('campaign_id').in('campaign_id', ids).order('id').range(from, to)
+  );
+  for (const row of rows) counts.set(row.campaign_id, (counts.get(row.campaign_id) ?? 0) + 1);
   return counts;
 }
 
 async function creatorPaidByCampaign(campaignIds: string[]): Promise<Map<string, number>> {
   const paid = new Map<string, number>();
   if (campaignIds.length === 0) return paid;
-  const { data } = await getSupabaseServerClient().from('settlements').select('campaign_id, amount').in('campaign_id', campaignIds);
-  for (const row of data ?? []) paid.set(row.campaign_id, (paid.get(row.campaign_id) ?? 0) + Number(row.amount));
+  const supabase = getSupabaseServerClient();
+  const rows = await fetchAllRowsIn(campaignIds, (ids) => (from, to) =>
+    supabase.from('settlements').select('campaign_id, amount').in('campaign_id', ids).order('id').range(from, to)
+  );
+  for (const row of rows) paid.set(row.campaign_id, (paid.get(row.campaign_id) ?? 0) + Number(row.amount));
   return paid;
 }
 
@@ -101,21 +109,29 @@ export type TopClip = { id: string; url: string; campaignTitle: string; viewCoun
 export async function loadTopClips(campaignIds: string[], limit = 12): Promise<TopClip[]> {
   if (campaignIds.length === 0) return [];
   const supabase = getSupabaseServerClient();
-  const { data: clips } = await supabase
-    .from('clips')
-    .select('id, url, campaign:campaigns!clips_campaign_id_fkey(title)')
-    .eq('status', 'approved')
-    .in('campaign_id', campaignIds);
-  const clipRows = (clips ?? []) as unknown as { id: string; url: string; campaign: { title: string } | null }[];
+  const clipRows = (await fetchAllRowsIn(campaignIds, (ids) => (from, to) =>
+    supabase
+      .from('clips')
+      .select('id, url, campaign:campaigns!clips_campaign_id_fkey(title)')
+      .eq('status', 'approved')
+      .in('campaign_id', ids)
+      .order('id')
+      .range(from, to)
+  )) as unknown as { id: string; url: string; campaign: { title: string } | null }[];
   if (clipRows.length === 0) return [];
 
-  const { data: snapshots } = await supabase
-    .from('view_snapshots')
-    .select('clip_id, view_count')
-    .in('clip_id', clipRows.map((clip) => clip.id))
-    .order('captured_at', { ascending: false });
+  // Newest first within each chunk; a clip's snapshots always share a chunk, so the first one seen is its latest.
+  const snapshots = await fetchAllRowsIn(clipRows.map((clip) => clip.id), (ids) => (from, to) =>
+    supabase
+      .from('view_snapshots')
+      .select('clip_id, view_count')
+      .in('clip_id', ids)
+      .order('captured_at', { ascending: false })
+      .order('id')
+      .range(from, to)
+  );
   const latest = new Map<string, number>();
-  for (const row of snapshots ?? []) if (!latest.has(row.clip_id)) latest.set(row.clip_id, Number(row.view_count));
+  for (const row of snapshots) if (!latest.has(row.clip_id)) latest.set(row.clip_id, Number(row.view_count));
 
   return clipRows
     .map((clip) => ({ id: clip.id, url: clip.url, campaignTitle: clip.campaign?.title ?? '캠페인', viewCount: latest.get(clip.id) ?? 0 }))
@@ -157,11 +173,18 @@ export async function loadCampaignDetail(id: string): Promise<CampaignDetail | n
   const [rates, participants, settlements, approvedClips] = await Promise.all([
     supabase.from('campaign_platform_rates').select('platform, max_payout').eq('campaign_id', id),
     participantsByCampaign([id]),
-    supabase.from('settlements').select('creator_id, amount, creator:profiles!settlements_creator_id_fkey(display_name)').eq('campaign_id', id),
-    supabase.from('clips').select('id, submitted_at').eq('campaign_id', id).eq('status', 'approved'),
+    fetchAllRows((from, to) =>
+      supabase
+        .from('settlements')
+        .select('creator_id, amount, creator:profiles!settlements_creator_id_fkey(display_name)')
+        .eq('campaign_id', id)
+        .order('id')
+        .range(from, to)
+    ),
+    fetchAllRows((from, to) => supabase.from('clips').select('id, submitted_at').eq('campaign_id', id).eq('status', 'approved').order('id').range(from, to)),
   ]);
 
-  const settlementRows = (settlements.data ?? []) as unknown as { creator_id: string; amount: number; creator: { display_name: string } | null }[];
+  const settlementRows = settlements as unknown as { creator_id: string; amount: number; creator: { display_name: string } | null }[];
   const ranked = rankCreatorEarnings(
     settlementRows.map((settlement) => ({
       creatorId: settlement.creator_id,
@@ -171,16 +194,13 @@ export async function loadCampaignDetail(id: string): Promise<CampaignDetail | n
   );
   const creatorPaid = settlementRows.reduce((sum, settlement) => sum + Number(settlement.amount), 0);
 
-  const clips = approvedClips.data ?? [];
+  const clips = approvedClips;
   const byClip = new Map<string, { capturedAt: string; viewCount: number }[]>();
-  if (clips.length > 0) {
-    const { data: snapshotRows } = await supabase
-      .from('view_snapshots')
-      .select('clip_id, view_count, captured_at')
-      .in('clip_id', clips.map((clip) => clip.id));
-    for (const snapshot of snapshotRows ?? []) {
-      byClip.set(snapshot.clip_id, [...(byClip.get(snapshot.clip_id) ?? []), { capturedAt: snapshot.captured_at, viewCount: Number(snapshot.view_count) }]);
-    }
+  const snapshotRows = await fetchAllRowsIn(clips.map((clip) => clip.id), (ids) => (from, to) =>
+    supabase.from('view_snapshots').select('clip_id, view_count, captured_at').in('clip_id', ids).order('id').range(from, to)
+  );
+  for (const snapshot of snapshotRows) {
+    byClip.set(snapshot.clip_id, [...(byClip.get(snapshot.clip_id) ?? []), { capturedAt: snapshot.captured_at, viewCount: Number(snapshot.view_count) }]);
   }
   const firstActivity = [row.created_at, ...clips.map((clip) => clip.submitted_at)].map((value) => seoulDateKey(new Date(value))).sort()[0];
   const daysSinceStart = Math.round((Date.parse(seoulDateKey(new Date())) - Date.parse(firstActivity)) / 86_400_000) + 1;
