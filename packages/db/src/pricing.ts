@@ -30,3 +30,9 @@ export function budgetUsage(totalBudget: number, creatorPaid: number, pricing: C
 export function campaignPricing(row: { brand_cpm: number | string; creator_cpm: number | string }): CampaignPricing {
   return { brandCpm: Number(row.brand_cpm), creatorCpm: Number(row.creator_cpm) };
 }
+
+/** Operator view of a campaign: brand spend, what reached creators, and the platform's spread. */
+export function campaignEconomics(totalBudget: number, creatorPaid: number, pricing: CampaignPricing) {
+  const { spent } = budgetUsage(totalBudget, creatorPaid, pricing);
+  return { spent, creatorPaid, platformRevenue: Math.max(0, spent - creatorPaid) };
+}

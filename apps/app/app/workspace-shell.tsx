@@ -12,6 +12,7 @@ import {
   Film,
   Gauge,
   House,
+  Landmark,
   Megaphone,
   MessageSquareWarning,
   Receipt,
@@ -73,26 +74,36 @@ const NAVIGATION: Record<WorkspaceRole, SidebarSection[]> = {
       items: [{ href: '/brand/settings', label: '설정', icon: <Settings {...ICON} /> }],
     },
   ],
-  // Hash links until phase 5 splits the admin workspace into routes.
   admin: [
     {
-      title: '운영',
+      title: '개요',
+      items: [{ href: '/admin', label: '현황', icon: <Gauge {...ICON} />, exact: true }],
+    },
+    {
+      title: '검수',
       items: [
-        { href: '#campaign-overview-title', label: '캠페인 현황', icon: <Gauge {...ICON} /> },
-        { href: '#application-queue-title', label: '지원서 검토', icon: <UserCheck {...ICON} /> },
-        { href: '#clip-queue-title', label: '클립 검수', icon: <ClipboardCheck {...ICON} /> },
-        { href: '#manual-view-report-queue-title', label: '조회수 신고', icon: <ScrollText {...ICON} /> },
-        { href: '#dispute-queue-title', label: '이의제기', icon: <MessageSquareWarning {...ICON} /> },
-        { href: '#settlements-title', label: '주간 정산', icon: <Banknote {...ICON} /> },
+        { href: '/admin/applications', label: '지원서', icon: <UserCheck {...ICON} /> },
+        { href: '/admin/clips', label: '클립', icon: <ClipboardCheck {...ICON} /> },
+        { href: '/admin/view-reports', label: '조회수 신고', icon: <ScrollText {...ICON} /> },
+        { href: '/admin/disputes', label: '이의제기', icon: <MessageSquareWarning {...ICON} /> },
+      ],
+    },
+    {
+      title: '정산',
+      items: [
+        { href: '/admin/deposits', label: '입금 확인', icon: <Landmark {...ICON} /> },
+        { href: '/admin/settlements', label: '주간 정산', icon: <Banknote {...ICON} /> },
       ],
     },
   ],
 };
 
-export default function WorkspaceShell({ role, displayName, topbarExtra, children }: {
+export default function WorkspaceShell({ role, displayName, topbarExtra, badges, children }: {
   role: WorkspaceRole;
   displayName: string;
   topbarExtra?: ReactNode;
+  /** Pending-work counts keyed by sidebar href; zero hides the badge. */
+  badges?: Record<string, number>;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -111,7 +122,7 @@ export default function WorkspaceShell({ role, displayName, topbarExtra, childre
           <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
         </Link>
       }
-      sidebar={<Sidebar activePath={pathname} LinkComponent={Link} sections={NAVIGATION[role]} />}
+      sidebar={<Sidebar activePath={pathname} LinkComponent={Link} sections={withBadges(NAVIGATION[role], badges)} />}
       topbarEnd={
         <>
           {topbarExtra}
@@ -122,4 +133,13 @@ export default function WorkspaceShell({ role, displayName, topbarExtra, childre
       {children}
     </AppShell>
   );
+}
+
+function withBadges(sections: SidebarSection[], badges: Record<string, number> = {}): SidebarSection[] {
+  return sections.map((section) => ({
+    ...section,
+    items: section.items.map((item) =>
+      badges[item.href] ? { ...item, badge: <span className="cl-count-badge">{badges[item.href]}</span> } : item
+    ),
+  }));
 }

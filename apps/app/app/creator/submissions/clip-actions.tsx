@@ -1,74 +1,10 @@
 'use client';
 
-import { useId, useState, useTransition, type FormEvent, type ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { fileDispute, fileManualViewReport } from '@clipers/db';
-import { Button, Dialog, Field, Input, Textarea } from '@clipers/ui';
+import { Field, Input, Textarea } from '@clipers/ui';
+import ActionDialog from '@/components/action-dialog';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
-
-type SubmitResult = { ok: true } | { ok: false; message: string };
-
-function ActionDialog({ trigger, title, submitLabel, canSubmit, onSubmit, children }: {
-  trigger: string;
-  title: string;
-  submitLabel: string;
-  canSubmit: boolean;
-  onSubmit: () => Promise<SubmitResult>;
-  children: ReactNode;
-}) {
-  const router = useRouter();
-  const formId = useId();
-  const [open, setOpen] = useState(false);
-  const [error, setError] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [, startTransition] = useTransition();
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSubmitting(true);
-    setError('');
-    const result = await onSubmit();
-    setSubmitting(false);
-    if (!result.ok) {
-      setError(result.message);
-      return;
-    }
-    setOpen(false);
-    startTransition(() => router.refresh());
-  }
-
-  return (
-    <>
-      <Button onClick={() => setOpen(true)} size="sm" variant="secondary">
-        {trigger}
-      </Button>
-      <Dialog
-        footer={
-          <>
-            <Button onClick={() => setOpen(false)} variant="secondary">
-              취소
-            </Button>
-            <Button disabled={submitting || !canSubmit} form={formId} type="submit" variant="primary">
-              {submitting ? '보내는 중…' : submitLabel}
-            </Button>
-          </>
-        }
-        onClose={() => setOpen(false)}
-        open={open}
-        title={title}
-      >
-        <form className="cl-auth__form" id={formId} onSubmit={submit}>
-          {children}
-          {error && (
-            <p className="cl-alert cl-tone-tomato" role="alert">
-              {error}
-            </p>
-          )}
-        </form>
-      </Dialog>
-    </>
-  );
-}
 
 export function DisputeDialog({ clipId, creatorId }: { clipId: string; creatorId: string }) {
   const [reason, setReason] = useState('');

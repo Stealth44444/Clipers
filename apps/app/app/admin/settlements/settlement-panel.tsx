@@ -9,6 +9,8 @@ import {
   getCampaignsToClose,
   getPreviousWeekPeriod,
 } from '@clipers/db';
+import { Badge, Button, DataTable, formatKRW } from '@clipers/ui';
+import { SETTLEMENT_STATUS, statusDisplay } from '@/lib/status';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 type CampaignForSettlement = {
@@ -55,18 +57,6 @@ type PreviousSettlement = {
   period: string;
 };
 
-const SETTLEMENT_STATUS: Record<StoredSettlement['status'], string> = {
-  pending: '대기',
-  requested: '지급 요청',
-  paid: '지급 완료',
-};
-
-function statusClass(status: StoredSettlement['status']): string {
-  if (status === 'paid') return 'app-status app-status-positive';
-  if (status === 'requested') return 'app-status app-status-requested';
-  return 'app-status app-status-neutral';
-}
-
 function splitIntoChunks<T>(items: T[], chunkSize: number): T[][] {
   const chunks: T[][] = [];
   for (let index = 0; index < items.length; index += chunkSize) {
@@ -81,7 +71,7 @@ function csvCell(value: string | number): string {
   return `"${safeText.replaceAll('"', '""')}"`;
 }
 
-export default function SettlementPanel({ userId }: { userId: string }) {
+export default function SettlementPanel() {
   const [settlements, setSettlements] = useState<StoredSettlement[]>([]);
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
@@ -108,8 +98,8 @@ export default function SettlementPanel({ userId }: { userId: string }) {
   }
 
   useEffect(() => {
-    if (userId) void loadSettlements();
-  }, [userId]);
+    void loadSettlements();
+  }, []);
 
   async function generateSettlements() {
     setWorking(true);
@@ -345,7 +335,7 @@ export default function SettlementPanel({ userId }: { userId: string }) {
       const current = totals.get(key) ?? {
         creatorId: settlement.creator_id,
         creatorName: settlement.creator?.display_name ?? '크리에이터',
-        status: SETTLEMENT_STATUS[settlement.status],
+        status: statusDisplay(SETTLEMENT_STATUS, settlement.status).label,
         gross: 0,
         withholding: 0,
       };
@@ -376,44 +366,68 @@ export default function SettlementPanel({ userId }: { userId: string }) {
   }
 
   return (
-    <section className="app-section" aria-labelledby="settlements-title">
-      <h2 id="settlements-title">주간 정산 <span className="app-muted">{period.period} 주간</span></h2>
-      <p className="app-muted">지난 완료 주의 조회수 증가분으로 산출합니다. 이체는 엑셀 내보내기 후 수동 처리합니다.</p>
-      {message && <p className="app-notice" role="status">{message}</p>}
-      {error && <p className="app-error" role="alert">{error}</p>}
-      <div className="app-action-row">
-        <button className="app-button app-button-primary" disabled={working || loading} onClick={() => void generateSettlements()} type="button">
-          {working ? '처리 중...' : '지난주 정산 산출'}
-        </button>
-        <button className="app-button" disabled={settlements.length === 0} onClick={exportCreatorCsv} type="button">
-          크리에이터별 CSV 내보내기
-        </button>
+    <div className="cl-stack-tight">
+      <div className="cl-toolbar">
+        <div className="cl-inline">
+          <Button disabled={working || loading} onClick={() => void generateSettlements()} variant="primary">
+            {working ? '처리 중…' : '지난주 정산 산출'}
+          </Button>
+          <Button disabled={settlements.length === 0} onClick={exportCreatorCsv} variant="secondary">
+            크리에이터별 CSV 내보내기
+          </Button>
+        </div>
+        <span className="cl-meta cl-number">{period.period} 주</span>
       </div>
-      <div className="app-table-wrap" style={{ marginTop: 18 }}>
-        <table className="app-table">
-          <thead>
-            <tr><th>크리에이터</th><th>캠페인</th><th>검증 조회수</th><th>총액</th><th>원천징수</th><th>상태</th><th>처리</th></tr>
-          </thead>
-          <tbody>
-            {settlements.map((settlement) => (
-              <tr key={settlement.id}>
-                <td>{settlement.creator?.display_name ?? '크리에이터'}</td>
-                <td>{settlement.campaign?.title ?? '캠페인'}</td>
-                <td>{Number(settlement.verified_views).toLocaleString('ko-KR')}</td>
-                <td>{Number(settlement.amount).toLocaleString('ko-KR')}원</td>
-                <td>{Number(settlement.withholding_amount).toLocaleString('ko-KR')}원</td>
-                <td className={statusClass(settlement.status)}>{SETTLEMENT_STATUS[settlement.status]}</td>
-                <td>
-                  {settlement.status === 'requested' ? (
-                    <button className="app-button" disabled={working} onClick={() => void markPaid(settlement)} type="button">지급 완료 처리</button>
-                  ) : '—'}
-                </td>
-              </tr>
-            ))}
-            {!loading && settlements.length === 0 && <tr><td colSpan={7}>이 주에 생성된 정산이 없습니다.</td></tr>}
-          </tbody>
-        </table>
-      </div>
-    </section>
+      {message && (
+        <p className="cl-alert cl-tone-brand" role="status">
+          {message}
+        </p>
+      )}
+      {error && (
+        <p className="cl-alert cl-tone-tomato" role="alert">
+          {error}
+        </p>
+      )}
+      <DataTable
+        columns={[
+          {
+            key: 'creator',
+            header: '크리에이터 / 캠페인',
+            render: (settlement) => (
+              <div>
+                <p>{settlement.creator?.display_name ?? '크리에이터'}</p>
+                <p className="cl-meta-subtle">{settlement.campaign?.title ?? '캠페인'}</p>
+              </div>
+            ),
+          },
+          { key: 'views', header: '검증 조회수', align: 'right', render: (settlement) => Number(settlement.verified_views).toLocaleString('ko-KR') },
+          { key: 'amount', header: '정산액', align: 'right', render: (settlement) => formatKRW(Number(settlement.amount)) },
+          { key: 'withholding', header: '원천징수', align: 'right', render: (settlement) => formatKRW(Number(settlement.withholding_amount)) },
+          {
+            key: 'status',
+            header: '상태',
+            render: (settlement) => {
+              const status = statusDisplay(SETTLEMENT_STATUS, settlement.status);
+              return <Badge tone={status.tone}>{status.label}</Badge>;
+            },
+          },
+          {
+            key: 'actions',
+            header: '',
+            align: 'right',
+            render: (settlement) =>
+              settlement.status === 'requested' ? (
+                <Button disabled={working} onClick={() => void markPaid(settlement)} size="sm" variant="secondary">
+                  지급 완료 처리
+                </Button>
+              ) : null,
+          },
+        ]}
+        empty={loading ? '불러오는 중…' : '이 주에 생성된 정산이 없어요.'}
+        label="주간 정산"
+        rowKey={(settlement) => settlement.id}
+        rows={settlements}
+      />
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import {
   DEFAULT_PRICING,
   MIN_CAMPAIGN_BUDGET,
   budgetUsage,
+  campaignEconomics,
   creatorPayoutCap,
   expectedViews,
   platformMargin,
@@ -54,5 +55,15 @@ describe('budgetUsage', () => {
 
   it('never reports more than the budget', () => {
     expect(budgetUsage(1_000_000, 300_000, DEFAULT_PRICING)).toEqual({ spent: 1_000_000, remaining: 0, ratio: 1 });
+  });
+});
+
+describe('campaignEconomics', () => {
+  it('splits brand spend into creator payouts and platform revenue', () => {
+    expect(campaignEconomics(1_000_000, 80_000, DEFAULT_PRICING)).toEqual({ spent: 300_000, creatorPaid: 80_000, platformRevenue: 220_000 });
+  });
+
+  it('never reports negative platform revenue', () => {
+    expect(campaignEconomics(1_000_000, 0, DEFAULT_PRICING).platformRevenue).toBe(0);
   });
 });
