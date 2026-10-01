@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, Eye, ScanSearch, UserRound } from 'lucide-react';
 import { DEFAULT_PRICING, MIN_PAYOUT_VIEWS } from '@clipers/db';
-import { ButtonLink, MeshGradient, Rail, StatusDot, buttonClass, formatKRW } from '@clipers/ui';
+import { Avatar, ButtonLink, MeshGradient, ProgressBar, Rail, StatusDot, buttonClass, formatCompactKRW, formatKRW } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
 import CampaignTypes from '@/components/campaign-types';
 import ClippingStage from '@/components/clipping-stage';
@@ -54,6 +54,10 @@ const MIN_LANDING_CAMPAIGNS = 4;
 
 const BARS = [0.12, 0.22, 0.36, 0.52, 0.7, 0.92];
 
+// The shared-budget example under the clipping copy, in the marketplace card's budget row. Static on purpose: a budget
+// that moved with the payout beside it would let visitors work out the brand rate.
+const POOL = { total: 5_000_000, remaining: 3_200_000, participants: 42, avatars: ['하린', '도윤', '서아', '민준'] };
+
 export default async function HomePage() {
   const showcaseVideos = await loadShowcaseVideos();
   const campaigns = (await loadLiveCampaigns()).sort((left, right) => right.remainingBudget - left.remainingBudget).slice(0, 8);
@@ -99,7 +103,26 @@ export default async function HomePage() {
           <p className="cl-clipping__lead">
             클리핑은 캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리는 일이에요. 자르고, 자막을 넣고, 순서를 바꾸는 것까지 자유예요.
           </p>
-          <p className="cl-clipping__lead">캠페인은 영상을 알리고 싶은 쪽이 예산을 걸고 여는 요청이에요. 올린 영상의 조회수만큼 이 예산에서 받아요.</p>
+          <p className="cl-clipping__lead">
+            캠페인은 영상을 알리고 싶은 쪽이 예산을 걸고 여는 요청이에요. 참여한 크리에이터들이 각자 올린 영상의 조회수만큼 이 예산을 나눠 받고, 예산이 다
+            쓰이면 캠페인이 끝나요.
+          </p>
+          <div aria-hidden className="cl-clipping__pool">
+            <div className="cl-clipping__pool-row">
+              <span className="cl-ccard__budget">
+                남은 예산 <strong>{formatCompactKRW(POOL.remaining)}</strong> / {formatCompactKRW(POOL.total)}
+              </span>
+              <span className="cl-clipping__pool-people">
+                <span className="cl-clipping__pool-avatars">
+                  {POOL.avatars.map((name) => (
+                    <Avatar key={name} name={name} size="sm" />
+                  ))}
+                </span>
+                참여 {POOL.participants}명
+              </span>
+            </div>
+            <ProgressBar value={1 - POOL.remaining / POOL.total} />
+          </div>
         </div>
         <ClippingStage rate={rate} />
       </section>
