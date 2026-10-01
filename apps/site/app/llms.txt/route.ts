@@ -2,6 +2,7 @@ import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET, MIN_PAYOUT_VIEWS, MIN_WITHDRAWAL,
 import { formatKRW } from '@clipers/ui';
 import { loadLiveCampaigns } from '@/lib/campaigns';
 import { CREATOR_FAQ } from '@/lib/creator-faq';
+import { GUIDES, GUIDE_GROUPS } from '@/lib/guides';
 import { siteUrl } from '@/lib/urls';
 
 export const revalidate = 3600;
@@ -52,6 +53,14 @@ export async function GET() {
     '3. 요구사항에 맞춰 숏폼을 만들어 올리고 링크를 제출합니다.',
     '4. 검수를 통과한 영상의 조회수만큼 매주 정산받고, 원할 때 지급을 요청합니다.',
     '',
+    '## 가이드',
+    ...GUIDE_GROUPS.flatMap((group) => [
+      `### ${group.label}`,
+      ...GUIDES.filter((guide) => guide.group === group.id).map(
+        (guide) => `- [${guide.title}](${siteUrl(`/guides/${guide.slug}`)}): ${guide.answer.join(' ')}`
+      ),
+      '',
+    ]),
     '## 자주 묻는 질문 (크리에이터)',
     ...CREATOR_FAQ.flatMap((item) => [`### ${item.q}`, item.a, '']),
     '## 브랜드·아티스트',
@@ -62,6 +71,7 @@ export async function GET() {
     '## 페이지',
     `- [크리에이터 안내](${siteUrl('/')}): 클리핑 설명, 캠페인 종류, 정산과 지급 기준`,
     `- [캠페인 둘러보기](${siteUrl('/discover')}): 지금 참여할 수 있는 캠페인 목록`,
+    `- [가이드](${siteUrl('/guides')}): 수익창출 전 수익, 클리핑 부업, 상황별·고민별 안내, 플랫폼별 정산`,
     `- [브랜드 안내](${siteUrl('/brands')}): 캠페인 개설과 예산 기준`,
     '',
     '## 진행 중인 캠페인',
