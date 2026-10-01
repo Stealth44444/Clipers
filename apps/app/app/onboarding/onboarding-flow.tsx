@@ -66,7 +66,7 @@ export default function OnboardingFlow() {
         </Button>
       </header>
       <div className="cl-flow__progress">
-        <ProgressBar label="온보딩 진행도" value={(stepIndex + 1) / steps.length} />
+        <ProgressBar bare label="온보딩 진행도" value={(stepIndex + 1) / steps.length} />
       </div>
 
       <main className="cl-flow__body">

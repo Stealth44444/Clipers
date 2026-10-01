@@ -157,13 +157,13 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
           {campaignId ? '캠페인' : '캠페인 목록'}
         </Link>
         <h1 className="cl-editor__title">{campaignId ? '캠페인 수정' : '새 캠페인'}</h1>
-        <div className="cl-editor__progress">
-          <ProgressBar label="작성 진행도" value={progress.done / progress.total} />
-          <span className="cl-meta cl-number">
-            {progress.done}/{progress.total}
-          </span>
-        </div>
+        <span className="cl-meta cl-number cl-editor__count">
+          {progress.done}/{progress.total} 완료
+        </span>
       </header>
+      <div className="cl-editor__progress">
+        <ProgressBar bare label="작성 진행도" value={progress.done / progress.total} />
+      </div>
 
       <div className="cl-editor__body">
         <div className="cl-editor__main">

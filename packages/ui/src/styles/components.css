@@ -195,6 +195,7 @@
 /* ---------- progress ---------- */
 .cl-progress { height: 6px; overflow: hidden; border-radius: var(--radius-full); background: var(--gray-4); }
 .cl-progress__fill { height: 100%; border-radius: inherit; background: var(--tone-solid); transition: width 0.3s ease; }
+.cl-progress--bare { background: transparent; }
 
 /* ---------- stat card ---------- */
 .cl-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); }
@@ -643,8 +644,9 @@
 .cl-editor__back { display: inline-flex; align-items: center; justify-self: start; gap: 2px; color: var(--color-text-muted); font-weight: 500; }
 .cl-editor__back:hover { color: var(--color-text); }
 .cl-editor__title { font-size: var(--font-size-3); text-align: center; }
-.cl-editor__progress { display: flex; align-items: center; justify-self: end; gap: var(--space-2); width: 140px; }
-.cl-editor__progress .cl-progress { flex: 1 1 auto; height: 4px; }
+.cl-editor__count { justify-self: end; }
+.cl-editor__progress { position: sticky; top: 60px; z-index: 30; }
+.cl-editor__progress .cl-progress { height: 3px; border-radius: 0 var(--radius-full) var(--radius-full) 0; }
 .cl-editor__body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--space-5); width: min(1120px, 100% - 48px); margin: 0 auto; padding: var(--space-6) 0 var(--space-9); }
 .cl-editor__main { display: grid; gap: var(--space-4); }
 .cl-editor__aside { position: sticky; top: 84px; align-self: start; }
