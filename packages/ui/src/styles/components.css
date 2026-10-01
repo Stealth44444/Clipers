@@ -826,6 +826,26 @@
 .cl-landing-nav__links { display: flex; gap: var(--space-5); color: var(--color-text-muted); font-size: var(--font-size-2); font-weight: 500; }
 .cl-landing-nav__links a:hover { color: var(--color-text); }
 .cl-landing-nav__actions { display: flex; gap: var(--space-2); margin-left: auto; }
+.cl-landing-nav__links { align-items: center; }
+
+/* Role menu (landing nav): a frosted card listing one landing per audience */
+.cl-role-menu { position: relative; }
+.cl-role-menu__trigger { display: inline-flex; align-items: center; gap: 4px; height: 32px; margin: 0 -10px; padding: 0 10px; border: 0; border-radius: var(--radius-3); background: transparent; color: inherit; font: inherit; cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease; }
+.cl-role-menu__trigger svg { color: var(--color-text-subtle); transition: transform 0.2s ease; }
+.cl-role-menu__trigger:hover, .cl-role-menu__trigger[aria-expanded="true"] { background: var(--gray-a3); color: var(--color-text); }
+.cl-role-menu__trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+.cl-role-menu__panel { position: absolute; top: 100%; left: -18px; z-index: 40; display: grid; gap: 2px; width: 300px; margin-top: 8px; padding: var(--space-3) var(--space-2) var(--space-2); border-radius: 18px; background: #fff; box-shadow: 0 0 0 0.5px rgba(31, 26, 20, 0.08), 0 16px 48px rgba(31, 26, 20, 0.12), 0 4px 12px rgba(31, 26, 20, 0.05); animation: cl-role-menu-in 0.16s ease-out both; }
+.cl-role-menu__panel[hidden] { display: none; }
+/* Hover bridge so the pointer can travel from the trigger to the panel */
+.cl-role-menu__panel::before { position: absolute; inset: -10px 0 auto; height: 10px; content: ""; }
+.cl-role-menu__label { padding: 0 var(--space-3) var(--space-1); color: var(--color-text-subtle); font-size: var(--font-size-1); }
+.cl-role-menu__item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-radius: 12px; transition: background-color 0.15s ease; }
+.cl-role-menu__item:hover, .cl-role-menu__item:focus-visible, .cl-role-menu__item[aria-current="page"] { background: var(--gray-a2); }
+.cl-role-menu__icon { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: var(--gray-a3); color: var(--color-text-muted); }
+.cl-role-menu__title { display: block; color: var(--color-text); font-size: var(--font-size-2); font-weight: 500; }
+.cl-role-menu__description { display: block; color: var(--color-text-subtle); font-size: var(--font-size-1); }
+@keyframes cl-role-menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .cl-role-menu__panel { animation: none; } }
 
 .cl-landing-hero { position: relative; display: grid; justify-items: center; gap: var(--space-5); padding: 96px var(--space-5) 120px; text-align: center; isolation: isolate; }
 .cl-landing-hero::after { position: absolute; inset: 35% -10% -10%; z-index: -1; background: radial-gradient(50% 60% at 50% 100%, rgba(88, 185, 130, 0.28) 0%, rgba(88, 185, 130, 0) 70%), radial-gradient(35% 45% at 70% 90%, rgba(205, 235, 120, 0.35) 0%, rgba(205, 235, 120, 0) 70%); content: ""; filter: blur(8px); }
@@ -854,6 +874,17 @@
 .cl-mock-budget { display: grid; gap: var(--space-3); width: min(340px, 90%); color: var(--color-text-muted); font-size: var(--font-size-2); }
 .cl-mock-budget strong { color: var(--color-text); font-size: var(--font-size-5); font-weight: 600; }
 .cl-mock-logos { display: grid; grid-template-columns: repeat(4, auto); gap: var(--space-4) var(--space-6); }
+.cl-mock-review__status { margin-left: auto; font-size: var(--font-size-1); white-space: nowrap; }
+.cl-mock-list { display: grid; gap: var(--space-2); width: min(360px, 90%); margin: 0; padding: 0; list-style: none; }
+.cl-mock-list li { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-5); background: var(--color-panel); font-size: var(--font-size-2); font-weight: 500; }
+.cl-mock-list li span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cl-mock-list em { margin-left: auto; color: var(--brand-11); font-size: var(--font-size-1); font-style: normal; white-space: nowrap; }
+.cl-mock-payout { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); width: min(340px, 90%); padding: var(--space-4); border-radius: var(--radius-5); background: var(--color-panel); color: var(--color-text-muted); font-size: var(--font-size-2); }
+.cl-mock-payout strong { display: block; margin-top: 2px; color: var(--color-text); font-size: var(--font-size-5); font-weight: 600; font-variant-numeric: tabular-nums; }
+.cl-landing-campaigns { padding-top: 24px; }
+.cl-landing-campaigns .cl-section-header { margin-bottom: var(--space-5); }
+.cl-landing-campaigns .cl-section-header__title { font-size: clamp(24px, 3vw, 32px); font-weight: 600; letter-spacing: -0.03em; }
+.cl-landing-campaigns .cl-section-header__description { margin-top: var(--space-1); font-size: var(--font-size-3); }
 
 
 .cl-audiences { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
@@ -884,7 +915,8 @@
 .cl-landing-footer p { margin-left: auto; }
 
 @media (max-width: 860px) {
-  .cl-landing-nav__links { display: none; }
+  .cl-landing-nav__links > a { display: none; }
+  .cl-landing-nav { gap: var(--space-4); }
   .cl-bento { grid-template-columns: minmax(0, 1fr); }
   .cl-landing-hero { padding: 64px var(--space-4) 88px; }
   .cl-landing-section { padding: 48px 0; }
@@ -1010,7 +1042,8 @@
 .cl-logo-wall li { display: inline-flex; align-items: center; justify-content: center; width: 104px; }
 .cl-logo-wall svg { display: block; width: auto; height: 36px; max-width: 100%; }
 @media (max-width: 640px) {
-  .cl-logo-wall { gap: var(--space-6) var(--space-6); }
-  .cl-logo-wall li { width: 64px; }
+  /* 9 marks: a 3×3 grid on phones instead of a lone mark on the last row */
+  .cl-logo-wall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6) var(--space-5); width: min(300px, 100%); }
+  .cl-logo-wall li { width: auto; }
   .cl-logo-wall svg { height: 28px; }
 }

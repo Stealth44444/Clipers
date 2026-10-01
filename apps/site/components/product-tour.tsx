@@ -42,7 +42,9 @@ const VIEW_SERIES = [0, 8, 21, 39, 64, 98, 151, 238, 352, 488, 640, 790, 930, 10
 
 type Cursor = { x: number; y: number; clicking: boolean; visible: boolean };
 
-export default function ProductTour() {
+/** `creator` skips the brand-side launch scene and starts at applying. */
+export default function ProductTour({ audience = 'all' }: { audience?: 'all' | 'creator' }) {
+  const scenes = audience === 'creator' ? SCENES.filter((item) => item.role === '크리에이터') : SCENES;
   const rootRef = useRef<HTMLDivElement>(null);
   const windowRef = useRef<HTMLDivElement>(null);
   const [scene, setScene] = useState(0);
@@ -67,15 +69,15 @@ export default function ProductTour() {
     const timer = window.setInterval(() => {
       setElapsed((current) => {
         if (current + TICK_MS < SCENE_MS) return current + TICK_MS;
-        setScene((index) => (index + 1) % SCENES.length);
+        setScene((index) => (index + 1) % scenes.length);
         return 0;
       });
     }, TICK_MS);
     return () => window.clearInterval(timer);
-  }, [playing]);
+  }, [playing, scenes.length]);
 
   const progress = Math.min(1, elapsed / SCENE_MS);
-  const current = SCENES[scene];
+  const current = scenes[scene];
   const after = (fraction: number) => progress >= fraction;
 
   // Cursor: glides to the scene's target before the click, presses on it, then rests.
@@ -123,7 +125,7 @@ export default function ProductTour() {
       </div>
     );
   } else if (current.id === 'apply') {
-    const clicked = after(SCENES[1].click!);
+    const clicked = after(current.click!);
     body = (
       <div className="cl-tour-panel">
         <div className="cl-tour-cover" />
@@ -177,7 +179,7 @@ export default function ProductTour() {
     );
   } else {
     const earned = Math.round(968_000 * Math.min(1, progress * 1.6));
-    const requested = after(SCENES[4].click!);
+    const requested = after(current.click!);
     body = (
       <div className="cl-tour-panel">
         <p className="cl-tour-eyebrow">받을 금액</p>
@@ -248,7 +250,7 @@ export default function ProductTour() {
       </div>
 
       <div aria-label="장면" className="cl-tour__chapters" role="tablist">
-        {SCENES.map((item, index) => (
+        {scenes.map((item, index) => (
           <button
             aria-selected={index === scene}
             className="cl-tour__chapter"
