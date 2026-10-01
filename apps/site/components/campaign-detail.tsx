@@ -1,6 +1,6 @@
 import { CircleCheck } from 'lucide-react';
 import { platformLabel } from '@clipers/db';
-import { Avatar, ButtonLink, PlatformIcon, PlatformIcons, ProgressBar, RankMedal, formatCompactKRW, formatKRW } from '@clipers/ui';
+import { Avatar, ButtonLink, PlatformIcon, ProgressBar, RankMedal, formatCompactKRW, formatKRW } from '@clipers/ui';
 import type { CampaignDetail as Detail } from '@/lib/campaigns';
 import { appUrl } from '@/lib/urls';
 import ActivityChart from './activity-chart';
@@ -26,7 +26,6 @@ export default function CampaignDetail({ campaign }: { campaign: Detail }) {
       </header>
 
       <div className="cl-detail__bar">
-        <PlatformIcons label={`플랫폼 ${campaign.platforms.length}개`} platforms={campaign.platforms} />
         <ButtonLink href={applyUrl} variant="primary">
           지원하기
         </ButtonLink>
