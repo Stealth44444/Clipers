@@ -1,6 +1,9 @@
+import type { ReactNode } from 'react';
 import { Avatar, PlatformIcon, ProgressBar, formatCompactKRW, formatKRW } from '@clipers/ui';
+import type { ShowcaseVideo } from '@/lib/youtube-showcase';
 
-// Illustrative campaign cards for marketing visuals. They reuse the marketplace card styles but are not links.
+// Illustrative campaign cards for marketing visuals, in the marketplace card styles. With a real YouTube video they show
+// its thumbnail, title and channel and link to it on YouTube; budget, rate and participants stay illustrative.
 
 export type MockCampaign = {
   brand: string;
@@ -31,16 +34,34 @@ export const MOCK_CAMPAIGNS: Record<'clipping' | 'ugc' | 'music', MockCampaign[]
   ],
 };
 
-export default function MockCampaignCard({ campaign, rate = 800 }: { campaign: MockCampaign; rate?: number }) {
+function Shell({ video, children }: { video?: ShowcaseVideo; children: ReactNode }) {
+  if (!video) {
+    return (
+      <div aria-hidden className="cl-ccard cl-ccard--mock">
+        {children}
+      </div>
+    );
+  }
   return (
-    <div aria-hidden className="cl-ccard cl-ccard--mock">
-      <div className="cl-ccard__cover" style={{ background: campaign.cover }} />
+    <a aria-label={`${video.title} · ${video.channel} (YouTube에서 보기)`} className="cl-ccard cl-ccard--mock" href={video.url} rel="noreferrer" target="_blank">
+      {children}
+    </a>
+  );
+}
+
+export default function MockCampaignCard({ campaign, video, rate = 800 }: { campaign: MockCampaign; video?: ShowcaseVideo; rate?: number }) {
+  const brand = video?.channel ?? campaign.brand;
+  return (
+    <Shell video={video}>
+      <div className="cl-ccard__cover" style={video ? undefined : { background: campaign.cover }}>
+        {video && <img alt="" className="cl-ccard__image" loading="lazy" referrerPolicy="no-referrer" src={video.thumbnail} />}
+      </div>
       <div className="cl-ccard__body">
         <p className="cl-ccard__brand">
-          <Avatar name={campaign.brand} size="sm" />
-          <span className="cl-ccard__brand-name">{campaign.brand}</span>
+          <Avatar name={brand} size="sm" src={video?.avatar} />
+          <span className="cl-ccard__brand-name">{brand}</span>
         </p>
-        <p className="cl-ccard__title">{campaign.title}</p>
+        <p className="cl-ccard__title">{video?.title ?? campaign.title}</p>
         <div className="cl-ccard__row">
           <span className="cl-ccard__platforms">
             {campaign.platforms.map((platform) => (
@@ -61,6 +82,6 @@ export default function MockCampaignCard({ campaign, rate = 800 }: { campaign: M
         </div>
         <ProgressBar label="예산 사용률" value={1 - campaign.remaining / campaign.total} />
       </div>
-    </div>
+    </Shell>
   );
 }

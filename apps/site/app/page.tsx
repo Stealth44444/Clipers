@@ -11,6 +11,7 @@ import LogoWall from '@/components/logo-wall';
 import NotificationStack from '@/components/notification-stack';
 import RotatingHeadline from '@/components/rotating-headline';
 import { loadLiveCampaigns } from '@/lib/campaigns';
+import { loadShowcaseVideos } from '@/lib/youtube-showcase';
 
 // Creator landing (the front door; brands have /brands). Copy draft: docs/superpowers/specs/2026-10-01-landing-copy-draft.md.
 // Sections below the hero follow the contentrewards.com creator page (kept by request). No invented totals or testimonials.
@@ -42,6 +43,7 @@ const FAQ = [
 const BARS = [0.12, 0.22, 0.36, 0.52, 0.7, 0.92];
 
 export default async function HomePage() {
+  const showcaseVideos = await loadShowcaseVideos();
   const campaigns = (await loadLiveCampaigns()).sort((left, right) => right.remainingBudget - left.remainingBudget).slice(0, 8);
   const rate = DEFAULT_PRICING.creatorCpm;
 
@@ -180,7 +182,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <CampaignTypes />
+      <CampaignTypes videos={showcaseVideos} />
 
       <LandingFaq items={FAQ} path="/" />
 
