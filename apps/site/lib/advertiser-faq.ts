@@ -7,7 +7,7 @@ const minBudget = `${(MIN_CAMPAIGN_BUDGET / 10_000).toLocaleString('ko-KR')}만 
 const hours = REVIEW_SLA_OPTIONS.map((value) => `${value}시간`).join('이나 ');
 
 export const ADVERTISER_FAQ: { id: string; q: string; a: string }[] = [
-  { id: 'min-budget', q: '최소 예산이 있나요?', a: `캠페인은 ${minBudget}부터 열 수 있어요. 상한은 없어요.` },
+  { id: 'min-budget', q: '최소 예산이 있나요?', a: `캠페인은 ${minBudget}부터 열 수 있어요. 금액은 부가세 별도이고, 상한은 없어요.` },
   { id: 'cost', q: '비용은 어떻게 계산되나요?', a: '검수를 통과한 영상의 검증된 조회수만큼만 예산이 쓰여요. 조회수가 나오지 않으면 예산도 쓰이지 않아요.' },
   {
     id: 'expected-views',

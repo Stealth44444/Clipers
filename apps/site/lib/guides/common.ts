@@ -13,7 +13,7 @@ export const START_STEPS = [
 ];
 
 export const ADVERTISER_NOTES = [
-  `캠페인은 ${MIN_BUDGET}부터 열 수 있고, 검증된 조회수만큼만 예산이 쓰여요.`,
+  `캠페인은 ${MIN_BUDGET}(부가세 별도)부터 열 수 있고, 검증된 조회수만큼만 예산이 쓰여요.`,
   '캠페인을 만들 때 예산을 넣으면 예상 조회수를 바로 확인할 수 있어요.',
 ];
 

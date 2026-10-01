@@ -3,6 +3,7 @@ export * from './platforms';
 export * from './onboarding';
 export * from './pricing';
 export * from './payouts';
+export * from './billing';
 export * from './campaignDraft';
 export * from './paging';
 export * from './services/errors';

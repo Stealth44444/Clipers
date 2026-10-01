@@ -258,7 +258,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
 
           <Section description={`검증된 조회수 1천 회당 ${formatKRW(pricing.brandCpm)}씩 예산이 쓰여요. 쓰지 않은 예산은 남아 있어요.`} title="예산">
             <div className="cl-form-row">
-              <Field hint={views > 0 ? `예상 조회수 약 ${views.toLocaleString('ko-KR')}회` : '최소 1,000,000원'} htmlFor="campaign-budget" label="총예산 (원)">
+              <Field hint={views > 0 ? `예상 조회수 약 ${views.toLocaleString('ko-KR')}회` : '최소 1,000,000원'} htmlFor="campaign-budget" label="총예산 (원, 부가세 별도)">
                 <Input
                   id="campaign-budget"
                   inputMode="numeric"

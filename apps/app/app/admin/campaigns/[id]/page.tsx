@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { campaignEconomics, campaignPricing, creatorPayoutToClipCap, fetchAllRows, platformLabels } from '@clipers/db';
+import { campaignEconomics, campaignPricing, creatorPayoutToClipCap, depositAmount, fetchAllRows, platformLabels } from '@clipers/db';
 import { Badge, Card, Page, PageHeader, Stack, SummaryList, formatKRW } from '@clipers/ui';
 import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
@@ -35,7 +35,7 @@ export default async function AdminCampaignPage({ params }: { params: Promise<{ 
     <Page>
       <PageHeader
         actions={
-          campaign.status === 'pending_escrow' ? <ConfirmDepositAction amount={totalBudget} campaignId={campaign.id} reviewerId={user.id} /> : undefined
+          campaign.status === 'pending_escrow' ? <ConfirmDepositAction amount={depositAmount(totalBudget)} campaignId={campaign.id} reviewerId={user.id} /> : undefined
         }
         description={
           <span className="cl-inline">

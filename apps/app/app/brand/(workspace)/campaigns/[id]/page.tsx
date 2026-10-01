@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ExternalLink, Eye, Film, Pencil, Target, Wallet } from 'lucide-react';
-import { campaignPricing, creatorPayoutToClipCap, platformLabel, platformLabels } from '@clipers/db';
+import Link from 'next/link';
+import { campaignPricing, creatorPayoutToClipCap, depositAmount, platformLabel, platformLabels, vatOn } from '@clipers/db';
 import {
   Badge,
   ButtonLink,
@@ -48,7 +49,11 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
       .order('submitted_at', { ascending: false }),
   ]);
 
-  const finance = (await loadCampaignFinances(supabase, [id])).get(id);
+  const [finances, { data: billing }] = await Promise.all([
+    loadCampaignFinances(supabase, [id]),
+    supabase.from('brand_billing_profiles').select('company_name').eq('brand_id', user.id).maybeSingle(),
+  ]);
+  const finance = finances.get(id);
   if (!finance) notFound();
   const pricing = campaignPricing(finance);
   const clipCap = rates.data?.[0] ? creatorPayoutToClipCap(Number(rates.data[0].max_payout), pricing) : null;
@@ -76,18 +81,29 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
       />
       <Stack>
         {campaign.status === 'draft' && (
-          <Card description="입금을 마치고 아래 버튼을 누르면 운영팀이 확인한 뒤 캠페인을 공개해요." title="예산 입금">
+          <Card description="입금을 마치고 아래 버튼을 누르면 운영팀이 확인한 뒤 캠페인을 공개하고, 세금계산서를 발행해요." title="예산 입금">
             <div className="cl-stack-tight">
               <SummaryList
                 rows={[
-                  { label: '입금 금액', value: formatKRW(summary.total_budget) },
+                  { label: '서비스 대금', value: formatKRW(summary.total_budget) },
+                  { label: '부가세 (10%)', value: formatKRW(vatOn(summary.total_budget)) },
+                  { label: '입금 금액', value: <strong>{formatKRW(depositAmount(summary.total_budget))}</strong> },
                   { label: '입금 계좌', value: bankTransferInfo ?? '운영팀에 문의해 주세요' },
                   { label: '입금자명', value: '브랜드명과 같게 입력해 주세요' },
                 ]}
               />
-              <div>
-                <DepositButton campaignId={campaign.id} />
-              </div>
+              {billing ? (
+                <div>
+                  <DepositButton campaignId={campaign.id} />
+                </div>
+              ) : (
+                <p className="cl-alert cl-tone-amber" role="status">
+                  입금을 알리기 전에 세금계산서 정보를 입력해 주세요.{' '}
+                  <Link className="cl-link" href="/brand/settings#billing">
+                    세금계산서 정보 입력
+                  </Link>
+                </p>
+              )}
             </div>
           </Card>
         )}
