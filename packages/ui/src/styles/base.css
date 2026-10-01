@@ -43,6 +43,26 @@ h3 {
   line-height: 1.3;
 }
 
+/* Korean line breaks: words never split (keep-all on body); headings balance their lines; body text avoids a lone
+   word on its last line. .cl-phrase keeps a sentence or phrase together, so lines break between them first. */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+p,
+li,
+dd,
+summary {
+  text-wrap: pretty;
+}
+
+.cl-phrase {
+  display: inline-block;
+}
+
 a {
   color: inherit;
   text-decoration: none;

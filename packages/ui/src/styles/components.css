@@ -898,7 +898,8 @@
 .cl-figures dt { font-size: clamp(22px, 2.6vw, 28px); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
 .cl-figures dd { margin: 2px 0 0; color: var(--color-text-subtle); font-size: var(--font-size-2); }
 
-.cl-faq { display: grid; gap: var(--space-2); max-width: 820px; margin: 0 auto; scroll-margin-top: 88px; }
+.cl-faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--space-2); max-width: 1080px; margin: 0 auto; scroll-margin-top: 88px; }
+.cl-faq__column { display: grid; gap: var(--space-2); }
 .cl-faq details { border-radius: var(--radius-5); background: var(--color-panel); }
 .cl-faq summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-4) var(--space-5); font-size: var(--font-size-3); font-weight: 600; cursor: pointer; list-style: none; }
 .cl-faq summary::-webkit-details-marker { display: none; }
@@ -923,6 +924,7 @@
   .cl-bento { grid-template-columns: minmax(0, 1fr); }
   .cl-landing-hero { padding: 64px var(--space-4) 88px; }
   .cl-landing-section { padding: 48px 0; }
+  .cl-faq { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 480px) {
   .cl-landing-nav { gap: var(--space-3); padding: 0 var(--space-4); }
@@ -1515,3 +1517,6 @@
 @media (max-width: 640px) {
   .cl-rotator { margin-bottom: 36px; }
 }
+
+/* Short landing copy (up to ~4 lines) reads best with even lines */
+.cl-kinds__text, .cl-landing-hero__lead, .cl-closing__lead, .cl-bento5__card > p, .cl-audience__lead, .cl-landing-section__lead { text-wrap: balance; }

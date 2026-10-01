@@ -86,8 +86,8 @@ export default async function HomePage() {
             클리핑은 캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 올리는 일이에요. 자르고, 자막을 넣고, 순서를 바꾸는 것까지 자유예요.
           </p>
           <p className="cl-clipping__lead">
-            캠페인은 브랜드나 아티스트, 크리에이터가 예산을 걸고 여는 숏폼 제작 요청이에요. 참여한 크리에이터들이 각자 올린 영상의 조회수만큼 이 예산을 나눠
-            받고, 예산이 다 쓰이면 캠페인이 끝나요.
+            캠페인은 브랜드나 아티스트, 크리에이터가 예산을 걸고 여는 숏폼 제작 요청이에요. 참여한&nbsp;크리에이터들이 각자 올린 영상의 조회수만큼 예산을 나눠 받고,
+            예산이 다 쓰이면 캠페인이 끝나요.
           </p>
           <div aria-hidden className="cl-clipping__pool">
             <div className="cl-clipping__pool-row">
@@ -226,7 +226,9 @@ export default async function HomePage() {
         <h2 className="cl-closing__title">
           <span>수익창출을 기다리지 말고,</span> <span>오늘부터 받으세요</span>
         </h2>
-        <p className="cl-closing__lead">가입과 지원은 무료예요. 새 채널로도 지금 바로 시작할 수 있어요.</p>
+        <p className="cl-closing__lead">
+          <span className="cl-phrase">가입과 지원은 무료예요.</span> <span className="cl-phrase">새 채널로도 지금 바로 시작할 수 있어요.</span>
+        </p>
         <div className="cl-closing__actions">
           <ButtonLink href={SIGN_UP} size="lg" variant="primary">
             무료로 시작하기

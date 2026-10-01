@@ -9,27 +9,28 @@ import type { ShowcaseKind, ShowcaseVideo } from '@/lib/youtube-showcase';
 // each kind takes over in turn (a segmented progress bar shows where you are and jumps on click);
 // on narrow screens the kinds simply stack. Cards show real YouTube videos when the page passes them in.
 
+//   keeps a modifier with its noun (정해 준 영상을) so Korean lines don't break between them.
 const KINDS: { id: keyof typeof MOCK_CAMPAIGNS; label: string; icon: ReactNode; title: string; body: string }[] = [
   {
     id: 'clipping',
     label: '클리핑',
     icon: <Scissors size={26} />,
     title: '클리핑 캠페인.',
-    body: '캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 만들어요. 얼굴을 드러내지 않아도, 편집만 할 줄 알면 시작할 수 있어요.',
+    body: '캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 만들어요. 얼굴을 드러내지 않아도, 편집만 할 줄 알면 시작할 수 있어요.',
   },
   {
     id: 'ugc',
     label: '소개',
     icon: <Clapperboard size={26} />,
     title: '소개 캠페인.',
-    body: '제품이나 서비스를 내 스타일대로 소개하는 숏폼을 찍어요. 리뷰, 일상, 상황극 무엇이든 괜찮아요.',
+    body: '제품이나 서비스를 내 스타일대로 소개하는 숏폼을 찍어요. 리뷰, 일상, 상황극 무엇이든 괜찮아요.',
   },
   {
     id: 'music',
     label: '음악',
     icon: <Music size={26} />,
     title: '음악 캠페인.',
-    body: '정해진 음원을 배경음으로 쓰거나 챌린지에 참여해요. 춤, 립싱크, 브이로그 무엇이든 괜찮아요.',
+    body: '정해진 음원을 배경음으로 쓰거나 챌린지에 참여해요. 춤, 립싱크, 브이로그 무엇이든 괜찮아요.',
   },
 ];
 
@@ -60,6 +61,9 @@ export default function CampaignTypes({ videos = {} }: { videos?: Partial<Record
       window.scrollTo({ top, behavior: 'smooth' });
       window.setTimeout(() => (locked = false), 700);
     };
+    // When the last wheel event scrolled the page freely (arriving at the section), a burst still in flight
+    // shouldn't also skip the first kind: it only settles the stage.
+    let lastFree = 0;
     const onWheel = (event: WheelEvent) => {
       if (Math.abs(event.deltaY) < 2 || event.ctrlKey || window.innerWidth <= 860) return;
       const rect = root.getBoundingClientRect();
@@ -67,14 +71,23 @@ export default function CampaignTypes({ videos = {} }: { videos?: Partial<Record
       const scrolled = -rect.top;
       const down = event.deltaY > 0;
       // Only while the stage is pinned, and only in the direction that still has kinds ahead.
-      if (travel <= 0 || (down ? scrolled < -1 || scrolled >= travel - 1 : scrolled <= 1 || scrolled > travel + 1)) return;
+      if (travel <= 0 || (down ? scrolled < -1 || scrolled >= travel - 1 : scrolled <= 1 || scrolled > travel + 1)) {
+        lastFree = event.timeStamp;
+        return;
+      }
       event.preventDefault();
       if (locked) return;
       const top = rect.top + window.scrollY;
-      const centers = KINDS.map((_, index) => travel * ((index + 0.5) / KINDS.length));
-      // The next kind's centre in the scroll direction; past the first or last, leave the section.
-      const target = down ? centers.find((center) => center > scrolled + 4) : [...centers].reverse().find((center) => center < scrolled - 4);
-      if (target !== undefined) go(top + target);
+      const center = (index: number) => top + travel * ((index + 0.5) / KINDS.length);
+      // The kind on screen now; one gesture always moves exactly one kind (or leaves past either end).
+      const current = Math.min(KINDS.length - 1, Math.max(0, Math.floor((scrolled / travel) * KINDS.length)));
+      if (event.timeStamp - lastFree < 250) {
+        lastFree = event.timeStamp;
+        go(center(current));
+        return;
+      }
+      const target = current + (down ? 1 : -1);
+      if (target >= 0 && target < KINDS.length) go(center(target));
       else go(down ? top + travel + window.innerHeight * 0.6 : top - window.innerHeight * 0.6);
     };
     measure();

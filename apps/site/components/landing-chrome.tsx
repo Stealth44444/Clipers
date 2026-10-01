@@ -52,17 +52,24 @@ export default function LandingChrome({ path, cta, children }: { path: string; c
 
 /** FAQ list plus its FAQPage structured data. */
 export function LandingFaq({ items, path }: { items: { q: string; a: string }[]; path: string }) {
+  // Two independent stacks, so opening an answer only pushes down its own column.
+  const half = Math.ceil(items.length / 2);
+  const columns = [items.slice(0, half), items.slice(half)];
   return (
     <section aria-labelledby="faq" className="cl-landing-section">
       <h2 className="cl-landing-section__title" id="faq">
         자주 묻는 질문
       </h2>
       <div className="cl-faq">
-        {items.map((item) => (
-          <details key={item.q}>
-            <summary>{item.q}</summary>
-            <p>{item.a}</p>
-          </details>
+        {columns.map((column, i) => (
+          <div className="cl-faq__column" key={i}>
+            {column.map((item) => (
+              <details key={item.q}>
+                <summary>{item.q}</summary>
+                <p>{item.a}</p>
+              </details>
+            ))}
+          </div>
         ))}
       </div>
       <JsonLd
