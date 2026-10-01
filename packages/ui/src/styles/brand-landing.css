@@ -139,3 +139,39 @@
   .cl-cases__grid li { animation: none; }
   .cl-cases__track span::after { transform: none; }
 }
+
+/* Controls bento (reference: "The best by design.") — 2 + 3 columns, then 3 + 2 */
+.cl-bento2 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.cl-bento2__card { position: relative; min-height: 330px; overflow: hidden; border-radius: 28px; background: var(--color-panel); }
+.cl-bento2__card[data-size="s"] { grid-column: span 2; }
+.cl-bento2__card[data-size="l"] { grid-column: span 3; }
+.cl-bento2__text { position: relative; z-index: 1; max-width: 330px; padding: 36px 36px 0; }
+.cl-bento2__card[data-size="l"] .cl-bento2__text { position: absolute; top: 50%; left: 0; max-width: 300px; padding: 0 0 0 40px; transform: translateY(-50%); }
+.cl-bento2__text h3 { font-size: 28px; font-weight: 600; letter-spacing: -0.035em; }
+.cl-bento2__text p { margin-top: 8px; color: var(--color-text-muted); font-size: var(--font-size-3); line-height: 1.6; }
+.cl-bento2__visual > .cl-bdemo { position: absolute; right: 0; bottom: 0; border-radius: 16px 0 0 0; }
+.cl-bento2__card[data-size="s"] .cl-bento2__visual > .cl-bdemo { left: 36px; }
+.cl-bento2__card[data-size="l"] .cl-bento2__visual > .cl-bdemo { top: 40px; left: 46%; }
+.cl-bdemo__bars { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.cl-bdemo__bars li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 12px; }
+.cl-bdemo__bars li > span:first-child { color: var(--color-text-muted); font-size: 12.5px; }
+.cl-bdemo__bars .cl-progress { grid-column: 1 / -1; grid-row: 2; }
+.cl-bdemo__bars .cl-progress__fill { transition: width 1.2s ease; }
+.cl-bdemo__bars .cl-status-dot { font-size: 12.5px; }
+.cl-bdemo__people { display: grid; margin: 0; padding: 0; list-style: none; }
+.cl-bdemo__people li { display: flex; align-items: center; gap: 12px; padding: 11px 0; box-shadow: inset 0 -1px 0 var(--gray-a3); }
+.cl-bdemo__people li:last-child { box-shadow: none; }
+.cl-bdemo__person { display: grid; flex: 1 1 auto; min-width: 0; }
+.cl-bdemo__person span { font-weight: 500; }
+.cl-bdemo__person small { color: var(--color-text-subtle); font-size: 11.5px; }
+.cl-bdemo__people .cl-status-dot { font-size: 12.5px; }
+@media (max-width: 960px) {
+  .cl-bento2 { grid-template-columns: minmax(0, 1fr); }
+  .cl-bento2__card[data-size] { display: grid; grid-column: auto; min-height: 0; }
+  .cl-bento2__card[data-size] .cl-bento2__text { position: relative; top: auto; max-width: none; padding: 32px 28px 0; transform: none; }
+  .cl-bento2__visual { position: relative; margin-top: 24px; padding-left: 28px; }
+  .cl-bento2__card[data-size] .cl-bento2__visual > .cl-bdemo { position: relative; top: auto; right: auto; bottom: auto; left: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-bdemo__bars .cl-progress__fill { transition: none; }
+}
