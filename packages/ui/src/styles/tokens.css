@@ -55,7 +55,8 @@
   --color-text: var(--gray-12);
   --color-text-muted: var(--gray-11);
   --color-text-subtle: var(--gray-10);
-  --color-border: var(--gray-a3);
+  /* Surfaces are separated by tone, not outlines; this is only for the rare faint divider. */
+  --color-border: var(--gray-a2);
 
   --space-1: 4px;
   --space-2: 8px;
@@ -109,7 +110,7 @@
   --bg-primary: var(--color-background);
   --bg-panel: var(--color-panel);
   --text-primary: var(--color-text);
-  --border-stroke: var(--gray-a4);
+  --border-stroke: var(--gray-a2);
   --border-width: 1px;
   --brand-primary: var(--brand-9);
   --brand-primary-dark: #479a6b;

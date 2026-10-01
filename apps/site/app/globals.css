@@ -20,7 +20,6 @@
   justify-content: space-between;
   height: 56px;
   box-sizing: border-box;
-  border-bottom: var(--border-width) solid var(--border-stroke);
   padding: 0 24px;
   background: var(--bg-primary);
 }
@@ -72,7 +71,6 @@
 
 .app-section {
   padding: 28px 0;
-  border-top: var(--border-width) solid var(--border-stroke);
 }
 
 .app-section h2 {
@@ -82,8 +80,8 @@
 
 .app-table-wrap {
   overflow-x: auto;
-  border-top: var(--border-width) solid var(--border-stroke);
-  border-bottom: var(--border-width) solid var(--border-stroke);
+  border-radius: var(--radius-5);
+  background: var(--color-panel);
 }
 
 .app-table {
@@ -119,20 +117,20 @@
   min-height: 40px;
   align-items: center;
   justify-content: center;
-  border: 1px solid #565656;
-  border-radius: var(--radius-button);
-  padding: 0 14px;
-  background: transparent;
+  border: 0;
+  border-radius: var(--radius-full);
+  padding: 0 16px;
+  background: var(--gray-4);
   color: var(--text-primary);
   cursor: pointer;
   white-space: nowrap;
 }
 
 .app-button-primary {
-  border-color: var(--brand-primary);
-  background: var(--brand-primary);
-  color: #07150e;
-  font-weight: 550;
+  background: var(--button-primary-surface);
+  box-shadow: var(--button-primary-edge);
+  color: var(--brand-contrast);
+  font-weight: 600;
 }
 
 @media (max-width: 640px) {

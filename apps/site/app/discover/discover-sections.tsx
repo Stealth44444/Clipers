@@ -37,7 +37,7 @@ export function DiscoverGrid({ campaigns, topClips }: { campaigns: CampaignCard[
               <Link
                 key={campaign.id}
                 href={`/campaigns/${campaign.id}`}
-                style={{ flex: '0 0 360px', display: 'block', borderRadius: 12, overflow: 'hidden', border: '1px solid #333' }}
+                style={{ flex: '0 0 360px', display: 'block', borderRadius: 12, overflow: 'hidden', background: 'var(--color-panel)' }}
               >
                 <div
                   style={{
@@ -62,7 +62,7 @@ export function DiscoverGrid({ campaigns, topClips }: { campaigns: CampaignCard[
           aria-label="캠페인 검색"
           onChange={(event) => setKeyword(event.target.value)}
           placeholder="예: 게임 캠페인 보여줘"
-          style={{ width: '100%', maxWidth: 480, boxSizing: 'border-box', padding: '11px 12px', borderRadius: 6, border: '1px solid #454545', background: '#181818', color: '#fff' }}
+          style={{ width: '100%', maxWidth: 480, boxSizing: 'border-box', padding: '11px 12px', borderRadius: 8, border: 0, background: 'var(--color-field)', color: 'var(--color-text)' }}
           value={keyword}
         />
       </section>
@@ -74,7 +74,7 @@ export function DiscoverGrid({ campaigns, topClips }: { campaigns: CampaignCard[
             <Link
               key={campaign.id}
               href={`/campaigns/${campaign.id}`}
-              style={{ display: 'block', borderRadius: 12, overflow: 'hidden', border: '1px solid #333' }}
+              style={{ display: 'block', borderRadius: 12, overflow: 'hidden', background: 'var(--color-panel)' }}
             >
               <div
                 style={{

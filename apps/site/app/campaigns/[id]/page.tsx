@@ -148,7 +148,7 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
             <p className="app-muted">참여 크리에이터 평균 수익 {averageEarning.toLocaleString('ko-KR')}원</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
               {leaderboard.map((entry) => (
-                <div key={entry.creatorId} style={{ border: '1px solid #333', borderRadius: 12, padding: 16 }}>
+                <div key={entry.creatorId} style={{ background: 'var(--color-panel)', borderRadius: 12, padding: 16 }}>
                   <p style={{ fontSize: 24 }}>{medal[entry.rank - 1] ?? `#${entry.rank}`}</p>
                   <p>{entry.creatorName}</p>
                   <p className="app-muted">{entry.totalAmount.toLocaleString('ko-KR')}원</p>

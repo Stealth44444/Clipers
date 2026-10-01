@@ -9,7 +9,7 @@
 .app-heading h1,
 .app-auth-panel h1 { font-size: var(--font-size-7); }
 .app-muted { color: var(--color-text-muted); }
-.app-section { padding: var(--space-6) 0; border-top: 1px solid var(--color-border); }
+.app-section { padding: var(--space-6) 0; }
 .app-section h2 { margin: 0 0 18px; font-size: var(--font-size-4); }
 .app-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-5); background: var(--color-panel); }
 .app-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; text-align: left; }
@@ -31,10 +31,10 @@
 .app-form select,
 .app-form textarea,
 .app-table textarea,
-.app-table input { width: 100%; border: 1px solid var(--gray-a4); border-radius: var(--radius-4); padding: 9px 12px; background: var(--color-field); color: var(--color-text); }
+.app-table input { width: 100%; border: 1px solid transparent; border-radius: var(--radius-4); padding: 9px 12px; background: var(--color-field); color: var(--color-text); }
 .app-form textarea,
 .app-table textarea { min-height: 84px; resize: vertical; }
-.app-button { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-full); padding: 0 16px; background: var(--gray-4); box-shadow: inset 0 0 0 1px var(--gray-a4), var(--shadow-control); color: var(--color-text); font-weight: 550; cursor: pointer; white-space: nowrap; }
+.app-button { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-full); padding: 0 16px; background: var(--gray-4); color: var(--color-text); font-weight: 600; cursor: pointer; white-space: nowrap; }
 .app-button:hover { background: var(--gray-5); }
 .app-button-primary { background: var(--button-primary-surface); box-shadow: var(--button-primary-edge); color: var(--brand-contrast); }
 .app-button-primary:hover { background: var(--button-primary-surface-hover); }
