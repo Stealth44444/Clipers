@@ -35,7 +35,12 @@ export default function SubmitClipDialog({ campaignId, campaignTitle, platforms,
       .insert({ campaign_id: campaignId, creator_id: creatorId, platform, url: url.trim() });
     setSubmitting(false);
     if (insertError) {
-      setError('제출하지 못했어요. 링크와 플랫폼을 확인한 뒤 다시 시도해 주세요.');
+      // 23505: clips_video_key_active_unique — this video is already submitted (here or in another campaign).
+      setError(
+        insertError.code === '23505'
+          ? '이미 제출된 영상이에요. 같은 영상은 한 번만 제출할 수 있어요.'
+          : '제출하지 못했어요. 링크와 플랫폼을 확인한 뒤 다시 시도해 주세요.'
+      );
       return;
     }
     setUrl('');

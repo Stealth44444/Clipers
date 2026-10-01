@@ -92,7 +92,7 @@ const NAVIGATION: Record<WorkspaceRole, SidebarSection[]> = {
       title: '정산',
       items: [
         { href: '/admin/deposits', label: '입금 확인', icon: <Landmark {...ICON} /> },
-        { href: '/admin/settlements', label: '주간 정산', icon: <Banknote {...ICON} /> },
+        { href: '/admin/settlements', label: '정산·지급', icon: <Banknote {...ICON} /> },
       ],
     },
   ],

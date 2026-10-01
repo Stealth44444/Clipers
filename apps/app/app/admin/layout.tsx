@@ -14,6 +14,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         '/admin/view-reports': counts.viewReports,
         '/admin/disputes': counts.disputes,
         '/admin/deposits': counts.deposits,
+        '/admin/settlements': counts.payouts,
       }}
       displayName={profile.display_name}
       role="admin"

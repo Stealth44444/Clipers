@@ -296,31 +296,6 @@ export default function SettlementPanel() {
     }
   }
 
-  async function markPaid(settlement: StoredSettlement) {
-    if (!window.confirm('계좌 이체를 완료한 건만 지급 완료 처리하세요.')) return;
-
-    setWorking(true);
-    setError('');
-    setMessage('');
-    const { data, error: updateError } = await getSupabaseBrowserClient()
-      .from('settlements')
-      .update({ status: 'paid' })
-      .eq('id', settlement.id)
-      .eq('status', 'requested')
-      .select('id')
-      .maybeSingle();
-
-    if (updateError) {
-      setError(updateError.message);
-    } else if (!data) {
-      setError('상태가 변경되어 지급 완료 처리를 하지 못했습니다. 새로고침 후 확인하세요.');
-    } else {
-      setMessage('지급 완료로 처리했습니다.');
-      await loadSettlements();
-    }
-    setWorking(false);
-  }
-
   function exportCreatorCsv() {
     const totals = new Map<string, {
       creatorId: string;
@@ -410,17 +385,6 @@ export default function SettlementPanel() {
               const status = statusDisplay(SETTLEMENT_STATUS, settlement.status);
               return <Badge tone={status.tone}>{status.label}</Badge>;
             },
-          },
-          {
-            key: 'actions',
-            header: '',
-            align: 'right',
-            render: (settlement) =>
-              settlement.status === 'requested' ? (
-                <Button disabled={working} onClick={() => void markPaid(settlement)} size="sm" variant="secondary">
-                  지급 완료 처리
-                </Button>
-              ) : null,
           },
         ]}
         empty={loading ? '불러오는 중…' : '이 주에 생성된 정산이 없어요.'}
