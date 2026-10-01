@@ -10,9 +10,27 @@ import type { ShowcaseKind, ShowcaseVideo } from '@/lib/youtube-showcase';
 // on narrow screens the kinds simply stack. Cards show real YouTube videos when the page passes them in.
 
 const KINDS: { id: keyof typeof MOCK_CAMPAIGNS; label: string; icon: ReactNode; title: string; body: string }[] = [
-  { id: 'clipping', label: '클리핑', icon: <Scissors size={26} />, title: '클리핑 캠페인.', body: '브랜드가 준 영상을 짧게 편집해 올리고, 조회수만큼 받아요.' },
-  { id: 'ugc', label: 'UGC', icon: <Clapperboard size={26} />, title: 'UGC 캠페인.', body: '제품과 서비스를 직접 써 보고 소개하는 영상을 만들어, 조회수만큼 받아요.' },
-  { id: 'music', label: '음악', icon: <Music size={26} />, title: '음악 캠페인.', body: '신곡과 음원을 영상에 쓰고, 노래가 퍼진 만큼 받아요.' },
+  {
+    id: 'clipping',
+    label: '클리핑',
+    icon: <Scissors size={26} />,
+    title: '클리핑 캠페인.',
+    body: '캠페인이 정해 준 영상을 내 방식대로 편집해 숏폼으로 만들어요. 얼굴을 드러내지 않아도, 편집만 할 줄 알면 시작할 수 있어요.',
+  },
+  {
+    id: 'ugc',
+    label: '소개',
+    icon: <Clapperboard size={26} />,
+    title: '소개 캠페인.',
+    body: '제품이나 서비스를 내 스타일대로 소개하는 숏폼을 찍어요. 리뷰, 일상, 상황극 무엇이든 괜찮아요.',
+  },
+  {
+    id: 'music',
+    label: '음악',
+    icon: <Music size={26} />,
+    title: '음악 캠페인.',
+    body: '정해진 음원을 배경음으로 쓰거나 챌린지에 참여해요. 춤, 립싱크, 브이로그 무엇이든 괜찮아요.',
+  },
 ];
 
 export default function CampaignTypes({ videos = {} }: { videos?: Partial<Record<ShowcaseKind, ShowcaseVideo[]>> }) {
