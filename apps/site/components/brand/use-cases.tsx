@@ -8,7 +8,8 @@ import { BRAND_CASES, clipMedia, type BrandCase } from '@/lib/brand-cases';
 
 // Spec §4.5, after the reference's product tour: icon tabs over a progress track, then the brand app's 제출 영상
 // screen for that case. Tabs advance every 6 seconds while on screen; a click jumps. Each tile plays its own vertical
-// clip while the demo moves; otherwise (off screen, reduced motion) it rests on the poster.
+// clip while the demo moves; otherwise (off screen, reduced motion) it rests on the poster. A caption over each clip,
+// in one of five finishing styles (data-look), stands for the creator's own edit.
 
 const ICONS: Record<BrandCase['id'], ReactNode> = {
   launch: <Package size={24} />,
@@ -126,7 +127,10 @@ export default function UseCases() {
               <ul className="cl-cases__grid" ref={grid}>
                 {active.clips.map((clip, position) => (
                   <li key={clip.clip} style={{ animationDelay: `${position * 60}ms` }}>
-                    <video className="cl-cases__thumb" loop muted playsInline preload="metadata" {...clipMedia(clip.clip)} />
+                    <div className="cl-cases__thumb" data-look={clip.look}>
+                      <video className="cl-cases__video" loop muted playsInline preload="metadata" {...clipMedia(clip.clip)} />
+                      <span className="cl-cases__caption">{clip.caption}</span>
+                    </div>
                     <span className="cl-cases__who">
                       <Avatar name={clip.creator} size="sm" />
                       <span>{clip.creator}</span>

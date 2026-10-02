@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { BRAND_CASES, CASE_CLIPS, clipMedia, clipSource } from './brand-cases';
+import { BRAND_CASES, CASE_CLIPS, CASE_LOOKS, clipMedia, clipSource } from './brand-cases';
 
 const publicDir = path.resolve(__dirname, '../public');
 
@@ -29,6 +29,16 @@ describe('BRAND_CASES', () => {
       const sources = new Set(item.clips.map((clip) => clipSource(clip.clip)));
       if (item.kind === '클리핑 캠페인') expect(sources.size).toBe(1);
       else expect(sources.size).toBeGreaterThan(1);
+    }
+  });
+
+  it('finishes the four clips of a case in four different styles, with short captions', () => {
+    for (const item of BRAND_CASES) {
+      expect(new Set(item.clips.map((clip) => clip.look)).size).toBe(item.clips.length);
+      for (const clip of item.clips) {
+        expect(CASE_LOOKS).toContain(clip.look);
+        expect(clip.caption.length).toBeLessThanOrEqual(14);
+      }
     }
   });
 

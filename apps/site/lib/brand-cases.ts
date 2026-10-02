@@ -2,7 +2,8 @@
 // and views are illustrative and fixed. No budget amounts here: next to views they would reveal the brand rate.
 // Every tile plays one of the site's own vertical clips (public/media/clips, 540×960, muted, about 6s). A clipping
 // campaign shows one source cut several ways, which is what clipping is; a UGC campaign shows different sources. A
-// clip that appears in two campaigns keeps its creator's name, as one creator joins several campaigns.
+// clip that appears in two campaigns keeps its creator's name, as one creator joins several campaigns. Each tile is
+// finished differently (caption, format, colour) so four cuts of one source read as four creators' edits.
 
 export const CASE_CLIPS = [
   'fashion-b', 'fashion-c', 'fashion-d', 'beauty', 'pet',
@@ -24,7 +25,11 @@ export function clipSource(clip: CaseClip): string {
   return clip.split('-')[0];
 }
 
-export type BrandCaseClip = { creator: string; platform: string; views: number; clip: CaseClip; pending?: boolean };
+/** How the creator finished the clip: a caption style, a format, or a colour treatment. */
+export type CaseLook = 'subtitle' | 'meme' | 'letterbox' | 'mono' | 'tag';
+export const CASE_LOOKS: readonly CaseLook[] = ['subtitle', 'meme', 'letterbox', 'mono', 'tag'];
+
+export type BrandCaseClip = { creator: string; platform: string; views: number; clip: CaseClip; caption: string; look: CaseLook; pending?: boolean };
 
 export type BrandCase = {
   id: 'launch' | 'app' | 'music' | 'film' | 'tourism' | 'channel';
@@ -48,10 +53,10 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '데일리 무드',
     counts: { all: 128, pending: 6, approved: 122 },
     clips: [
-      { creator: '민지', platform: 'instagram_reels', views: 82_000, clip: 'fashion-b' },
-      { creator: '서아', platform: 'tiktok', views: 124_000, clip: 'beauty' },
-      { creator: '도윤', platform: 'youtube_shorts', views: 31_000, clip: 'pet' },
-      { creator: '민지', platform: 'youtube_shorts', views: 29_000, clip: 'fashion-d', pending: true },
+      { creator: '민지', platform: 'instagram_reels', views: 82_000, clip: 'fashion-b', caption: '가을 토트백 OOTD', look: 'subtitle' },
+      { creator: '서아', platform: 'tiktok', views: 124_000, clip: 'beauty', caption: '오늘의 메이크업 포인트', look: 'meme' },
+      { creator: '도윤', platform: 'youtube_shorts', views: 31_000, clip: 'pet', caption: '#광고 #가을신상', look: 'tag' },
+      { creator: '민지', platform: 'youtube_shorts', views: 29_000, clip: 'fashion-d', caption: '코트 입기 좋은 날', look: 'mono', pending: true },
     ],
   },
   {
@@ -63,10 +68,10 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '무브 모빌리티',
     counts: { all: 74, pending: 3, approved: 71 },
     clips: [
-      { creator: '편집왕', platform: 'youtube_shorts', views: 142_000, clip: 'car-a' },
-      { creator: '클립데일리', platform: 'tiktok', views: 88_000, clip: 'car-b' },
-      { creator: '숏츠랩', platform: 'instagram_reels', views: 51_000, clip: 'car-c', pending: true },
-      { creator: '하이라이트', platform: 'kakao_shorts', views: 27_000, clip: 'car-d' },
+      { creator: '편집왕', platform: 'youtube_shorts', views: 142_000, clip: 'car-a', caption: '론칭 필름 명장면', look: 'letterbox' },
+      { creator: '클립데일리', platform: 'tiktok', views: 88_000, clip: 'car-b', caption: '실내 조명 봐', look: 'subtitle' },
+      { creator: '숏츠랩', platform: 'instagram_reels', views: 51_000, clip: 'car-c', caption: '공유차 맞아?', look: 'meme', pending: true },
+      { creator: '하이라이트', platform: 'kakao_shorts', views: 27_000, clip: 'car-d', caption: '#광고 #무브', look: 'tag' },
     ],
   },
   {
@@ -78,10 +83,10 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '데모 레코즈',
     counts: { all: 221, pending: 8, approved: 213 },
     clips: [
-      { creator: '민지', platform: 'tiktok', views: 213_000, clip: 'fashion-c' },
-      { creator: '하루', platform: 'instagram_reels', views: 98_000, clip: 'sky' },
-      { creator: '숏츠랩', platform: 'youtube_shorts', views: 55_000, clip: 'hoops-slow' },
-      { creator: '서아', platform: 'kakao_shorts', views: 32_000, clip: 'beauty', pending: true },
+      { creator: '민지', platform: 'tiktok', views: 213_000, clip: 'fashion-c', caption: '여름밤 후렴 챌린지', look: 'subtitle' },
+      { creator: '하루', platform: 'instagram_reels', views: 98_000, clip: 'sky', caption: '여름밤 × 하늘', look: 'letterbox' },
+      { creator: '숏츠랩', platform: 'youtube_shorts', views: 55_000, clip: 'hoops-slow', caption: '후렴 타이밍', look: 'mono' },
+      { creator: '서아', platform: 'kakao_shorts', views: 32_000, clip: 'beauty', caption: '#여름밤챌린지 #광고', look: 'tag', pending: true },
     ],
   },
   {
@@ -93,10 +98,10 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '오름 픽처스',
     counts: { all: 96, pending: 4, approved: 92 },
     clips: [
-      { creator: '명장면', platform: 'youtube_shorts', views: 265_000, clip: 'drive' },
-      { creator: '편집왕', platform: 'tiktok', views: 131_000, clip: 'drive-close' },
-      { creator: '클립데일리', platform: 'instagram_reels', views: 76_000, clip: 'drive-slow', pending: true },
-      { creator: '하이라이트', platform: 'x', views: 44_000, clip: 'drive-late' },
+      { creator: '명장면', platform: 'youtube_shorts', views: 265_000, clip: 'drive', caption: '사막의 추격 · 2026', look: 'letterbox' },
+      { creator: '편집왕', platform: 'tiktok', views: 131_000, clip: 'drive-close', caption: '이 장면 실화냐', look: 'meme' },
+      { creator: '클립데일리', platform: 'instagram_reels', views: 76_000, clip: 'drive-slow', caption: '차가 날아간다', look: 'subtitle', pending: true },
+      { creator: '하이라이트', platform: 'x', views: 44_000, clip: 'drive-late', caption: '결말은 극장에서', look: 'mono' },
     ],
   },
   {
@@ -108,10 +113,10 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '청솔군 문화관광과',
     counts: { all: 58, pending: 2, approved: 56 },
     clips: [
-      { creator: '하루', platform: 'instagram_reels', views: 118_000, clip: 'sky' },
-      { creator: '숏츠랩', platform: 'youtube_shorts', views: 64_000, clip: 'sky-close' },
-      { creator: '명장면', platform: 'tiktok', views: 39_000, clip: 'sky-slow' },
-      { creator: '클립데일리', platform: 'naver_clip', views: 21_000, clip: 'sky-late', pending: true },
+      { creator: '하루', platform: 'instagram_reels', views: 118_000, clip: 'sky', caption: '청솔군 패러글라이딩', look: 'subtitle' },
+      { creator: '숏츠랩', platform: 'youtube_shorts', views: 64_000, clip: 'sky-close', caption: '하늘에서 본 청솔', look: 'meme' },
+      { creator: '명장면', platform: 'tiktok', views: 39_000, clip: 'sky-slow', caption: '청솔군 축제 · 10월', look: 'letterbox' },
+      { creator: '클립데일리', platform: 'naver_clip', views: 21_000, clip: 'sky-late', caption: '#청솔군 #광고', look: 'tag', pending: true },
     ],
   },
   {
@@ -123,10 +128,10 @@ export const BRAND_CASES: BrandCase[] = [
     brand: '하루 스포츠',
     counts: { all: 39, pending: 2, approved: 37 },
     clips: [
-      { creator: '편집왕', platform: 'youtube_shorts', views: 310_000, clip: 'hoops' },
-      { creator: '클립데일리', platform: 'tiktok', views: 186_000, clip: 'hoops-close' },
-      { creator: '하이라이트', platform: 'x', views: 48_000, clip: 'hoops-late' },
-      { creator: '명장면', platform: 'instagram_reels', views: 93_000, clip: 'hoops-mid', pending: true },
+      { creator: '편집왕', platform: 'youtube_shorts', views: 310_000, clip: 'hoops', caption: '주말 리그 하이라이트', look: 'subtitle' },
+      { creator: '클립데일리', platform: 'tiktok', views: 186_000, clip: 'hoops-close', caption: '이 드리블 봐', look: 'mono' },
+      { creator: '하이라이트', platform: 'x', views: 48_000, clip: 'hoops-late', caption: '버저비터 각?', look: 'meme' },
+      { creator: '명장면', platform: 'instagram_reels', views: 93_000, clip: 'hoops-mid', caption: '3쿼터 명장면', look: 'letterbox', pending: true },
     ],
   },
 ];
