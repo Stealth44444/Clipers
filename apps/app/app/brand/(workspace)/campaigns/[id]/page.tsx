@@ -113,7 +113,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
 
         <StatGrid>
           <StatCard highlight label="사용한 예산" value={formatKRW(summary.spent)} />
-          <StatCard label="예상 조회수" value={formatCompactNumber(summary.expectedViews)} />
+          <StatCard label="최대 조회수" value={formatCompactNumber(summary.expectedViews)} />
           <StatCard label="검증 조회수" value={formatCompactNumber(summary.verifiedViews)} />
           <StatCard label="받은 클립" value={summary.clipCount} />
         </StatGrid>

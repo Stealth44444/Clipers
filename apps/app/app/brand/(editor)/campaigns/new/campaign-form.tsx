@@ -263,7 +263,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
 
           <Section description={`검증된 조회수 1천 회당 ${formatKRW(pricing.brandCpm)}씩 예산이 쓰여요. 쓰지 않은 예산은 남아 있어요.`} title="예산">
             <div className="cl-form-row">
-              <Field hint={views > 0 ? `예상 조회수 약 ${views.toLocaleString('ko-KR')}회` : '최소 1,000,000원'} htmlFor="campaign-budget" label="총예산 (원, 부가세 별도)">
+              <Field hint={views > 0 ? `검증 조회수 최대 ${views.toLocaleString('ko-KR')}회까지 결제돼요` : '최소 1,000,000원'} htmlFor="campaign-budget" label="총예산 (원, 부가세 별도)">
                 <Input
                   id="campaign-budget"
                   inputMode="numeric"
@@ -363,7 +363,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
                 { label: '카테고리', value: draft.category ? categoryLabel(draft.category) : '—' },
                 { label: '플랫폼', value: draft.platforms.length > 0 ? platformLabels(draft.platforms) : '—' },
                 { label: '예산', value: budget > 0 ? formatKRW(budget) : '—' },
-                { label: '예상 조회수', value: views > 0 ? `${views.toLocaleString('ko-KR')}회` : '—' },
+                { label: '최대 조회수', value: views > 0 ? `${views.toLocaleString('ko-KR')}회` : '—' },
                 { label: '하루 제출 한도', value: dailyClipLimitLabel(dailyClipLimitValue(draft)) },
               ]}
             />
