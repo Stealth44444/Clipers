@@ -74,17 +74,31 @@ export function validateRefundRequest(
   return { ok: true, data: { amount: input.amount, bankCode: input.bankCode, accountNumber, accountHolder } };
 }
 
+/**
+ * Korean public holidays that fall on weekdays (substitute holidays included), from 2026-10, per 우주항공청 월력요항.
+ * Add each year when its 월력요항 comes out (usually June); brandBalance.test.ts fails once the current year is missing.
+ */
+export const KOREAN_PUBLIC_HOLIDAYS: ReadonlySet<string> = new Set([
+  // 2026, from October: 개천절 대체공휴일, 한글날, 성탄절
+  '2026-10-05', '2026-10-09', '2026-12-25',
+  // 2027: 신정, 설 연휴·대체, 3·1절, 노동절 대체, 어린이날, 부처님오신날, 제헌절 대체, 광복절 대체, 추석 연휴,
+  // 개천절 대체, 한글날 대체, 성탄절 대체
+  '2027-01-01', '2027-02-08', '2027-02-09', '2027-03-01', '2027-05-03', '2027-05-05', '2027-05-13', '2027-07-19',
+  '2027-08-16', '2027-09-14', '2027-09-15', '2027-09-16', '2027-10-04', '2027-10-11', '2027-12-27',
+]);
+
 const KOREA_OFFSET_MS = 9 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-/** Weekdays after the day of `fromIso` up to today, Korea time (public holidays are not taken out). */
+/** Business days after the day of `fromIso` up to today, Korea time: weekdays that are not public holidays. */
 export function businessDaysSince(fromIso: string, now: Date = new Date()): number {
   const start = Math.floor((Date.parse(fromIso) + KOREA_OFFSET_MS) / DAY_MS);
   const end = Math.floor((now.getTime() + KOREA_OFFSET_MS) / DAY_MS);
   let days = 0;
   for (let day = start + 1; day <= end; day += 1) {
-    const weekday = new Date(day * DAY_MS).getUTCDay();
-    if (weekday !== 0 && weekday !== 6) days += 1;
+    const date = new Date(day * DAY_MS);
+    const weekday = date.getUTCDay();
+    if (weekday !== 0 && weekday !== 6 && !KOREAN_PUBLIC_HOLIDAYS.has(date.toISOString().slice(0, 10))) days += 1;
   }
   return days;
 }

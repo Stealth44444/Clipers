@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
+  KOREAN_PUBLIC_HOLIDAYS,
   REFUND_WINDOW_MONTHS,
   balanceSummary,
   businessDaysSince,
@@ -109,13 +110,31 @@ describe('validateRefundRequest', () => {
 });
 
 describe('businessDaysSince', () => {
-  // 2026-10-02 is a Friday. Public holidays are not taken out.
+  // 2026-10-02 is a Friday; Monday 10-05 (개천절 대체공휴일) and Friday 10-09 (한글날) are holidays.
   const requested = '2026-10-02T01:00:00.000Z';
 
-  it('counts weekdays after the request day, Korea time', () => {
+  it('counts weekdays after the request day, Korea time, without public holidays', () => {
     expect(businessDaysSince(requested, new Date('2026-10-02T09:00:00.000Z'))).toBe(0);
-    expect(businessDaysSince(requested, new Date('2026-10-05T01:00:00.000Z'))).toBe(1);
-    expect(businessDaysSince(requested, new Date('2026-10-09T01:00:00.000Z'))).toBe(5);
+    expect(businessDaysSince(requested, new Date('2026-10-05T01:00:00.000Z'))).toBe(0);
+    expect(businessDaysSince(requested, new Date('2026-10-09T01:00:00.000Z'))).toBe(3);
+    expect(businessDaysSince(requested, new Date('2026-10-13T01:00:00.000Z'))).toBe(5);
+  });
+
+  it('switches days at midnight Korea time', () => {
+    // 2026-10-06 00:30 KST is still 2026-10-05 in UTC.
+    expect(businessDaysSince(requested, new Date('2026-10-05T15:30:00.000Z'))).toBe(1);
+  });
+});
+
+describe('KOREAN_PUBLIC_HOLIDAYS', () => {
+  it('lists only weekdays', () => {
+    for (const date of KOREAN_PUBLIC_HOLIDAYS) expect([0, 6]).not.toContain(new Date(`${date}T00:00:00Z`).getUTCDay());
+  });
+
+  // Fails in a year with no entries: add that year's holidays from the 월력요항.
+  it('covers the current year', () => {
+    const year = String(new Date().getFullYear());
+    expect([...KOREAN_PUBLIC_HOLIDAYS].some((date) => date.startsWith(year))).toBe(true);
   });
 });
 
