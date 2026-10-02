@@ -1,12 +1,12 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button, ButtonLink, Field, IconButton, Input } from '@clipers/ui';
 import { authErrorMessage } from '@/lib/auth';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { siteUrl } from '@/lib/urls';
 
 // The page the password-reset mail lands on: /auth/callback has already turned the link into a session, so a new
 // password is all that is left. Without a session the link was used, expired or never valid.
@@ -53,9 +53,9 @@ export default function ResetPasswordForm() {
   return (
     <main className="cl-auth">
       <section aria-labelledby="auth-title" className="cl-auth__card">
-        <Link className="cl-auth__logo" href="/">
+        <a className="cl-auth__logo" href={siteUrl('/')}>
           <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
-        </Link>
+        </a>
 
         {state === 'expired' ? (
           <>

@@ -11,6 +11,7 @@ import {
   Compass,
   Film,
   Gauge,
+  Globe,
   House,
   Landmark,
   Megaphone,
@@ -126,7 +127,12 @@ export default function WorkspaceShell({ role, displayName, topbarExtra, badges,
       topbarEnd={
         <>
           {topbarExtra}
-          <UserMenu name={displayName} onSignOut={() => void signOut()} subtitle={ROLE_LABEL[role]} />
+          <UserMenu
+            links={[{ href: siteUrl('/'), label: 'Clipers 홈', icon: <Globe size={16} /> }]}
+            name={displayName}
+            onSignOut={() => void signOut()}
+            subtitle={ROLE_LABEL[role]}
+          />
         </>
       }
     >

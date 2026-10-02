@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
@@ -8,6 +7,7 @@ import type { Attribution, OnboardingRole } from '@clipers/db';
 import { Button, Field, IconButton, Input, Tabs } from '@clipers/ui';
 import { authErrorMessage } from '@/lib/auth';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { siteUrl } from '@/lib/urls';
 
 // Sign-in, sign-up and password reset on one card. Sign-up opens for the role the visitor came for (the site's
 // links say which) and sends the role plus the site's attribution as user metadata; a database trigger stores
@@ -185,9 +185,9 @@ export default function LoginForm({
   return (
     <main className="cl-auth">
       <section aria-labelledby="auth-title" className="cl-auth__card">
-        <Link className="cl-auth__logo" href="/">
+        <a className="cl-auth__logo" href={siteUrl('/')}>
           <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
-        </Link>
+        </a>
 
         {sent ? (
           <>

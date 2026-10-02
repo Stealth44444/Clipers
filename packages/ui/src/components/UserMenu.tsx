@@ -1,10 +1,19 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ChevronDown, LogOut } from 'lucide-react';
 import { Avatar } from './Avatar';
 
-export function UserMenu({ name, subtitle, onSignOut, signOutLabel = '로그아웃' }: { name: string; subtitle?: string; onSignOut: () => void; signOutLabel?: string }) {
+export type UserMenuLink = { href: string; label: string; icon?: ReactNode };
+
+export function UserMenu({ name, subtitle, links = [], onSignOut, signOutLabel = '로그아웃' }: {
+  name: string;
+  subtitle?: string;
+  /** Plain links shown above sign-out; they may leave the app, so they render as anchors. */
+  links?: UserMenuLink[];
+  onSignOut: () => void;
+  signOutLabel?: string;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -37,6 +46,12 @@ export function UserMenu({ name, subtitle, onSignOut, signOutLabel = '로그아�
             <strong>{name}</strong>
             {subtitle && <span>{subtitle}</span>}
           </div>
+          {links.map((link) => (
+            <a className="cl-user-menu__item" href={link.href} key={link.href} role="menuitem">
+              {link.icon}
+              {link.label}
+            </a>
+          ))}
           <button className="cl-user-menu__item" onClick={onSignOut} role="menuitem" type="button">
             <LogOut size={16} />
             {signOutLabel}

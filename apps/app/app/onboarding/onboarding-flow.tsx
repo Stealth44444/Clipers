@@ -18,6 +18,7 @@ import { Button, List, ListRow, OptionCard, ProgressBar, Switch } from '@clipers
 import InterestPicker from '@/components/interest-picker';
 import { EXPERIENCE_ICONS, ON_CAMERA_ICONS } from '@/components/profile-option-icons';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { siteUrl } from '@/lib/urls';
 
 const ICON = { size: 18 };
 
@@ -63,7 +64,9 @@ export default function OnboardingFlow({ initialRole = 'creator' }: { initialRol
   return (
     <div className="cl-flow">
       <header className="cl-flow__header">
-        <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
+        <a href={siteUrl('/')}>
+          <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
+        </a>
         <Button onClick={() => void signOut()} size="sm" variant="ghost">
           로그아웃
         </Button>
