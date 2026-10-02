@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ButtonLink, MeshGradient } from '@clipers/ui';
 import CompareTable from '@/components/brand/compare-table';
 import HorizonHero from '@/components/brand/horizon-hero';
+import ReachStory from '@/components/brand/reach-story';
 import ControlsBento from '@/components/brand/controls-bento';
-import SolutionCards from '@/components/brand/solution-cards';
 import StartCard, { CONTACT } from '@/components/brand/start-card';
 import UseCases from '@/components/brand/use-cases';
 import VerifyFlow from '@/components/brand/verify-flow';
@@ -28,8 +28,8 @@ export default function BrandsPage() {
     <LandingChrome cta="캠페인 시작하기" path="/brands">
       <HorizonHero signUpHref={signUpUrl('brand')} />
       <ViewsStory />
+      <ReachStory />
       <CompareTable />
-      <SolutionCards />
       <UseCases />
       <ControlsBento />
       <VerifyFlow />

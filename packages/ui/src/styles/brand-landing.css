@@ -312,3 +312,42 @@
 @media (max-width: 860px) {
   .cl-views__tiles figcaption { flex-wrap: wrap; gap: 6px 16px; font-size: 13px; }
 }
+
+/* Reach section (spec 2026-10-02-brand-reach-section-design.md §4): the creator page's campaign-kinds stage
+   (cl-kinds) with phones, glass cards and an app panel in place of campaign cards */
+.cl-reach__title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cl-reach .cl-kinds__text sup { margin-left: 1px; font-size: 0.5em; font-weight: 500; }
+.cl-reach .cl-kinds__card { width: auto; }
+.cl-reach .cl-earn__card { position: static; min-width: 196px; }
+.cl-reach .cl-earn__rate .cl-reach__plain { color: var(--color-text); font-weight: 600; }
+.cl-reach__phone { display: grid; justify-items: center; gap: var(--space-3); width: 228px; }
+.cl-reach .cl-earn__views b { color: var(--color-text); font-weight: 600; }
+.cl-reach .cl-earn__views[data-hit] b { color: var(--brand-11); }
+/* One new account: the phone in the middle, its follower count up right, its views down left (the creator hero's layout) */
+.cl-reach .cl-kinds__item[data-kind="feed"] .cl-kinds__card[data-slot="phone"] { top: 20px; left: calc(50% - 114px); z-index: 0; }
+.cl-reach .cl-kinds__item[data-kind="feed"] .cl-kinds__card[data-slot="account"] { --n: 1; top: 56px; right: 0; left: auto; z-index: 1; }
+.cl-reach .cl-kinds__item[data-kind="feed"] .cl-kinds__card[data-slot="views"] { --n: 2; top: 270px; left: 0; z-index: 1; }
+/* One game cut three ways: the winning edit in front, the other two smaller behind it either side */
+.cl-reach .cl-kinds__item[data-kind="more"] .cl-kinds__card[data-slot="left"] { --s: 0.82; top: 50px; left: 0; z-index: 0; }
+.cl-reach .cl-kinds__item[data-kind="more"] .cl-kinds__card[data-slot="right"] { --s: 0.82; --n: 1; top: 50px; right: 0; left: auto; z-index: 0; }
+.cl-reach .cl-kinds__item[data-kind="more"] .cl-kinds__card[data-slot="front"] { --n: 2; top: 10px; left: calc(50% - 114px); z-index: 1; }
+/* The campaign's clip list, most viewed first */
+.cl-reach .cl-kinds__item[data-kind="ranked"] .cl-kinds__card[data-slot="panel"] { top: 80px; left: calc(50% - 220px); width: 440px; }
+.cl-reach__panel { padding: 20px 22px 14px; }
+.cl-reach__views { flex: 0 0 auto; color: var(--color-text-muted); font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.cl-reach__panel li[data-hit] .cl-reach__views { color: var(--brand-11); font-weight: 600; }
+.cl-reach__notes { display: grid; gap: 2px; width: min(1160px, 100% - 40px); margin: 8px auto 0; padding-top: 14px; box-shadow: inset 0 1px 0 var(--gray-a3); color: var(--color-text-subtle); font-size: 12px; line-height: 1.7; }
+@media (max-width: 860px) {
+  .cl-reach .cl-kinds__stack { height: 540px; }
+  .cl-reach .cl-kinds__item[data-kind="feed"] .cl-kinds__card[data-slot="phone"] { top: 0; right: auto; left: calc(50% - 100px); }
+  .cl-reach .cl-kinds__item[data-kind="feed"] .cl-kinds__card[data-slot="account"] { top: 24px; right: 0; left: auto; }
+  .cl-reach .cl-kinds__item[data-kind="feed"] .cl-kinds__card[data-slot="views"] { top: 250px; right: auto; left: 0; }
+  .cl-reach .cl-kinds__item[data-kind="more"] .cl-kinds__card[data-slot="left"],
+  .cl-reach .cl-kinds__item[data-kind="more"] .cl-kinds__card[data-slot="right"] { display: none; }
+  .cl-reach .cl-kinds__item[data-kind="more"] .cl-kinds__card[data-slot="front"] { top: 0; right: auto; left: calc(50% - 100px); }
+  .cl-reach .cl-kinds__item[data-kind="ranked"] .cl-kinds__stack { height: auto; overflow: visible; }
+  .cl-reach .cl-kinds__item[data-kind="ranked"] .cl-kinds__card[data-slot="panel"] { position: static; width: 100%; max-width: 440px; margin: 0 auto; }
+  .cl-reach__phone { width: 200px; }
+  .cl-reach .cl-earn__card { min-width: 0; padding: var(--space-3) var(--space-4); }
+  .cl-reach .cl-earn__amount { font-size: 24px; }
+}
