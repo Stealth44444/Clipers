@@ -18,7 +18,7 @@ const FACTS: { label: string; value: string }[] = [
   { label: '캠페인 최소 예산', value: `${formatKRW(MIN_CAMPAIGN_BUDGET)} (부가세 별도)` },
   { label: '올릴 수 있는 플랫폼', value: PLATFORMS.map((platform) => platform.label).join(' · ') },
   { label: '영상 검수', value: `캠페인마다 ${REVIEW_SLA_OPTIONS.map((hours) => `${hours}시간`).join(' 또는 ')} 안에` },
-  { label: '조회수 확인', value: '유튜브는 자동 수집, 다른 플랫폼은 화면 캡처를 운영팀이 대조' },
+  { label: '조회수 확인', value: '검수를 통과한 영상의 조회수만 정산에 반영' },
   { label: '크리에이터 참여', value: '캠페인마다 지원하고 운영팀 승인 후 참여, 가입과 지원은 무료' },
 ];
 
