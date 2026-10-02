@@ -5,6 +5,7 @@ export * from './pricing';
 export * from './payouts';
 export * from './billing';
 export * from './campaignDraft';
+export * from './dailyClipLimit';
 export * from './paging';
 export * from './services/errors';
 export * from './services/escalation';

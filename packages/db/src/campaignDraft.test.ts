@@ -4,6 +4,7 @@ import {
   REVIEW_SLA_OPTIONS,
   campaignDraftErrors,
   campaignDraftProgress,
+  dailyClipLimitValue,
   clipCapToCreatorPayout,
   creatorPayoutToClipCap,
   emptyCampaignDraft,
@@ -21,6 +22,7 @@ const valid: CampaignDraft = {
   totalBudget: '2000000',
   maxPayoutPerClip: '100000',
   reviewSlaHours: '48',
+  dailyClipLimit: '3',
   referenceLinks: ['https://youtu.be/abc'],
   requirements: '음원은 15초 이상 사용',
 };
@@ -72,6 +74,14 @@ describe('campaignDraftErrors', () => {
 
   it('returns the first error in form order', () => {
     expect(firstCampaignDraftError({ ...valid, title: '', platforms: [] })).toBe('캠페인 이름을 입력해 주세요.');
+  });
+});
+
+describe('dailyClipLimitValue', () => {
+  it('defaults to three clips a day and accepts no limit', () => {
+    expect(emptyCampaignDraft().dailyClipLimit).toBe('3');
+    expect(dailyClipLimitValue({ ...valid, dailyClipLimit: 'none' })).toBeNull();
+    expect(dailyClipLimitValue({ ...valid, dailyClipLimit: '5' })).toBe(5);
   });
 });
 

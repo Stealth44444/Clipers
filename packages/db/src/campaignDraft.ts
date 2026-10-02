@@ -1,3 +1,4 @@
+import { DEFAULT_DAILY_CLIP_LIMIT } from './dailyClipLimit';
 import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET, MIN_PAYOUT_VIEWS, type CampaignPricing } from './pricing';
 
 export const CAMPAIGN_TITLE_MAX = 80;
@@ -16,6 +17,8 @@ export type CampaignDraft = {
   totalBudget: string;
   maxPayoutPerClip: string;
   reviewSlaHours: string;
+  /** '1' | '2' | '3' | '5', or 'none' for no limit. */
+  dailyClipLimit: string;
   referenceLinks: string[];
   requirements: string;
 };
@@ -44,6 +47,7 @@ export function emptyCampaignDraft(): CampaignDraft {
     totalBudget: '',
     maxPayoutPerClip: '',
     reviewSlaHours: '48',
+    dailyClipLimit: String(DEFAULT_DAILY_CLIP_LIMIT),
     referenceLinks: [''],
     requirements: '',
   };
@@ -119,4 +123,9 @@ export function clipCapToCreatorPayout(brandSpendCap: number, pricing: CampaignP
 
 export function creatorPayoutToClipCap(creatorPayoutCap: number, pricing: CampaignPricing): number {
   return Math.round((creatorPayoutCap * pricing.brandCpm) / pricing.creatorCpm);
+}
+
+/** The draft's daily clip limit as stored: a number, or null for no limit. */
+export function dailyClipLimitValue(draft: CampaignDraft): number | null {
+  return draft.dailyClipLimit === 'none' ? null : Number(draft.dailyClipLimit);
 }
