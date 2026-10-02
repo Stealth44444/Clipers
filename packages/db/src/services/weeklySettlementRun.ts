@@ -1,7 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { fetchAllRows, fetchAllRowsIn } from '../paging';
-import { campaignPricing, creatorCampaignCap, creatorPayoutCap } from '../pricing';
+import { budgetUsage, campaignPricing, creatorCampaignCap, creatorPayoutCap } from '../pricing';
 import { getCampaignsToClose } from './campaignClosure';
+import { includeInSettlement } from './campaignStop';
 import { err, ok, type ServiceResult } from './errors';
 import { findPlatformRate, type PlatformRate } from './platformRate';
 import { calculateWeeklySettlementDrafts, settlementPeriodsToRun, type SettlementPeriod, type WeeklySettlementInput } from './settlement';
@@ -33,6 +34,8 @@ type FinanceRow = { campaign_id: string; total_budget: number | string; brand_cp
 type RateRow = { campaign_id: string; platform: string; cpm_rate: number | string; max_payout: number | string };
 type SnapshotRow = { clip_id: string; view_count: number | string; captured_at: string };
 type SettledRow = { clip_id: string; campaign_id: string; creator_id: string; amount: number | string; period: string };
+type StopRow = { id: string; stopped_at: string | null };
+type PaidRow = { campaign_id: string; amount: number | string };
 
 async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promise<{ settlements: number; closedCampaigns: number }> {
   const clips = (await fetchAllRows((from, to) =>
@@ -48,7 +51,7 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
   const campaignIds = [...new Set(clips.map((clip) => clip.campaign_id))];
   const clipIds = clips.map((clip) => clip.id);
   // Budgets and brand rates are not readable through campaigns; campaign_finances serves admins and the service role.
-  const [financeRows, rateRows, snapshots, settled] = await Promise.all([
+  const [financeRows, rateRows, snapshots, settled, stopRows] = await Promise.all([
     fetchAllRowsIn(campaignIds, (ids) => (from, to) =>
       supabase.from('campaign_finances').select('campaign_id, total_budget, brand_cpm, creator_cpm').in('campaign_id', ids).order('campaign_id').range(from, to)
     ) as Promise<FinanceRow[]>,
@@ -67,9 +70,13 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
     fetchAllRowsIn(clipIds, (ids) => (from, to) =>
       supabase.from('settlements').select('clip_id, campaign_id, creator_id, amount, period').in('clip_id', ids).order('id').range(from, to)
     ) as Promise<SettledRow[]>,
+    fetchAllRowsIn(campaignIds, (ids) => (from, to) =>
+      supabase.from('campaigns').select('id, stopped_at').in('id', ids).order('id').range(from, to)
+    ) as Promise<StopRow[]>,
   ]);
 
   const finances = new Map(financeRows.map((row) => [row.campaign_id, row]));
+  const stoppedAt = new Map(stopRows.map((row) => [row.id, row.stopped_at]));
   const ratesByCampaign = new Map<string, PlatformRate[]>();
   for (const row of rateRows) {
     const rates = ratesByCampaign.get(row.campaign_id) ?? [];
@@ -93,6 +100,7 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
     const rate = findPlatformRate(ratesByCampaign.get(clip.campaign_id) ?? [], clip.platform);
     const finance = finances.get(clip.campaign_id);
     if (!finance || !rate || settledThisWeek.has(clip.id)) return [];
+    if (!includeInSettlement(clip.reviewed_at, stoppedAt.get(clip.campaign_id) ?? null, period)) return [];
     return [
       {
         clipId: clip.id,
@@ -143,11 +151,52 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
     }))
   );
   if (toClose.length > 0) {
-    const { error } = await supabase.from('campaigns').update({ status: 'closed' }).in('id', toClose).eq('status', 'live');
+    const { error } = await supabase
+      .from('campaigns')
+      .update({ status: 'closed', finalized_at: new Date().toISOString() })
+      .in('id', toClose)
+      .eq('status', 'live');
     if (error) throw new Error(error.message);
   }
 
   return { settlements: drafts.length, closedCampaigns: toClose.length };
+}
+
+/**
+ * Fixes the leftover of campaigns stopped before this week ended. Runs after the week is settled, so a campaign's
+ * last settled week is the week it was stopped in; finalize_campaign() does nothing for one already fixed.
+ */
+async function finalizeStoppedCampaigns(supabase: SupabaseClient, period: SettlementPeriod): Promise<void> {
+  const { data, error } = await supabase
+    .from('campaigns')
+    .select('id')
+    .eq('status', 'closed')
+    .is('finalized_at', null)
+    .not('stopped_at', 'is', null)
+    .lt('stopped_at', period.endAt.toISOString());
+  if (error) throw new Error(error.message);
+  const ids = ((data ?? []) as { id: string }[]).map((row) => row.id);
+  if (ids.length === 0) return;
+
+  const [financeRows, paidRows] = await Promise.all([
+    fetchAllRowsIn(ids, (slice) => (from, to) =>
+      supabase.from('campaign_finances').select('campaign_id, total_budget, brand_cpm, creator_cpm').in('campaign_id', slice).order('campaign_id').range(from, to)
+    ) as Promise<FinanceRow[]>,
+    fetchAllRowsIn(ids, (slice) => (from, to) =>
+      supabase.from('settlements').select('campaign_id, amount').in('campaign_id', slice).order('id').range(from, to)
+    ) as Promise<PaidRow[]>,
+  ]);
+  const paid = new Map<string, number>();
+  for (const row of paidRows) paid.set(row.campaign_id, (paid.get(row.campaign_id) ?? 0) + Number(row.amount));
+
+  for (const finance of financeRows) {
+    const { remaining } = budgetUsage(Number(finance.total_budget), paid.get(finance.campaign_id) ?? 0, campaignPricing(finance));
+    const { error: rpcError } = await supabase.rpc('finalize_campaign', {
+      p_campaign_id: finance.campaign_id,
+      p_leftover: Math.max(0, Math.floor(remaining)),
+    });
+    if (rpcError) throw new Error(rpcError.message);
+  }
 }
 
 /** Settles one week, unless that week was already claimed. */
@@ -164,6 +213,7 @@ export async function runWeeklySettlement(
 
   try {
     const result = await settle(supabase, period);
+    await finalizeStoppedCampaigns(supabase, period);
     await supabase
       .from('settlement_runs')
       .update({ settlement_count: result.settlements, finished_at: new Date().toISOString() })
