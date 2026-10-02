@@ -11,6 +11,7 @@ export type AdminQueueCounts = {
   disputes: number;
   /** Payout requests waiting for a bank transfer. */
   payouts: number;
+  refunds: number;
 };
 
 export const SIGNUP_SOURCE_DAYS = 30;
@@ -29,7 +30,7 @@ export const getSignupSources = cache(async () => {
 export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => {
   const { supabase } = await getSession();
   const count = { count: 'exact' as const, head: true };
-  const [deposits, applications, clips, overdueClips, viewReports, disputes, payouts] = await Promise.all([
+  const [deposits, applications, clips, overdueClips, viewReports, disputes, payouts, refunds] = await Promise.all([
     supabase.from('campaigns').select('id', count).eq('status', 'pending_escrow'),
     supabase.from('campaign_applications').select('id', count).eq('status', 'applied'),
     supabase.from('clips').select('id', count).eq('status', 'pending_review'),
@@ -37,6 +38,7 @@ export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => 
     supabase.from('manual_view_reports').select('id', count).eq('status', 'pending'),
     supabase.from('clip_disputes').select('id', count).eq('status', 'open'),
     supabase.from('payouts').select('id', count).eq('status', 'requested'),
+    supabase.from('brand_refunds').select('id', count).eq('status', 'requested'),
   ]);
   return {
     deposits: deposits.count ?? 0,
@@ -46,5 +48,6 @@ export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => 
     viewReports: viewReports.count ?? 0,
     disputes: disputes.count ?? 0,
     payouts: payouts.count ?? 0,
+    refunds: refunds.count ?? 0,
   };
 });

@@ -19,6 +19,7 @@ import {
   Receipt,
   ScrollText,
   Settings,
+  Undo2,
   UserCheck,
   Wallet,
 } from 'lucide-react';
@@ -94,6 +95,7 @@ const NAVIGATION: Record<WorkspaceRole, SidebarSection[]> = {
       items: [
         { href: '/admin/deposits', label: '입금 확인', icon: <Landmark {...ICON} /> },
         { href: '/admin/settlements', label: '정산·지급', icon: <Banknote {...ICON} /> },
+        { href: '/admin/refunds', label: '반환', icon: <Undo2 {...ICON} /> },
       ],
     },
   ],
