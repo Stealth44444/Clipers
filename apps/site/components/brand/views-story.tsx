@@ -4,7 +4,6 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import {
   SPONSOR_PRICE_PER_1K,
   belowMeanShare,
-  hitProbability,
   hitTiles,
   medianPricePer1kManwon,
   medianToMean,
@@ -12,8 +11,9 @@ import {
 } from '@/lib/views-math';
 
 // Spec §5: why paying for views beats paying a fixed fee, from an 80:20 split. The section pins while native scroll
-// fills 20 of 100 tiles, rolls three numbers into place and lands one line (never hijacked). Sources and the model
-// live in docs/superpowers/specs/2026-10-01-brand-hero-data-design.md. Phones, short screens and
+// fills 20 of 100 tiles, rolls two numbers into place and lands one line (never hijacked). Sources and the model
+// live in docs/superpowers/specs/2026-10-01-brand-hero-data-design.md (the hit chance, 1 − 0.8¹⁰, moved to
+// ReachStory: 2026-10-02-brand-reach-section-design.md). Phones, short screens and
 // reduced motion get the finished state in normal flow. The server HTML is the finished state too.
 
 const TILES = 100;
@@ -47,19 +47,7 @@ const STATS: Stat[] = [
         열 건 중 아홉 건은 약속한 단가보다 비싸게 사고, 많게는 {Math.floor(worstCostMultiple())}배까지 내요.
       </>
     ),
-    range: [0.56, 0.7],
-  },
-  {
-    value: Math.round(hitProbability(10) * 100),
-    from: 20,
-    unit: '%',
-    title: '영상 10편이면, 하나는 상위 20%',
-    body: (
-      <>
-        1 − 0.8<sup>10</sup>. 조회수만큼만 내니까 빗나간 영상의 비용은 0원이에요.
-      </>
-    ),
-    range: [0.68, 0.82],
+    range: [0.6, 0.74],
   },
 ];
 
