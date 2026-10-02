@@ -5,8 +5,9 @@ import { Card, CardGrid, EmptyState, Page, Rail, SectionHeader, Stack, Starfield
 import CampaignCard from '@/components/campaign-card';
 import JsonLd from '@/components/json-ld';
 import PlatformSelect from '@/components/platform-select';
-import SiteShell, { discoverHref } from '@/components/site-shell';
+import SiteShell from '@/components/site-shell';
 import { loadLiveCampaigns, loadTopClips } from '@/lib/campaigns';
+import { CAMPAIGN_KINDS, discoverUrl } from '@/lib/discover';
 import { siteUrl } from '@/lib/urls';
 
 export const metadata: Metadata = {
@@ -15,40 +16,43 @@ export const metadata: Metadata = {
   alternates: { canonical: '/discover' },
 };
 
-type SearchParams = Promise<{ q?: string; group?: string; platform?: string }>;
-
+type SearchParams = Promise<{ q?: string; group?: string; type?: string; platform?: string }>;
 
 export default async function DiscoverPage({ searchParams }: { searchParams: SearchParams }) {
-  const { q = '', group, platform } = await searchParams;
+  const { q = '', group, type, platform } = await searchParams;
   const activeGroup = INTEREST_GROUPS.find((item) => item.id === group) ?? null;
+  const activeKind = CAMPAIGN_KINDS.find((item) => item.id === type) ?? null;
   const activePlatform = PLATFORMS.find((item) => item.value === platform) ?? null;
   const all = await loadLiveCampaigns();
 
   const query = q.trim().toLowerCase();
   const campaigns = all.filter((campaign) => {
+    if (activeKind && campaign.contentType !== activeKind.id) return false;
     if (activeGroup && categoryGroup(campaign.category) !== activeGroup.id) return false;
     if (activePlatform && !campaign.platforms.includes(activePlatform.value)) return false;
     if (!query) return true;
     return [campaign.title, categoryLabel(campaign.category), campaign.brandName].some((field) => field.toLowerCase().includes(query));
   });
-  const featured = !query && !activeGroup && !activePlatform ? [...all].sort((left, right) => right.payoutRemaining - left.payoutRemaining).slice(0, 5) : [];
+  const filtered = Boolean(activeKind || activeGroup || activePlatform);
+  const featured = !query && !filtered ? [...all].sort((left, right) => right.payoutRemaining - left.payoutRemaining).slice(0, 5) : [];
   const topClips = !query ? await loadTopClips(campaigns.map((campaign) => campaign.id)) : [];
 
   return (
-    <SiteShell activeGroup={activeGroup?.id}>
+    <SiteShell filters={{ group: activeGroup?.id, type: activeKind?.id, platform: activePlatform?.value }}>
       <div className="cl-sky">
         <Starfield className="cl-sky__canvas" count={700} speed={0.45} trail={0.6} twinkle={0.25} />
       </div>
       <Page>
         <section className="cl-market-hero">
-          <h1 className="cl-market-hero__title">{activeGroup || activePlatform ? `${[activeGroup?.label, activePlatform?.label].filter(Boolean).join(' · ')} 캠페인` : '지금 참여할 수 있는 캠페인'}</h1>
+          <h1 className="cl-market-hero__title">{filtered ? `${[activeKind?.label, activeGroup?.label, activePlatform?.label].filter(Boolean).join(' · ')} 캠페인` : '지금 참여할 수 있는 캠페인'}</h1>
           <p className="cl-market-hero__description">영상을 올리고, 검증된 조회수만큼 정산받으세요. 지원은 무료예요.</p>
           <form action="/discover" className="cl-search" role="search">
             <Search aria-hidden size={18} />
             {activeGroup && <input name="group" type="hidden" value={activeGroup.id} />}
+            {activeKind && <input name="type" type="hidden" value={activeKind.id} />}
             <input aria-label="캠페인 검색" className="cl-input" defaultValue={q} name="q" placeholder="캠페인, 브랜드, 분야로 검색" type="search" />
             {activePlatform && <input name="platform" type="hidden" value={activePlatform.value} />}
-            <PlatformSelect group={activeGroup?.id ?? null} q={q} value={activePlatform?.value ?? null} />
+            <PlatformSelect filters={{ q, group: activeGroup?.id, type: activeKind?.id }} value={activePlatform?.value ?? null} />
           </form>
         </section>
 
@@ -73,13 +77,13 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
               <Card>
                 <EmptyState
                   action={
-                    query || activeGroup || activePlatform ? (
-                      <a className="cl-link" href={discoverHref()}>
+                    query || filtered ? (
+                      <a className="cl-link" href={discoverUrl()}>
                         모든 캠페인 보기
                       </a>
                     ) : undefined
                   }
-                  description={query || activeGroup || activePlatform ? '다른 검색어나 분야, 플랫폼으로 찾아보세요.' : '새 캠페인이 열리면 여기에 보여요.'}
+                  description={query || filtered ? '다른 검색어나 종류, 분야, 플랫폼으로 찾아보세요.' : '새 캠페인이 열리면 여기에 보여요.'}
                   icon={<Sparkles size={24} />}
                   title="조건에 맞는 캠페인이 없어요"
                 />

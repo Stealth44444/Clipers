@@ -41,7 +41,7 @@ export default async function CampaignPage({ params }: Params) {
   if (!campaign) notFound();
 
   return (
-    <SiteShell activeGroup={categoryGroup(campaign.category)}>
+    <SiteShell filters={{ group: categoryGroup(campaign.category) }}>
       <Page>
         <CampaignDetail campaign={campaign} />
       </Page>
