@@ -74,7 +74,7 @@ P1 → P2 → P3 순서. P2는 P1의 구조화 데이터·공통 틀 위에서 �
 ### 4.2 데이터 구조 확장 (`lib/guides/types.ts`)
 - `GuideGroup`에 광고주용 `pillar`, `advertiser-platform`, `compare`, `cost`, `execution`, `glossary`, `data`를 더한다(크리에이터 `platform`과 구분).
 - `Guide`에 추가:
-  - `stage?: 'awareness' | 'platform' | 'compare' | 'cost' | 'execution'` — 광고주 가이드의 질문 지도 단계. 광고주 가이드는 필수(테스트).
+  - (단계 필드는 두지 않는다. 광고주 `GUIDE_GROUPS`를 질문 지도 순서 — pillar → advertiser-platform → compare → cost → industry → advertiser-problem → execution → glossary → data — 로 배치해 그룹이 곧 단계가 된다. `llms.txt`·`/guides`는 이 순서로 목록을 만든다. 2026-10-02 P2 계획 때 단순화.)
   - `reviewed: string` — 마지막 사실 확인 날짜(ISO). 모든 가이드 필수. 화면에 "Clipers 운영팀 작성 · {reviewed} 확인"으로 보인다.
   - `sources?: { label: string; url: string; checked: string }[]` — 출처. `compare`·`data` 그룹은 1개 이상 필수.
   - `claims?: { text: string; source: number }[]` — 실명 비교에서 상대 서비스에 대한 주장. 각 주장은 `sources`의 번호를 가리킨다. `compare` 중 실명 비교는 필수, 출처 없는 주장은 테스트 실패.
@@ -94,7 +94,7 @@ P1 → P2 → P3 순서. P2는 P1의 구조화 데이터·공통 틀 위에서 �
 - 출처: `compare`·`data`는 `sources` 1개 이상, 모든 `claims`·`rows`가 유효한 출처 번호, 출처 `url`은 `https://`.
 - 고유성: `slug`, `title`, `description` 중복 없음, 길이 규칙(3.6).
 - 연결: `related`·`counterpart`·`links` 대상이 존재.
-- 광고주 가이드는 `stage` 필수, 모든 가이드는 `reviewed` 필수.
+- 모든 가이드는 `reviewed` 필수.
 
 ### 4.6 실명 비교 원칙
 - 상대 서비스가 **자기 공개 페이지에 직접 밝힌 내용**만, 출처 링크와 확인 날짜를 붙여 쓴다. 추측·평가 표현("비싸다", "느리다") 금지. 차이는 구조(과금 방식, 크리에이터 선정 방식, 조회수 검증 방식)로만 쓴다.
@@ -107,7 +107,7 @@ P1 → P2 → P3 순서. P2는 P1의 구조화 데이터·공통 틀 위에서 �
 우리가 누구인지(국내 숏폼 클리핑 캠페인 플랫폼), 어떻게 돌아가는지(광고주 → 캠페인 → 크리에이터 → 검증 조회수 → 정산), 핵심 사실 표(최소 예산, 지원 플랫폼, 검수 시간, 조회수 검증 방식 — 모두 `@clipers/db` 값), 법인 정보(`COMPANY`), 연락처(상담 문의). `Organization` 구조화 데이터의 대표 페이지가 되고 루트 레이아웃의 `Organization`과 같은 `@id`를 쓴다. 공식 SNS가 생기면 `sameAs`에 넣을 자리를 `COMPANY`에 둔다(지금은 빈 배열). 푸터에 링크(상단 메뉴는 대상별 진입만 둔다).
 
 ### 5.2 `llms.txt` 확장과 `llms-full.txt`
-- `llms.txt`: 광고주 섹션을 질문 지도 단계 순서로 다시 쓰고 새 페이지와 `/about`을 링크한다. 단가 비공개 원칙 유지. (광고주 섹션의 단계별 재구성은 P2에서 stage 필드를 만든 뒤 한다. P1은 /about·llms-full.txt 링크만 더한다.)
+- `llms.txt`: 광고주 섹션을 질문 지도 단계 순서로 다시 쓰고 새 페이지와 `/about`을 링크한다. 단가 비공개 원칙 유지. (광고주 섹션은 그룹 순서를 따르므로 P2에서 새 그룹이 추가되면 자동으로 단계 순서가 된다. P1은 /about·llms-full.txt 링크만 더했다.)
 - `llms-full.txt`: 모든 가이드의 제목·답·본문·FAQ·출처를 마크다운 한 파일로. `revalidate` 1시간. 테스트: 단가 금지 규칙을 이 출력에도 적용.
 
 ### 5.3 구조화 데이터
