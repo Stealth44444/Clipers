@@ -3,6 +3,7 @@ import AttributionCarrier from '@/components/attribution-carrier';
 import JsonLd from '@/components/json-ld';
 import { COMPANY } from '@/lib/company';
 import { siteUrl } from '@/lib/urls';
+import { siteVerification } from '@/lib/verification';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -14,6 +15,11 @@ export const metadata: Metadata = {
   openGraph: { type: 'website', siteName: 'Clipers', locale: 'ko_KR' },
   twitter: { card: 'summary_large_image' },
   robots: { index: true, follow: true },
+  verification: siteVerification({
+    GOOGLE_SITE_VERIFICATION: process.env.GOOGLE_SITE_VERIFICATION,
+    NAVER_SITE_VERIFICATION: process.env.NAVER_SITE_VERIFICATION,
+    BING_SITE_VERIFICATION: process.env.BING_SITE_VERIFICATION,
+  }),
 };
 
 const ORGANIZATION = {
