@@ -51,6 +51,7 @@ export default function LandingChrome({ path, cta, overDark = false, children }:
           <Link href="/brands">브랜드</Link>
           <Link href="/discover">캠페인 둘러보기</Link>
           <Link href="/guides">가이드</Link>
+          <Link href="/about">회사 소개</Link>
           <a href={appUrl('/terms')}>이용약관</a>
           <a href={appUrl('/privacy')}>개인정보 처리방침</a>
         </nav>

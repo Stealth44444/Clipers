@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import AttributionCarrier from '@/components/attribution-carrier';
 import JsonLd from '@/components/json-ld';
-import { COMPANY } from '@/lib/company';
+import { COMPANY, ORGANIZATION_ID } from '@/lib/company';
 import { siteUrl } from '@/lib/urls';
 import { siteVerification } from '@/lib/verification';
 import './globals.css';
@@ -29,10 +29,11 @@ const ORGANIZATION = {
   '@graph': [
     {
       '@type': 'Organization',
-      '@id': `${siteUrl('/')}#organization`,
+      '@id': ORGANIZATION_ID,
       name: 'Clipers',
       legalName: COMPANY.legalName,
       url: siteUrl('/'),
+      ...(COMPANY.sameAs.length > 0 ? { sameAs: COMPANY.sameAs } : {}),
       logo: siteUrl('/logo/clipers-mark.svg'),
       description: '검증된 조회수 기반으로 정산하는 국내 숏폼 클리핑 캠페인 플랫폼',
       address: { '@type': 'PostalAddress', streetAddress: COMPANY.address, addressLocality: '용인시', addressRegion: '경기도', addressCountry: 'KR' },
@@ -45,7 +46,7 @@ const ORGANIZATION = {
       name: 'Clipers',
       url: siteUrl('/'),
       inLanguage: 'ko-KR',
-      publisher: { '@id': `${siteUrl('/')}#organization` },
+      publisher: { '@id': ORGANIZATION_ID },
       potentialAction: {
         '@type': 'SearchAction',
         target: { '@type': 'EntryPoint', urlTemplate: `${siteUrl('/discover')}?q={search_term_string}` },
