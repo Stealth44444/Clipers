@@ -160,20 +160,34 @@
 .cl-verify__checks .cl-status-dot { font-size: var(--font-size-2); }
 .cl-verify__spike .cl-status-dot { color: var(--color-text-subtle); font-size: var(--font-size-1); }
 
-/* The whole first screen, slid up under the sticky nav (which turns clear over it) */
-.cl-horizon { position: relative; display: grid; align-content: center; height: 100svh; min-height: 640px; margin-top: calc(var(--header-height) * -1); overflow: hidden; background: #040605; isolation: isolate; }
+/* The whole first screen, slid up under the sticky nav (which turns clear over it). The section is a scroll track: its
+   screen stays pinned while scrolling through it flies down to the planet and washes white into the page below. */
+.cl-horizon { position: relative; height: 240svh; margin-top: calc(var(--header-height) * -1); }
+.cl-horizon__pin { position: sticky; top: 0; display: grid; align-content: center; height: 100svh; min-height: 640px; overflow: hidden; background: #040605; isolation: isolate; }
 .cl-horizon__canvas { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; }
-.cl-horizon[data-fallback="true"] { background: radial-gradient(130% 70% at 50% 118%, #040605 58%, rgba(205, 235, 120, 0.85) 60%, rgba(88, 185, 130, 0.45) 63%, rgba(26, 92, 56, 0.25) 72%, transparent 88%), #040605; }
-.cl-horizon__copy { display: grid; justify-items: center; gap: 22px; padding: var(--header-height) 24px 16vh; text-align: center; will-change: transform; }
+.cl-horizon[data-fallback="true"] { height: auto; }
+/* The data section slides up over the hero's last, already white screen, so its title rises as the light finishes */
+.cl-horizon + .cl-views { position: relative; z-index: 1; margin-top: -50svh; }
+.cl-horizon[data-fallback="true"] + .cl-views { margin-top: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .cl-horizon + .cl-views { margin-top: 0; }
+}
+.cl-horizon[data-fallback="true"] .cl-horizon__pin { background: radial-gradient(130% 70% at 50% 118%, #040605 58%, rgba(205, 235, 120, 0.85) 60%, rgba(88, 185, 130, 0.45) 63%, rgba(26, 92, 56, 0.25) 72%, transparent 88%), #040605; }
+.cl-horizon__copy { display: grid; justify-items: center; gap: 22px; padding: var(--header-height) 24px 16vh; text-align: center; will-change: transform, opacity; }
 .cl-horizon__copy h1 { color: #fff; font-size: clamp(40px, 5.4vw, 72px); font-weight: 600; letter-spacing: -0.04em; line-height: 1.04; }
 .cl-horizon__copy p { color: rgba(255, 255, 255, 0.62); font-size: clamp(17px, 1.6vw, 20px); line-height: 1.6; }
 .cl-horizon__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 8px; }
 .cl-horizon .cl-button--glass { background: rgba(255, 255, 255, 0.08); color: #fff; box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
 .cl-horizon .cl-button--glass:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
 @media (max-width: 860px) {
-  .cl-horizon { min-height: 560px; }
+  .cl-horizon { height: 190svh; }
+  .cl-horizon + .cl-views { margin-top: -22svh; }
+  .cl-horizon__pin { min-height: 560px; }
   .cl-horizon__copy { padding-bottom: 14vh; }
   .cl-horizon__copy h1 { font-size: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-horizon { height: auto; }
 }
 
 /* Views data section: pinned while native scroll fills 20 of 100 tiles and rolls two numbers into place */

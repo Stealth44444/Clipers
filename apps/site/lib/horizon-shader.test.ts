@@ -5,7 +5,7 @@ describe('horizon shader', () => {
   it('is WebGL2 GLSL with the uniforms the hero sets', () => {
     expect(HORIZON_VS.startsWith('#version 300 es')).toBe(true);
     expect(HORIZON_FS.startsWith('#version 300 es')).toBe(true);
-    for (const name of ['uRes', 'uTime', 'uRise', 'uMouse']) expect(HORIZON_FS).toContain(name);
+    for (const name of ['uRes', 'uTime', 'uRise', 'uApproach', 'uMouse']) expect(HORIZON_FS).toContain(name);
   });
 
   it('never calls smoothstep with reversed constant edges (undefined in GLSL)', () => {

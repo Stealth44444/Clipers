@@ -1,5 +1,7 @@
 // The brand hero's "horizon": a planet's rim lit green and lime, a haze, light shafts and rising specks — one per clip,
 // their brightness drawn from a Pareto so only a few shine. One WebGL2 fragment shader over a full-screen quad.
+// uApproach (0 → 1, the hero's scroll) flies down to the planet: the horizon rises and flattens, its light thickens,
+// and at the end the light washes the screen white so the white page below follows on (2026-10-02).
 // smoothstep is always called with edge0 < edge1 (reversed edges are undefined in GLSL; a prototype broke on it).
 
 export const HORIZON_VS = `#version 300 es
@@ -11,6 +13,7 @@ precision highp float;
 uniform vec2 uRes;
 uniform float uTime;
 uniform float uRise;
+uniform float uApproach;
 uniform vec2 uMouse;
 out vec4 o;
 
@@ -41,19 +44,22 @@ void main() {
   vec2 p = vec2((uv.x - .5) * asp, uv.y);
   float t = uTime;
 
-  float R = 2.9, top = 0.19 + uRise * 0.14;
-  vec2 c = vec2((uMouse.x - .5) * 0.10, top - R);
+  float a = uApproach;
+  float near = smoothstep(0.08, 0.85, a);
+  float R = mix(2.9, 14.0, near), top = 0.19 + uRise * 0.14 + 0.30 * near;
+  float thick = 1. + near * 3.;
+  vec2 c = vec2((uMouse.x - .5) * 0.10 * (1. - near), top - R);
   vec2 q = p - c; float r = length(q); float d = r - R;
   vec2 n = q / r;
   float ang = atan(n.x, n.y) - (uMouse.x - .5) * 0.06;
-  float focus = exp(-ang * ang * 42.) * (.92 + .08 * sin(t * .45)) * (1. + uRise * 0.9);
+  float focus = exp(-ang * ang * 42.) * (.92 + .08 * sin(t * .45)) * (1. + uRise * 0.9 + near * 0.5);
 
   float above = step(0., d);
-  float rim = exp(-abs(d) * 260.) * (0.30 + 0.70 * focus);
-  float rimSoft = exp(-abs(d) * 46.) * (0.18 + 0.82 * focus);
-  float halo = exp(-max(d, 0.) * (4.2 - uRise * 1.6)) * (0.10 + 0.90 * focus) * above;
-  float haloWide = exp(-max(d, 0.) * 1.6) * (0.05 + 0.40 * focus) * above;
-  float inner = exp(min(d, 0.) * 18.) * (1. - above) * (0.25 + 0.75 * focus);
+  float rim = exp(-abs(d) * 260. / thick) * (0.30 + 0.70 * focus);
+  float rimSoft = exp(-abs(d) * 46. / thick) * (0.18 + 0.82 * focus);
+  float halo = exp(-max(d, 0.) * (4.2 - uRise * 1.6) * (1. + near * 0.8)) * (0.10 + 0.90 * focus) * above;
+  float haloWide = exp(-max(d, 0.) * 1.6 * (1. + near)) * (0.05 + 0.40 * focus) * above;
+  float inner = exp(min(d, 0.) * 18. / thick) * (1. - above) * (0.25 + 0.75 * focus);
 
   vec2 src = vec2(c.x, top - 0.22); vec2 rv = p - src; float ra = atan(rv.x, rv.y);
   float shafts = smoothstep(0.42, 0.95, fbm(vec2(ra * 7.0, t * 0.04))) * exp(-length(rv) * 1.7) * smoothstep(-0.01, 0.06, d) * exp(-ra * ra * 3.);
@@ -70,7 +76,16 @@ void main() {
            + mix(lime, vec3(1.), 0.55) * rim * 1.6 + green * inner * 0.35 + mix(green, lime, 0.4) * shafts * 0.22
            + mix(lime, vec3(1.), 0.3) * parts * 1.5 + deep * surface * 0.22;
   col = 1. - exp(-col * 1.35);
-  col *= 1. - 0.35 * smoothstep(0.55, 1.15, length((uv - vec2(.5, .45)) * vec2(asp * .8, 1.)));
-  col += (hash(gl_FragCoord.xy + fract(t) * 91.) - .5) * 0.018;
+
+  // the wash: like a sunrise, the light floods up into the sky from the rim (the planet below brightens last),
+  // through the rim's lime into white, then the whole screen
+  float w = smoothstep(0.5, 0.8, a);
+  float reach = d > 0. ? d * 0.9 : -d * 1.8;
+  float wash = max(smoothstep(0.0, 1.0, w * 2.0 - reach - 0.15), smoothstep(0.74, 0.8, a));
+  vec3 light = mix(mix(green, lime, 0.6), vec3(1.), smoothstep(0.35, 1.0, wash));
+
+  col *= 1. - 0.35 * (1. - wash) * smoothstep(0.55, 1.15, length((uv - vec2(.5, .45)) * vec2(asp * .8, 1.)));
+  col = mix(col, light, wash);
+  col += (hash(gl_FragCoord.xy + fract(t) * 91.) - .5) * 0.018 * (1. - wash);
   o = vec4(col, 1.);
 }`;
