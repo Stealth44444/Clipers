@@ -31,7 +31,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
   const { supabase, user } = await getSession();
   const { data: campaign } = await supabase
     .from('campaigns')
-    .select('id, title, status, description, content_requirements, reference_links, review_sla_hours, allowed_platforms, category, content_type')
+    .select('id, title, status, description, content_requirements, reference_links, review_sla_hours, daily_clip_limit, allowed_platforms, category, content_type')
     .eq('id', id)
     .eq('brand_id', user.id)
     .maybeSingle();
@@ -137,6 +137,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
             rows={[
               { label: '플랫폼', value: platformLabels(campaign.allowed_platforms) },
               { label: '검수 기간', value: `제출 후 ${campaign.review_sla_hours}시간 이내` },
+              { label: '하루 제출 한도', value: campaign.daily_clip_limit === null ? '제한 없음' : `크리에이터 1명당 하루 ${campaign.daily_clip_limit}개` },
               { label: '설명', value: campaign.description || '—' },
               { label: '요구사항', value: campaign.content_requirements || '—' },
               {

@@ -8,6 +8,7 @@ import {
   CAMPAIGN_DESCRIPTION_MAX,
   CAMPAIGN_REQUIREMENTS_MAX,
   CAMPAIGN_TITLE_MAX,
+  DAILY_CLIP_LIMIT_OPTIONS,
   INTEREST_GROUPS,
   INTERESTS,
   MAX_REFERENCE_LINKS,
@@ -15,6 +16,8 @@ import {
   REVIEW_SLA_OPTIONS,
   campaignDraftProgress,
   clipCapToCreatorPayout,
+  dailyClipLimitLabel,
+  dailyClipLimitValue,
   expectedViews,
   filledReferenceLinks,
   firstCampaignDraftError,
@@ -102,6 +105,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
         allowed_platforms: draft.platforms,
         total_budget: Number(draft.totalBudget),
         review_sla_hours: Number(draft.reviewSlaHours),
+        daily_clip_limit: dailyClipLimitValue(draft),
         reference_links: filledReferenceLinks(draft.referenceLinks),
         content_requirements: draft.requirements.trim() || null,
       };
@@ -281,6 +285,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
                 />
               </Field>
             </div>
+            <p className="cl-meta">한 크리에이터에게 예산이 몰리지 않도록, 한 명이 받을 수 있는 금액에도 상한이 있어요.</p>
             <Field hint="제출된 영상을 운영팀이 이 시간 안에 검수해요." htmlFor="campaign-sla" label="검수 기간">
               <Select id="campaign-sla" onChange={(event) => update({ reviewSlaHours: event.target.value })} value={draft.reviewSlaHours}>
                 {REVIEW_SLA_OPTIONS.map((hours) => (
@@ -288,6 +293,16 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
                     {hours}시간
                   </option>
                 ))}
+              </Select>
+            </Field>
+            <Field hint="한 크리에이터가 하루에 올릴 수 있는 영상 수예요. 반려된 영상은 세지 않아요." htmlFor="campaign-daily-limit" label="크리에이터 1명당 하루 제출 한도">
+              <Select id="campaign-daily-limit" onChange={(event) => update({ dailyClipLimit: event.target.value })} value={draft.dailyClipLimit}>
+                {DAILY_CLIP_LIMIT_OPTIONS.map((count) => (
+                  <option key={count} value={String(count)}>
+                    {count}개
+                  </option>
+                ))}
+                <option value="none">제한 없음</option>
               </Select>
             </Field>
           </Section>
@@ -348,6 +363,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
                 { label: '플랫폼', value: draft.platforms.length > 0 ? platformLabels(draft.platforms) : '—' },
                 { label: '예산', value: budget > 0 ? formatKRW(budget) : '—' },
                 { label: '예상 조회수', value: views > 0 ? `${views.toLocaleString('ko-KR')}회` : '—' },
+                { label: '하루 제출 한도', value: dailyClipLimitLabel(dailyClipLimitValue(draft)) },
               ]}
             />
           </Card>

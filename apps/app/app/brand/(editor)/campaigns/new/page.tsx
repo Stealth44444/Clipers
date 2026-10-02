@@ -17,7 +17,7 @@ export default async function NewCampaignPage({ searchParams }: { searchParams: 
 
   const { data: campaign } = await supabase
     .from('campaigns')
-    .select('id, title, description, content_type, category, allowed_platforms, review_sla_hours, reference_links, content_requirements, cover_image_url')
+    .select('id, title, description, content_type, category, allowed_platforms, review_sla_hours, daily_clip_limit, reference_links, content_requirements, cover_image_url')
     .eq('id', draftId)
     .eq('brand_id', user.id)
     .eq('status', 'draft')
@@ -37,6 +37,7 @@ export default async function NewCampaignPage({ searchParams }: { searchParams: 
     totalBudget: String(finance.total_budget),
     maxPayoutPerClip: rates?.[0] ? String(creatorPayoutToClipCap(Number(rates[0].max_payout), pricing)) : '',
     reviewSlaHours: String(campaign.review_sla_hours),
+    dailyClipLimit: campaign.daily_clip_limit === null ? 'none' : String(campaign.daily_clip_limit),
     referenceLinks: campaign.reference_links.length > 0 ? campaign.reference_links : [''],
     requirements: campaign.content_requirements ?? '',
   };
