@@ -26,7 +26,7 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
         </p>
         <h1 className="cl-guide__title">{guide.title}</h1>
         <p className="cl-guide__updated">
-          <time dateTime={guide.updated}>{guide.updated.split('-').join('. ')}.</time> 업데이트
+          Clipers 운영팀 작성 · <time dateTime={guide.reviewed}>{guide.reviewed.split('-').join('. ')}.</time> 확인
         </p>
         <div className="cl-guide__answer">
           {guide.answer.map((sentence) => (
@@ -80,6 +80,72 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
             )}
           </section>
         ))}
+
+        {guide.claims && guide.claims.length > 0 && (
+          <section className="cl-guide__section">
+            <h2>각 서비스가 밝힌 내용</h2>
+            <table className="cl-guide__table cl-guide__table--text">
+              <tbody>
+                {guide.claims.map((claim) => (
+                  <tr key={`${claim.subject}-${claim.text}`}>
+                    <th scope="row">{claim.subject}</th>
+                    <td>
+                      {claim.text} <sup>[{claim.source + 1}]</sup>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
+
+        {guide.terms && (
+          <section className="cl-guide__section">
+            <h2>용어</h2>
+            <dl className="cl-guide__terms">
+              {guide.terms.map((item) => (
+                <div id={`term-${encodeURIComponent(item.term)}`} key={item.term}>
+                  <dt>{item.term}</dt>
+                  <dd>{item.definition}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        {guide.rows && (
+          <section className="cl-guide__section">
+            <h2>숫자로 보기</h2>
+            <table className="cl-guide__table">
+              <tbody>
+                {guide.rows.map((row) => (
+                  <tr key={row.label}>
+                    <th scope="row">{row.label}</th>
+                    <td>
+                      {row.value} <sup>[{row.source + 1}]</sup>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
+
+        {guide.sources && guide.sources.length > 0 && (
+          <section className="cl-guide__section cl-guide__sources">
+            <h2>출처</h2>
+            <ol>
+              {guide.sources.map((source) => (
+                <li key={source.url}>
+                  <a className="cl-link" href={source.url} rel="noopener" target="_blank">
+                    {source.label}
+                  </a>{' '}
+                  <span>({source.checked.split('-').join('. ')}. 확인)</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
 
         {advertiser ? (
           <section className="cl-guide__section">
@@ -161,6 +227,22 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
         </ul>
       </nav>
 
+      {guide.terms && (
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'DefinedTermSet',
+            name: guide.title,
+            url: siteUrl(path),
+            hasDefinedTerm: guide.terms.map((item) => ({
+              '@type': 'DefinedTerm',
+              name: item.term,
+              description: item.definition,
+              url: siteUrl(`${path}#term-${encodeURIComponent(item.term)}`),
+            })),
+          }}
+        />
+      )}
       <JsonLd
         data={{
           '@context': 'https://schema.org',
