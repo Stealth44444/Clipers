@@ -6,7 +6,7 @@ describe('CREATOR_FAQ', () => {
     const ids = CREATOR_FAQ.map((item) => item.id);
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids).toEqual([
-      'what-is-clipping', 'small-channel', 'others-videos', 'fees', 'how-much', 'per-clip-max',
+      'what-is-clipping', 'small-channel', 'others-videos', 'fees', 'how-much', 'per-clip-max', 'daily-limit',
       'min-views', 'budget-runs-out', 'when-paid', 'platforms', 'view-check', 'rejected',
     ]);
   });
@@ -16,7 +16,8 @@ describe('CREATOR_FAQ', () => {
     expect(() => faqById('nope')).toThrow('Unknown FAQ id: nope');
   });
 
-  it('never states the brand rate', () => {
+  it('never states the brand rate or the size of the per-person cap', () => {
     expect(CREATOR_FAQ.some((item) => item.a.includes('1천 회당 3,000원'))).toBe(false);
+    expect(CREATOR_FAQ.some((item) => (item.q + item.a).includes('15%'))).toBe(false);
   });
 });

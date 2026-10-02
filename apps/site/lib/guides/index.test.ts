@@ -58,7 +58,7 @@ describe('guides', () => {
   });
 
   it('never promises what we cannot keep', () => {
-    const banned = ['1천 회당 3,000원', '저작권 걱정 없', '클레임 보호', '보장', '평균 수익', '월 수익'];
+    const banned = ['1천 회당 3,000원', '저작권 걱정 없', '클레임 보호', '보장', '평균 수익', '월 수익', '15%'];
     for (const guide of GUIDES) for (const word of banned) expect(text(guide)).not.toContain(word);
   });
 
