@@ -21,6 +21,8 @@ create table if not exists private.cron_requests (
   requested_at timestamptz not null default now(),
   checked_at timestamptz
 );
+-- No policies: only the owner (postgres, which the functions below run as) reads or writes it.
+alter table private.cron_requests enable row level security;
 
 /** Calls one of the app's /api/cron routes with the shared secret. pg_net is asynchronous: the answer is checked later. */
 create or replace function private.call_cron_endpoint(p_path text)
