@@ -37,9 +37,13 @@ export function platformMargin(pricing: CampaignPricing): number {
   return pricing.brandCpm - pricing.creatorCpm;
 }
 
-/** Budget consumed by creator payouts, expressed in brand spend. */
-export function budgetUsage(totalBudget: number, creatorPaid: number, pricing: CampaignPricing) {
-  const spent = pricing.creatorCpm > 0 ? Math.min(totalBudget, Math.round((creatorPaid * pricing.brandCpm) / pricing.creatorCpm)) : 0;
+/**
+ * Budget consumed by creator payouts, expressed in brand spend. A campaign closed because its budget ran out
+ * (`exhausted`) counts as fully spent: the creator cap is cut to the won, so converting back can leave a few won.
+ */
+export function budgetUsage(totalBudget: number, creatorPaid: number, pricing: CampaignPricing, exhausted = false) {
+  const converted = pricing.creatorCpm > 0 ? Math.min(totalBudget, Math.round((creatorPaid * pricing.brandCpm) / pricing.creatorCpm)) : 0;
+  const spent = exhausted ? totalBudget : converted;
   return { spent, remaining: totalBudget - spent, ratio: totalBudget > 0 ? spent / totalBudget : 0 };
 }
 

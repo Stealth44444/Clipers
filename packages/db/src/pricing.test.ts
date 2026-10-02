@@ -63,6 +63,12 @@ describe('budgetUsage', () => {
   it('never reports more than the budget', () => {
     expect(budgetUsage(1_000_000, 300_000, DEFAULT_PRICING)).toEqual({ spent: 1_000_000, remaining: 0, ratio: 1 });
   });
+
+  it('counts a campaign closed by its budget as fully spent, rounding leftovers included', () => {
+    // 1,000,000 won buys a 266,666 won creator cap; that converts back to 999,998 won.
+    expect(budgetUsage(1_000_000, 266_666, DEFAULT_PRICING)).toEqual({ spent: 999_998, remaining: 2, ratio: 0.999998 });
+    expect(budgetUsage(1_000_000, 266_666, DEFAULT_PRICING, true)).toEqual({ spent: 1_000_000, remaining: 0, ratio: 1 });
+  });
 });
 
 describe('campaignEconomics', () => {

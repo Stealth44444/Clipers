@@ -18,6 +18,7 @@ export * from './services/rejectClip';
 export * from './services/settlement';
 export * from './services/youtubeViews';
 export * from './services/campaignClosure';
+export * from './services/campaignStop';
 export * from './services/anomalyDetection';
 export * from './services/dispute';
 export * from './services/manualViewReport';
