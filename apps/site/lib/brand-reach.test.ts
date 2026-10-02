@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { PLATFORMS } from '@clipers/db';
 import { hitProbability } from './views-math';
-import { FEED_CLIP, FEED_VIEWS_FROM, HIT_PERCENT, HOOP_CLIPS, RANKED_CLIPS, climbViews, compactViews } from './brand-reach';
+import { ARRIVALS, HIT_PERCENT, HOOP_CLIPS, RANKED_CLIPS, compactViews } from './brand-reach';
 
 describe('reach scenes', () => {
   it('quotes the hit chance from the model', () => {
@@ -11,7 +11,8 @@ describe('reach scenes', () => {
 
   it('uses real platforms', () => {
     const platforms = new Set<string>(PLATFORMS.map((platform) => platform.value));
-    for (const clip of [FEED_CLIP, ...HOOP_CLIPS]) expect(platforms.has(clip.platform)).toBe(true);
+    for (const clip of HOOP_CLIPS) expect(platforms.has(clip.platform)).toBe(true);
+    for (const arrival of ARRIVALS) expect(platforms.has(arrival.platform)).toBe(true);
     for (const row of RANKED_CLIPS) expect(platforms.has(row.platform)).toBe(true);
   });
 
@@ -23,12 +24,9 @@ describe('reach scenes', () => {
     expect(RANKED_CLIPS[0]).toMatchObject({ title: hit?.caption, views: hit?.views, platform: hit?.platform });
   });
 
-  it('climbs from the start to the clip views and holds', () => {
-    expect(climbViews(0)).toBe(FEED_VIEWS_FROM);
-    expect(climbViews(1)).toBe(FEED_CLIP.views);
-    expect(climbViews(2)).toBe(FEED_CLIP.views);
-    expect(climbViews(0.5)).toBeGreaterThan(FEED_VIEWS_FROM);
-    expect(climbViews(0.5)).toBeLessThan(FEED_CLIP.views);
+  it('lands clips from different creators on different platforms', () => {
+    expect(new Set(ARRIVALS.map((arrival) => arrival.creator)).size).toBe(ARRIVALS.length);
+    expect(new Set(ARRIVALS.map((arrival) => arrival.platform)).size).toBe(ARRIVALS.length);
   });
 
   it('writes views like the apps do', () => {

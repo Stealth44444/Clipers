@@ -1,6 +1,6 @@
 // The brand page's reach section (spec: docs/superpowers/specs/2026-10-02-brand-reach-section-design.md §4).
-// Three scenes: one new account's clip spreads on its own, three edits of one game take their chances, and the
-// campaign's clip list shows which one won. Accounts and views are examples (the section says so); no amounts.
+// Three scenes: clips from many creators land at once on different platforms, three edits of one game take their
+// chances, and the campaign's clip list shows which one won. Creators and views are examples; no amounts.
 
 import { hitProbability } from './views-math';
 
@@ -16,19 +16,16 @@ export type ReachClip = {
   hit?: boolean;
 };
 
-/** Scene 1: a new account with few followers whose clip spreads anyway. */
-export const FEED_CLIP: ReachClip = {
-  video: '/media/clips/pet.mp4',
-  poster: '/media/clips/pet.jpg',
-  platform: 'tiktok',
-  handle: 'dailypaws.new',
-  caption: '산책 가자는 말에 이러는 거 정상인가요',
-  likes: '2.9만',
-  comments: '418',
-  views: 482_000,
-};
-export const FEED_FOLLOWERS = 312;
-export const FEED_VIEWS_FROM = 310_000;
+export type Arrival = { creator: string; platform: string; ago: string };
+
+/** Scene 1: new clips landing at once from different creators on different platforms, newest first. */
+export const ARRIVALS: Arrival[] = [
+  { creator: '하린', platform: 'instagram_reels', ago: '방금' },
+  { creator: '도윤', platform: 'youtube_shorts', ago: '1분 전' },
+  { creator: '서아', platform: 'tiktok', ago: '1분 전' },
+  { creator: '민준', platform: 'naver_clip', ago: '3분 전' },
+  { creator: '지우', platform: 'kakao_shorts', ago: '4분 전' },
+];
 
 /** Scene 2: one game, cut three ways by three creators — left, centre (in front), right. */
 export const HOOP_CLIPS: ReachClip[] = [
@@ -78,13 +75,6 @@ export const RANKED_CLIPS: RankedClip[] = [
 
 /** Chance that one of 10 clips lands in the top 20%, in percent (89). */
 export const HIT_PERCENT = Math.round(hitProbability(10) * 100);
-
-/** Scene 1's view count at progress t (0 → 1, then holds): fast at first, settling as it nears the total. */
-export function climbViews(t: number): number {
-  const p = Math.min(1, Math.max(0, t));
-  const eased = 1 - Math.pow(1 - p, 3);
-  return Math.round((FEED_VIEWS_FROM + (FEED_CLIP.views - FEED_VIEWS_FROM) * eased) / 100) * 100;
-}
 
 /** Views as the apps write them: 48.2만 from ten thousand up, 8,400 below. */
 export function compactViews(views: number): string {

@@ -1,31 +1,31 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { ChartNoAxesColumn, Layers, Send } from 'lucide-react';
+import { ChartNoAxesColumn, Layers, Users } from 'lucide-react';
 import { platformLabel } from '@clipers/db';
-import { Avatar, DeviceFrame, PlatformIcon, StatusDot } from '@clipers/ui';
+import { Avatar, DeviceFrame, PlatformIcon } from '@clipers/ui';
 import ShortSlide from '@/components/short-slide';
 import { useStickySteps } from '@/components/use-sticky-steps';
-import { FEED_CLIP, FEED_FOLLOWERS, HIT_PERCENT, HOOP_CLIPS, RANKED_CLIPS, climbViews, compactViews, type ReachClip } from '@/lib/brand-reach';
+import { ARRIVALS, HIT_PERCENT, HOOP_CLIPS, RANKED_CLIPS, compactViews, type ReachClip } from '@/lib/brand-reach';
 
 // Spec: docs/superpowers/specs/2026-10-02-brand-reach-section-design.md §4. The why that ViewsStory doesn't cover:
 // more clips, more chances. Same grammar as the creator page's campaign kinds (CampaignTypes): a pinned stage, one
 // sentence per scene on the left, the real product on the right, a segmented progress bar. Phones stack the scenes.
 
-const CLIMB_MS = 2400;
+const ARRIVAL_MS = 520;
 
-type Scene = { id: 'feed' | 'more' | 'ranked'; label: string; icon: ReactNode; title: string; body: ReactNode };
+type Scene = { id: 'many' | 'more' | 'ranked'; label: string; icon: ReactNode; title: string; body: ReactNode };
 
 const SCENES: Scene[] = [
   {
-    id: 'feed',
-    label: '영상 단위 추천',
-    icon: <Send size={26} />,
-    title: '팔로워가 적어도, 영상은 퍼져요.',
+    id: 'many',
+    label: '여러 크리에이터',
+    icon: <Users size={26} />,
+    title: '한 명 대신, 여러 크리에이터가 동시에 올려요.',
     body: (
       <>
-        <span className="cl-phrase">숏폼은 누가 올렸는지보다 영상 하나하나의 반응을 보고&nbsp;추천해요.</span>{' '}
-        <span className="cl-phrase">큰 계정을 섭외하지 않아도 되는 이유예요.</span>
+        <span className="cl-phrase">서로 다른 계정과 플랫폼에서 영상이 한꺼번에&nbsp;올라와요.</span>{' '}
+        <span className="cl-phrase">한 사람의 팔로워에만 머물지&nbsp;않아요.</span>
       </>
     ),
   },
@@ -80,7 +80,7 @@ function Phone({ clip, views, hit, videoRef }: { clip: ReachClip; views?: string
 export default function ReachStory() {
   const { rootRef, progress, active, jumpTo } = useStickySteps(SCENES.length);
   const videos = useRef(new Map<string, { scene: number; element: HTMLVideoElement }>());
-  const [climb, setClimb] = useState(1);
+  const [landed, setLanded] = useState(ARRIVALS.length);
 
   // Each clip plays while it is on screen and, on wide screens, while its scene is the one showing.
   useEffect(() => {
@@ -107,18 +107,13 @@ export default function ReachStory() {
     };
   }, [active]);
 
-  // The first scene's views climb each time it comes on (the server HTML and reduced motion show the total).
+  // The first scene's notifications land one by one, oldest first, each time it comes on. The server HTML, reduced
+  // motion and phones (where the scenes stack and never switch) show them all.
   useEffect(() => {
-    if (active !== 0 || reducedMotion()) return;
-    let raf = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / CLIMB_MS);
-      setClimb(t);
-      if (t < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    if (active !== 0 || reducedMotion() || window.matchMedia('(max-width: 860px)').matches) return;
+    setLanded(0);
+    const timer = window.setInterval(() => setLanded((count) => (count >= ARRIVALS.length ? count : count + 1)), ARRIVAL_MS);
+    return () => window.clearInterval(timer);
   }, [active]);
 
   const video = (key: string, scene: number) => (element: HTMLVideoElement | null) => {
@@ -127,31 +122,27 @@ export default function ReachStory() {
   };
 
   const visual = (scene: Scene, index: number) => {
-    if (scene.id === 'feed')
+    if (scene.id === 'many')
       return (
-        <>
-          <div className="cl-kinds__card" data-slot="phone">
-            <Phone clip={FEED_CLIP} videoRef={video('feed', index)} />
+        <div className="cl-kinds__card" data-slot="arrivals">
+          <div className="cl-reach__arrivals">
+            {ARRIVALS.map((arrival, order) => (
+              <div className="cl-notice" data-landed={ARRIVALS.length - 1 - order < landed} key={arrival.creator}>
+                <img alt="" className="cl-notice__icon" src="/logo/clipers-mark.svg" />
+                <div className="cl-notice__text">
+                  <p className="cl-notice__head">
+                    <strong>새 클립</strong>
+                    <span>{arrival.ago}</span>
+                  </p>
+                  <p className="cl-notice__body cl-reach__arrival">
+                    <PlatformIcon platform={arrival.platform} size={14} />
+                    {arrival.creator}님이 {platformLabel(arrival.platform)}에 영상을 올렸어요.
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="cl-kinds__card" data-slot="account">
-            <div className="cl-earn__card">
-              <p className="cl-earn__label">올린 계정</p>
-              <p className="cl-earn__campaign">
-                <Avatar name={FEED_CLIP.handle} size="sm" />@{FEED_CLIP.handle}
-              </p>
-              <p className="cl-earn__rate">
-                팔로워 <strong className="cl-reach__plain">{FEED_FOLLOWERS.toLocaleString('ko-KR')}명</strong>
-              </p>
-            </div>
-          </div>
-          <div className="cl-kinds__card" data-slot="views">
-            <div className="cl-earn__card">
-              <p className="cl-earn__label">이 영상의 조회수</p>
-              <p className="cl-earn__amount">{compactViews(climbViews(climb))}</p>
-              <StatusDot tone="green">추천 피드에서</StatusDot>
-            </div>
-          </div>
-        </>
+        </div>
       );
     if (scene.id === 'more')
       return HOOP_CLIPS.map((clip, slot) => (
@@ -185,7 +176,7 @@ export default function ReachStory() {
   return (
     <section aria-labelledby="reach-title" className="cl-kinds cl-reach" ref={rootRef} style={{ '--kinds': SCENES.length } as CSSProperties}>
       <h2 className="cl-reach__title" id="reach-title">
-        팔로워가 적어도, 영상은 퍼져요
+        한 명 대신, 여러 크리에이터가 동시에 올려요
       </h2>
       <div className="cl-kinds__stage">
         {SCENES.map((scene, index) => (
