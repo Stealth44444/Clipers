@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ExternalLink, Film, Pencil } from 'lucide-react';
 import Link from 'next/link';
-import { campaignPricing, categoryLabel, creatorPayoutToClipCap, depositAmount, platformLabel, platformLabels, vatOn } from '@clipers/db';
+import { campaignPricing, categoryLabel, classifyDeposit, creatorPayoutToClipCap, depositDue, platformLabel, platformLabels } from '@clipers/db';
 import {
   Badge,
   ButtonLink,
@@ -22,7 +22,9 @@ import { getBrandCampaigns } from '@/lib/brand-data';
 import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
 import { CAMPAIGN_STATUS, CLIP_STATUS, CONTENT_TYPE_LABEL, statusDisplay } from '@/lib/status';
-import DepositButton from './deposit-button';
+import { getBrandBalance } from '@/lib/brand-balance';
+import DepositPanel from './deposit-panel';
+import StopCampaignButton from './stop-campaign-button';
 
 type ClipRow = { id: string; url: string; platform: string; status: string; submitted_at: string; creator: { display_name: string } | null };
 
@@ -47,9 +49,12 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
       .order('submitted_at', { ascending: false }),
   ]);
 
-  const [finances, { data: billing }] = await Promise.all([
+  const [finances, { data: billing }, { data: escrow }, { data: overDeposit }, balance] = await Promise.all([
     loadCampaignFinances(supabase, [id]),
     supabase.from('brand_billing_profiles').select('company_name').eq('brand_id', user.id).maybeSingle(),
+    supabase.from('campaign_escrow').select('received_amount, credit_applied').eq('campaign_id', id).maybeSingle(),
+    supabase.from('brand_refunds').select('transfer_amount, status').eq('campaign_id', id).eq('kind', 'over_deposit').maybeSingle(),
+    getBrandBalance(),
   ]);
   const finance = finances.get(id);
   if (!finance) notFound();
@@ -58,6 +63,9 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
   const status = statusDisplay(CAMPAIGN_STATUS, campaign.status);
   const clipRows = (clips.data ?? []) as unknown as ClipRow[];
   const bankTransferInfo = process.env.NEXT_PUBLIC_BANK_TRANSFER_INFO;
+  const received = Number(escrow?.received_amount ?? 0);
+  const deposit = escrow ? classifyDeposit(depositDue(summary.total_budget, Number(escrow.credit_applied)), received) : null;
+  const leftover = balance.rows.find((row) => row.kind === 'leftover' && row.campaign_id === id);
 
   return (
     <Page>
@@ -67,6 +75,8 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
             <ButtonLink href={`/brand/campaigns/new?draft=${campaign.id}`} icon={<Pencil size={15} />} variant="secondary">
               수정
             </ButtonLink>
+          ) : campaign.status === 'live' ? (
+            <StopCampaignButton campaignId={campaign.id} />
           ) : undefined
         }
         description={
@@ -79,35 +89,41 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
       />
       <Stack>
         {campaign.status === 'draft' && (
-          <Card description="입금을 마치고 아래 버튼을 누르면 운영팀이 확인한 뒤 캠페인을 공개하고, 세금계산서를 발행해요." title="예산 입금">
-            <div className="cl-stack-tight">
-              <SummaryList
-                rows={[
-                  { label: '서비스 대금', value: formatKRW(summary.total_budget) },
-                  { label: '부가세 (10%)', value: formatKRW(vatOn(summary.total_budget)) },
-                  { label: '입금 금액', value: <strong>{formatKRW(depositAmount(summary.total_budget))}</strong> },
-                  { label: '입금 계좌', value: bankTransferInfo ?? '운영팀에 문의해 주세요' },
-                  { label: '입금자명', value: '브랜드명과 같게 입력해 주세요' },
-                ]}
-              />
-              {billing ? (
-                <div>
-                  <DepositButton campaignId={campaign.id} />
-                </div>
-              ) : (
-                <p className="cl-alert cl-tone-amber" role="status">
-                  입금을 알리기 전에 세금계산서 정보를 입력해 주세요.{' '}
-                  <Link className="cl-link" href="/brand/settings#billing">
-                    세금계산서 정보 입력
-                  </Link>
-                </p>
-              )}
-            </div>
+          <Card description="입금을 마치고 아래 버튼을 누르면 운영팀이 확인한 뒤 캠페인을 공개하고, 입금한 금액만큼 세금계산서를 발행해요." title="예산 입금">
+            <DepositPanel
+              balance={balance.summary.balance}
+              bankTransferInfo={bankTransferInfo ?? null}
+              billingReady={Boolean(billing)}
+              campaignId={campaign.id}
+              serviceAmount={summary.total_budget}
+            />
           </Card>
         )}
         {campaign.status === 'pending_escrow' && (
           <p className="cl-alert cl-tone-amber" role="status">
-            운영팀이 입금을 확인하고 있어요. 확인되면 캠페인이 공개되고 크리에이터 지원을 받기 시작해요.
+            {deposit?.kind === 'short' && received > 0
+              ? `${formatKRW(received)}이 확인됐어요. 차액 ${formatKRW(deposit.difference)}을 더 입금해 주세요.`
+              : '운영팀이 입금을 확인하고 있어요. 확인되면 캠페인이 공개되고 크리에이터 지원을 받기 시작해요.'}
+          </p>
+        )}
+        {overDeposit && (
+          <p className="cl-alert cl-tone-sky" role="status">
+            {overDeposit.status === 'paid'
+              ? `초과 입금한 ${formatKRW(overDeposit.transfer_amount)}을 입금한 계좌로 돌려드렸어요.`
+              : `초과 입금한 ${formatKRW(overDeposit.transfer_amount)}은 영업일 7일 안에 입금한 계좌로 돌려드려요.`}
+          </p>
+        )}
+        {campaign.status === 'closed' && summary.stoppedAt && !summary.finalizedAt && (
+          <p className="cl-alert cl-tone-sky" role="status">
+            중단한 캠페인이에요. 이번 주 조회수까지 정산한 뒤 다음 월요일에 남은 금액이 확정돼요.
+          </p>
+        )}
+        {leftover && (
+          <p className="cl-alert cl-tone-brand" role="status">
+            남은 {formatKRW(leftover.amount)}을 잔액으로 옮겼어요. 반환을 요청하거나 다음 캠페인에 쓸 수 있어요.{' '}
+            <Link className="cl-link" href="/brand/spend">
+              예산 사용 내역
+            </Link>
           </p>
         )}
 
