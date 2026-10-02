@@ -46,9 +46,9 @@ export default function BrandsPage() {
           <MeshGradient />
         </div>
         <h2 className="cl-closing__title">
-          <span>다음 숏폼 캠페인을,</span> <span>오늘 열어 보세요</span>
+          <span>다음 바이럴은,</span> <span>운 말고 캠페인으로</span>
         </h2>
-        <p className="cl-closing__lead">캠페인은 100만 원부터 열 수 있어요. 예산은 검증된 조회수에만 쓰여요.</p>
+        <p className="cl-closing__lead">100만 원으로 첫 캠페인을 열어 보세요. 예산은 검증된 조회수에만 쓰여요.</p>
         <div className="cl-closing__actions">
           <ButtonLink href={signUpUrl('brand')} size="lg" variant="primary">
             캠페인 시작하기
