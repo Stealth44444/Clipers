@@ -69,4 +69,28 @@ describe('guides', () => {
       expect(text(guide)).not.toContain(formatKRW(DEFAULT_PRICING.brandCpm));
     }
   });
+
+  it('keeps titles and descriptions unique and within search snippet lengths', () => {
+    for (const guide of GUIDES) {
+      expect(`${guide.title} — Clipers`.length).toBeLessThanOrEqual(60);
+      expect(guide.description.length).toBeGreaterThanOrEqual(60);
+      expect(guide.description.length).toBeLessThanOrEqual(160);
+    }
+    expect(new Set(GUIDES.map((guide) => guide.title)).size).toBe(GUIDES.length);
+    expect(new Set(GUIDES.map((guide) => guide.description)).size).toBe(GUIDES.length);
+  });
+
+  it('links only to pages that exist', () => {
+    const routes = new Set(['/', '/brands', '/discover', '/guides', '/contact', '/about']);
+    for (const guide of GUIDES) {
+      for (const section of guide.sections) {
+        for (const link of section.links ?? []) {
+          if (link.href.startsWith('https://')) continue;
+          const pathname = link.href.split(/[?#]/)[0];
+          if (pathname.startsWith('/guides/')) expect(guideBySlug(pathname.slice('/guides/'.length))).toBeDefined();
+          else expect(routes.has(pathname)).toBe(true);
+        }
+      }
+    }
+  });
 });
