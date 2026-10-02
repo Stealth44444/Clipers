@@ -2,10 +2,12 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
 import {
+  CREATOR_CAMPAIGN_SHARE,
   DEFAULT_PRICING,
   MIN_CAMPAIGN_BUDGET,
   budgetUsage,
   campaignEconomics,
+  creatorCampaignCap,
   creatorPayoutCap,
   expectedViews,
   platformMargin,
@@ -70,5 +72,14 @@ describe('campaignEconomics', () => {
 
   it('never reports negative platform revenue', () => {
     expect(campaignEconomics(1_000_000, 0, DEFAULT_PRICING).platformRevenue).toBe(0);
+  });
+});
+
+describe('creatorCampaignCap', () => {
+  it('lets one creator take at most 15% of the brand budget from a campaign', () => {
+    expect(CREATOR_CAMPAIGN_SHARE).toBe(0.15);
+    expect(creatorCampaignCap(1_000_000)).toBe(150_000);
+    expect(creatorCampaignCap(1_234_567)).toBe(185_185);
+    expect(creatorCampaignCap(0)).toBe(0);
   });
 });

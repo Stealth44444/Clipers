@@ -21,6 +21,18 @@ export function creatorPayoutCap(totalBudget: number, pricing: CampaignPricing):
   return Math.floor((totalBudget * pricing.creatorCpm) / pricing.brandCpm);
 }
 
+/**
+ * Most one creator can be paid from one campaign: a share of the brand's budget, in creator payout won. Mirrored by
+ * creator_campaign_cap_states() in the database. Never shown to creators (with the public payout limit it would give
+ * away the budget and the brand rate).
+ */
+export const CREATOR_CAMPAIGN_SHARE = 0.15;
+
+export function creatorCampaignCap(totalBudget: number): number {
+  if (!(totalBudget > 0)) return 0;
+  return Math.floor(totalBudget * CREATOR_CAMPAIGN_SHARE);
+}
+
 export function platformMargin(pricing: CampaignPricing): number {
   return pricing.brandCpm - pricing.creatorCpm;
 }
