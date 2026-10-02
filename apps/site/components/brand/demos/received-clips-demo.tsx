@@ -1,23 +1,12 @@
-'use client';
-
 import { platformLabel } from '@clipers/db';
-import { Badge, DataTable, StatCard, StatGrid, formatCompactNumber } from '@clipers/ui';
-import { useDemoFrame } from '@/components/brand/use-demo-frame';
-import { receivedFrames } from '@/lib/brand-demos';
+import { Badge, DataTable } from '@clipers/ui';
+import { RECEIVED_CLIPS } from '@/lib/brand-demos';
 
-const FRAMES = receivedFrames();
-
-/** The brand campaign page: verified views and received clips, with new clips passing review. No budget amounts. */
+/** The brand campaign page's 받은 클립 table at its real size. Review status reads as the app shows it. No budget amounts. */
 export default function ReceivedClipsDemo() {
-  const { ref, frame } = useDemoFrame(FRAMES);
-
   return (
-    <div className="cl-app-dark cl-bdemo cl-bdemo--clips" inert ref={ref}>
-      <StatGrid>
-        <StatCard label="검증 조회수" value={formatCompactNumber(frame.views)} />
-        <StatCard label="받은 클립" value={frame.clips} />
-      </StatGrid>
-      <p className="cl-bdemo__label">받은 클립</p>
+    <div className="cl-app-dark cl-crop" inert>
+      <p className="cl-crop__heading">받은 클립</p>
       <DataTable
         columns={[
           { key: 'creator', header: '크리에이터', render: (row) => row.creator },
@@ -25,14 +14,13 @@ export default function ReceivedClipsDemo() {
           {
             key: 'review',
             header: '검수',
-            align: 'right',
-            render: (row) => (row.approved ? <Badge tone="brand">승인</Badge> : <Badge tone="amber">검수 대기</Badge>),
+            render: (row) => (row.review === 'approved' ? <Badge tone="brand">승인</Badge> : <Badge tone="amber">검수 대기</Badge>),
           },
         ]}
         empty=""
         label="받은 클립"
-        rowKey={(row) => String(row.id)}
-        rows={frame.rows}
+        rowKey={(row) => `${row.creator}-${row.platform}`}
+        rows={RECEIVED_CLIPS}
       />
     </div>
   );

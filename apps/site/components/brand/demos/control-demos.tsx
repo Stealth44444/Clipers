@@ -4,20 +4,18 @@ import { useId } from 'react';
 import { CAMPAIGN_REQUIREMENTS_MAX } from '@clipers/db';
 import { Avatar, Field, Input, ProgressBar, StatusDot, SummaryList, Textarea, formatCompactKRW } from '@clipers/ui';
 import { useDemoFrame } from '@/components/brand/use-demo-frame';
-import { APPLICANT_FRAMES, BUDGET_TOTAL, CAP_FRAMES, budgetFrames, requirementsFrames } from '@/lib/brand-demos';
+import { APPLICANT_FRAMES, BUDGET_TOTAL, CAP_FRAMES, REQUIREMENTS_TEXT, budgetFrames } from '@/lib/brand-demos';
 
 // The four crops of the controls bento (spec §4.6), each a piece of the real brand app. None pairs won with views.
 
-const REQUIREMENT_FRAMES = requirementsFrames();
 const BUDGET_FRAMES = budgetFrames();
 
 export function RequirementsDemo() {
-  const { ref, frame } = useDemoFrame(REQUIREMENT_FRAMES);
   const id = useId();
   return (
-    <div className="cl-app-dark cl-bdemo" inert ref={ref}>
-      <Field count={frame.length} hint="검수 기준이 돼요." htmlFor={id} label="요구사항" maxLength={CAMPAIGN_REQUIREMENTS_MAX}>
-        <Textarea id={id} readOnly rows={3} value={frame} />
+    <div className="cl-app-dark cl-bdemo" inert>
+      <Field count={REQUIREMENTS_TEXT.length} hint="검수 기준이 돼요." htmlFor={id} label="요구사항" maxLength={CAMPAIGN_REQUIREMENTS_MAX}>
+        <Textarea id={id} readOnly rows={3} value={REQUIREMENTS_TEXT} />
       </Field>
     </div>
   );
