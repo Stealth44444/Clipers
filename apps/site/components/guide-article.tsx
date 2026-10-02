@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ButtonLink, formatKRW } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
 import JsonLd from '@/components/json-ld';
-import { LandingFaq, SIGN_UP } from '@/components/landing-chrome';
+import { LandingFaq, SIGN_UP, signUpUrl } from '@/components/landing-chrome';
 import type { MarketCampaign } from '@/lib/campaigns';
 import { ADVERTISER_NOTES, CAVEATS, START_STEPS } from '@/lib/guides/common';
 import { RATE, earningsFor } from '@/lib/guides/facts';
@@ -90,7 +90,7 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
               ))}
             </ul>
             <div className="cl-guide__actions">
-              <ButtonLink href={SIGN_UP} size="lg" variant="primary">
+              <ButtonLink href={signUpUrl('brand')} size="lg" variant="primary">
                 캠페인 시작하기
               </ButtonLink>
               <ButtonLink href={contactHref} size="lg" variant="secondary">

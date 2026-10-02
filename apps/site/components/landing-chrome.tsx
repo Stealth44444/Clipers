@@ -6,7 +6,13 @@ import RoleMenu from '@/components/role-menu';
 import { COMPANY } from '@/lib/company';
 import { appUrl, siteUrl } from '@/lib/urls';
 
-export const SIGN_UP = appUrl('/login?mode=sign-up');
+/** The app's sign-up, opened for the role the page is for (the app pre-selects it; the visitor can still switch). */
+export function signUpUrl(role: 'creator' | 'brand'): string {
+  return appUrl(`/login?mode=sign-up&role=${role}`);
+}
+
+/** Creator sign-up: the creator landing, guides and the marketplace lead here. */
+export const SIGN_UP = signUpUrl('creator');
 
 /**
  * Light marketing frame shared by the audience landings (/ for creators, /brands for brands):
@@ -28,7 +34,7 @@ export default function LandingChrome({ path, cta, children }: { path: string; c
           <ButtonLink href={appUrl('/login')} size="sm" variant="ghost">
             로그인
           </ButtonLink>
-          <ButtonLink href={SIGN_UP} size="sm" variant="primary">
+          <ButtonLink href={signUpUrl(path === '/brands' ? 'brand' : 'creator')} size="sm" variant="primary">
             {cta}
           </ButtonLink>
         </div>

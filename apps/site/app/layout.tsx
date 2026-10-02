@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import AttributionCarrier from '@/components/attribution-carrier';
 import JsonLd from '@/components/json-ld';
 import { COMPANY } from '@/lib/company';
 import { siteUrl } from '@/lib/urls';
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <JsonLd data={ORGANIZATION} />
+        <AttributionCarrier />
       </body>
     </html>
   );

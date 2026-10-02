@@ -3,7 +3,7 @@ import { Activity, Clock, Smartphone, Wallet } from 'lucide-react';
 import { MIN_CAMPAIGN_BUDGET, PLATFORMS, REVIEW_SLA_OPTIONS } from '@clipers/db';
 import { ButtonLink, MeshGradient } from '@clipers/ui';
 import DepositDemo from '@/components/brand/demos/deposit-demo';
-import { SIGN_UP } from '@/components/landing-chrome';
+import { signUpUrl } from '@/components/landing-chrome';
 
 // Spec §4.8, after the reference's "Run your next campaign": four facts and the buttons on the left, the real deposit
 // card on the right.
@@ -44,7 +44,7 @@ export default function StartCard() {
             ))}
           </ul>
           <div className="cl-start__actions">
-            <ButtonLink href={SIGN_UP} size="lg" variant="primary">
+            <ButtonLink href={signUpUrl('brand')} size="lg" variant="primary">
               캠페인 시작하기
             </ButtonLink>
             <ButtonLink href={CONTACT} size="lg" variant="secondary">

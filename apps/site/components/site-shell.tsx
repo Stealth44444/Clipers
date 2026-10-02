@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { BookOpen, Dumbbell, LayoutGrid, Palette, ShoppingBag, Sparkles } from 'lucide-react';
 import { INTEREST_GROUPS, type InterestGroupId } from '@clipers/db';
 import { AppShell, ButtonLink, Sidebar } from '@clipers/ui';
+import { signUpUrl } from '@/components/landing-chrome';
 import { appUrl } from '@/lib/urls';
 
 const ICON = { size: 18 };
@@ -45,7 +46,7 @@ export default function SiteShell({ activeGroup, children }: { activeGroup?: str
           <ButtonLink href={appUrl('/login')} size="sm" variant="ghost">
             로그인
           </ButtonLink>
-          <ButtonLink href={appUrl('/login?mode=sign-up')} size="sm" variant="primary">
+          <ButtonLink href={signUpUrl('creator')} size="sm" variant="primary">
             시작하기
           </ButtonLink>
         </>
