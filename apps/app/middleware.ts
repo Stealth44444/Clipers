@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { prelaunchGate } from '@clipers/db/src/prelaunch';
 
 const WORKSPACE_BY_ROLE: Record<string, string> = {
   brand: '/brand',
@@ -8,6 +9,15 @@ const WORKSPACE_BY_ROLE: Record<string, string> = {
 };
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const locked = prelaunchGate(pathname, request.headers.get('authorization'), process.env.PRELAUNCH_PASSWORD);
+  if (locked) return locked;
+
+  // Every path passes the lock above; only workspaces and onboarding need a session.
+  const isOnboarding = pathname === '/onboarding' || pathname.startsWith('/onboarding/');
+  const requiredRole = Object.entries(WORKSPACE_BY_ROLE).find(([, prefix]) => pathname.startsWith(prefix))?.[0];
+  if (!requiredRole && !isOnboarding) return NextResponse.next();
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -37,11 +47,6 @@ export async function middleware(request: NextRequest) {
     return redirect;
   };
 
-  const { pathname } = request.nextUrl;
-  const isOnboarding = pathname === '/onboarding' || pathname.startsWith('/onboarding/');
-  const requiredRole = Object.entries(WORKSPACE_BY_ROLE).find(([, prefix]) => pathname.startsWith(prefix))?.[0];
-  if (!requiredRole && !isOnboarding) return response;
-
   if (!user) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('next', pathname);
@@ -66,5 +71,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/brand/:path*', '/creator/:path*', '/admin/:path*', '/onboarding/:path*'],
+  // Everything but build assets, so the pre-launch lock covers pages, API routes and public files.
+  matcher: ['/((?!_next/static|_next/image).*)'],
 };
