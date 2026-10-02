@@ -526,6 +526,14 @@ a.cl-chip { text-decoration: none; }
 .cl-auth__subtitle { margin-top: var(--space-1); color: var(--color-text-muted); }
 .cl-auth__form { display: grid; gap: var(--space-4); }
 .cl-auth__footer { color: var(--color-text-muted); font-size: var(--font-size-2); text-align: center; }
+.cl-auth__secret { position: relative; }
+.cl-auth__secret .cl-input { padding-right: 44px; }
+.cl-auth__secret .cl-icon-button { position: absolute; top: 50%; right: 4px; translate: 0 -50%; }
+.cl-auth__forgot { margin-top: calc(-1 * var(--space-2)); font-size: var(--font-size-2); text-align: right; }
+.cl-auth__note { color: var(--color-text-muted); font-size: var(--font-size-2); line-height: 1.6; }
+.cl-auth__subtitle strong { color: var(--color-text); font-weight: 600; }
+.cl-two-up { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
+@media (max-width: 860px) { .cl-two-up { grid-template-columns: minmax(0, 1fr); } }
 .cl-link { border: 0; padding: 0; background: none; color: var(--brand-11); font-weight: 500; cursor: pointer; }
 .cl-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 .cl-alert { padding: 10px var(--space-3); border-radius: var(--radius-4); background: var(--tone-bg); color: var(--tone-fg); font-size: var(--font-size-2); }
