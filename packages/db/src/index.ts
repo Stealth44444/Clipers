@@ -7,6 +7,7 @@ export * from './signupSources';
 export * from './pricing';
 export * from './payouts';
 export * from './billing';
+export * from './brandBalance';
 export * from './campaignDraft';
 export * from './dailyClipLimit';
 export * from './paging';
