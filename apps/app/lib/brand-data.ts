@@ -20,6 +20,8 @@ export type BrandCampaign = {
   expectedViews: number;
   verifiedViews: number;
   clipCount: number;
+  stoppedAt: string | null;
+  finalizedAt: string | null;
 };
 
 /** The signed-in brand's campaigns with spend and clip counts, deduplicated per request. */
@@ -27,7 +29,7 @@ export const getBrandCampaigns = cache(async (): Promise<BrandCampaign[]> => {
   const { supabase, user } = await getSession();
   const { data: rows } = await supabase
     .from('campaigns')
-    .select('id, title, status, category, content_type, cover_image_url, allowed_platforms, created_at')
+    .select('id, title, status, category, content_type, cover_image_url, allowed_platforms, created_at, stopped_at, finalized_at')
     .eq('brand_id', user.id)
     .order('created_at', { ascending: false });
   const campaigns = rows ?? [];
@@ -55,7 +57,9 @@ export const getBrandCampaigns = cache(async (): Promise<BrandCampaign[]> => {
     const finance = finances.get(campaign.id) ?? { total_budget: 0, brand_cpm: 0, creator_cpm: 0 };
     const pricing = campaignPricing(finance);
     const totalBudget = finance.total_budget;
-    const usage = budgetUsage(totalBudget, paid.get(campaign.id) ?? 0, pricing);
+    // Closed by its budget running out (not stopped): fully spent, rounding leftovers included.
+    const exhausted = campaign.status === 'closed' && !campaign.stopped_at;
+    const usage = budgetUsage(totalBudget, paid.get(campaign.id) ?? 0, pricing, exhausted);
     return {
       id: campaign.id,
       title: campaign.title,
@@ -72,6 +76,8 @@ export const getBrandCampaigns = cache(async (): Promise<BrandCampaign[]> => {
       expectedViews: expectedViews(totalBudget, pricing),
       verifiedViews: views.get(campaign.id) ?? 0,
       clipCount: clipCounts.get(campaign.id) ?? 0,
+      stoppedAt: campaign.stopped_at,
+      finalizedAt: campaign.finalized_at,
     };
   });
 });
