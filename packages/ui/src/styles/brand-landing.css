@@ -167,7 +167,7 @@
 .cl-horizon__canvas { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; }
 .cl-horizon[data-fallback="true"] { height: auto; }
 /* The data section slides up over the hero's last, already white screen, so its title rises as the light finishes */
-.cl-horizon + .cl-views { position: relative; z-index: 1; margin-top: -50svh; }
+.cl-horizon + .cl-views { position: relative; z-index: 1; margin-top: -40svh; }
 .cl-horizon[data-fallback="true"] + .cl-views { margin-top: 0; }
 @media (prefers-reduced-motion: reduce) {
   .cl-horizon + .cl-views { margin-top: 0; }
@@ -181,7 +181,7 @@
 .cl-horizon .cl-button--glass:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
 @media (max-width: 860px) {
   .cl-horizon { height: 190svh; }
-  .cl-horizon + .cl-views { margin-top: -22svh; }
+  .cl-horizon + .cl-views { margin-top: -18svh; }
   .cl-horizon__pin { min-height: 560px; }
   .cl-horizon__copy { padding-bottom: 14vh; }
   .cl-horizon__copy h1 { font-size: 40px; }

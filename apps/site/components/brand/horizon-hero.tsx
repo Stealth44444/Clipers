@@ -13,7 +13,7 @@ import { HORIZON_FS, HORIZON_VS } from '@/lib/horizon-shader';
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 const ease = (value: number) => 1 - Math.pow(1 - value, 3);
 // Past this progress the screen is mostly white, so the nav goes back to its white self.
-const NAV_WHITE_AT = 0.66;
+const NAV_WHITE_AT = 0.72;
 
 /** Scroll progress through the pinned hero: 0 at the top, 1 when its last screen is reached. */
 function progressOf(track: HTMLElement): number {
@@ -104,10 +104,11 @@ export default function HorizonHero({ signUpHref }: { signUpHref: string }) {
       const progress = progressOf(track);
       clock += (Math.min(64, now - last) / 1000) * (1 + 1.6 * progress);
       last = now;
-      const lift = clamp(progress / 0.28);
-      copy.style.opacity = String(1 - ease(lift));
-      copy.style.transform = `translateY(${-90 * ease(lift)}px)`;
-      copy.style.visibility = lift >= 1 ? 'hidden' : '';
+      // The headline holds for the first third, drifting up a little, then fades before the light comes.
+      const fade = clamp((progress - 0.32) / 0.2);
+      copy.style.opacity = String(1 - fade * fade * (3 - 2 * fade));
+      copy.style.transform = `translateY(${-36 * clamp(progress / 0.52) - 40 * ease(fade)}px)`;
+      copy.style.visibility = fade >= 1 ? 'hidden' : '';
       eased[0] += (mouse[0] - eased[0]) * 0.04;
       eased[1] += (mouse[1] - eased[1]) * 0.04;
       gl.uniform2f(uRes, canvas.width, canvas.height);

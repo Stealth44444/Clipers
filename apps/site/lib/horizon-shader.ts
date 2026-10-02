@@ -79,9 +79,9 @@ void main() {
 
   // the wash: like a sunrise, the light floods up into the sky from the rim (the planet below brightens last),
   // through the rim's lime into white, then the whole screen
-  float w = smoothstep(0.5, 0.8, a);
+  float w = smoothstep(0.5, 0.92, a);
   float reach = d > 0. ? d * 0.9 : -d * 1.8;
-  float wash = max(smoothstep(0.0, 1.0, w * 2.0 - reach - 0.15), smoothstep(0.74, 0.8, a));
+  float wash = max(smoothstep(0.0, 1.0, w * 1.5 - reach * 0.6 - 0.05), smoothstep(0.88, 0.95, a));
   vec3 light = mix(mix(green, lime, 0.6), vec3(1.), smoothstep(0.35, 1.0, wash));
 
   col *= 1. - 0.35 * (1. - wash) * smoothstep(0.55, 1.15, length((uv - vec2(.5, .45)) * vec2(asp * .8, 1.)));
