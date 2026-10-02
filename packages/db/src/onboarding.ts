@@ -64,8 +64,20 @@ export const EXPERIENCE_OPTIONS = [
   { id: 'pro', label: '전업으로 해요', description: '콘텐츠가 주 수입원이에요' },
 ] as const;
 
+/** "How did you hear about Clipers?" — optional, asked right before the terms. Ids match signup_attributions_heard_from_valid. */
+export const HEARD_FROM_OPTIONS = [
+  { id: 'search', label: '검색 (네이버·구글)' },
+  { id: 'youtube_shortform', label: '유튜브·숏폼에서 봤어요' },
+  { id: 'instagram_tiktok', label: '인스타그램·틱톡' },
+  { id: 'friend_creator', label: '지인·크리에이터 추천' },
+  { id: 'community_blog', label: '커뮤니티·블로그' },
+  { id: 'press', label: '기사·뉴스' },
+  { id: 'other', label: '기타' },
+] as const;
+
+export type HeardFrom = (typeof HEARD_FROM_OPTIONS)[number]['id'];
 export type OnboardingRole = 'creator' | 'brand';
-export type OnboardingStep = 'role' | 'earn' | 'interests' | 'camera' | 'experience' | 'terms';
+export type OnboardingStep = 'role' | 'earn' | 'interests' | 'camera' | 'experience' | 'source' | 'terms';
 export type InterestId = (typeof INTERESTS)[number]['id'];
 export type InterestGroupId = (typeof INTEREST_GROUPS)[number]['id'];
 
@@ -83,16 +95,19 @@ export type OnboardingAnswers = {
   interests: string[];
   onCamera: OnCamera | null;
   experienceLevel: ExperienceLevel | null;
+  /** Optional; null when skipped. */
+  heardFrom: HeardFrom | null;
   termsAgreed: boolean;
   privacyAgreed: boolean;
 };
 
 export function emptyOnboardingAnswers(): OnboardingAnswers {
-  return { role: null, interests: [], onCamera: null, experienceLevel: null, termsAgreed: false, privacyAgreed: false };
+  return { role: null, interests: [], onCamera: null, experienceLevel: null, heardFrom: null, termsAgreed: false, privacyAgreed: false };
 }
 
+/** Both roles answer where they heard of Clipers (optional) before the terms. */
 export function onboardingSteps(role: OnboardingRole | null): OnboardingStep[] {
-  return role === 'brand' ? ['role', 'terms'] : ['role', 'earn', 'interests', 'camera', 'experience', 'terms'];
+  return role === 'brand' ? ['role', 'source', 'terms'] : ['role', 'earn', 'interests', 'camera', 'experience', 'source', 'terms'];
 }
 
 export function toggleInterest(selected: readonly string[], id: string): string[] {
@@ -113,6 +128,8 @@ export function canContinueOnboarding(step: OnboardingStep, answers: OnboardingA
       return answers.onCamera !== null;
     case 'experience':
       return answers.experienceLevel !== null;
+    case 'source':
+      return true;
     case 'terms':
       return answers.termsAgreed && answers.privacyAgreed;
   }

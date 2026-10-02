@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
 import {
+  HEARD_FROM_OPTIONS,
   INTERESTS,
   MAX_INTERESTS,
   canContinueOnboarding,
@@ -15,17 +16,21 @@ import {
 
 const MIGRATIONS_DIR = fileURLToPath(new URL('../../../supabase/migrations/', import.meta.url));
 
-function interestIdsAllowedByDatabase(): string[] {
+/** The ids a check constraint allows, read from the latest migration that defines it. */
+function idsAllowedByDatabase(constraint: string, listStart: string, listEnd: string): string[] {
   const latest = readdirSync(MIGRATIONS_DIR)
     .filter((file) => file.endsWith('.sql'))
     .sort()
     .map((file) => readFileSync(MIGRATIONS_DIR + file, 'utf8'))
-    .filter((sql) => sql.includes('profiles_interests_valid check'))
+    .filter((sql) => sql.includes(`${constraint} check`))
     .at(-1)!;
-  const constraint = latest.slice(latest.lastIndexOf('profiles_interests_valid check'));
-  const arrayLiteral = constraint.slice(constraint.indexOf('array['), constraint.indexOf(']::text[]'));
-  return [...arrayLiteral.matchAll(/'([a-z_]+)'/g)].map((match) => match[1]);
+  const definition = latest.slice(latest.lastIndexOf(`${constraint} check`));
+  const list = definition.slice(definition.indexOf(listStart), definition.indexOf(listEnd));
+  return [...list.matchAll(/'([a-z_]+)'/g)].map((match) => match[1]);
 }
+
+const interestIdsAllowedByDatabase = () => idsAllowedByDatabase('profiles_interests_valid', 'array[', ']::text[]');
+const heardFromIdsAllowedByDatabase = () => idsAllowedByDatabase('signup_attributions_heard_from_valid', 'in (', ')');
 
 describe('INTERESTS', () => {
   it('matches the ids allowed by the profiles_interests_valid constraint', () => {
@@ -41,22 +46,29 @@ describe('INTERESTS', () => {
   });
 });
 
+describe('HEARD_FROM_OPTIONS', () => {
+  it('matches the ids allowed by signup_attributions_heard_from_valid', () => {
+    expect(heardFromIdsAllowedByDatabase().sort()).toEqual(HEARD_FROM_OPTIONS.map((option) => option.id).sort());
+  });
+});
+
 const completeCreator: OnboardingAnswers = {
   role: 'creator',
   interests: ['music'],
   onCamera: 'always',
   experienceLevel: 'new',
+  heardFrom: null,
   termsAgreed: true,
   privacyAgreed: true,
 };
 
 describe('onboardingSteps', () => {
   it('walks creators through every profile question', () => {
-    expect(onboardingSteps('creator')).toEqual(['role', 'earn', 'interests', 'camera', 'experience', 'terms']);
+    expect(onboardingSteps('creator')).toEqual(['role', 'earn', 'interests', 'camera', 'experience', 'source', 'terms']);
   });
 
-  it('sends brands straight to terms', () => {
-    expect(onboardingSteps('brand')).toEqual(['role', 'terms']);
+  it('asks brands only where they heard of Clipers, then the terms', () => {
+    expect(onboardingSteps('brand')).toEqual(['role', 'source', 'terms']);
   });
 });
 
@@ -80,6 +92,7 @@ describe('canContinueOnboarding', () => {
     expect(canContinueOnboarding('interests', empty)).toBe(false);
     expect(canContinueOnboarding('camera', empty)).toBe(false);
     expect(canContinueOnboarding('experience', empty)).toBe(false);
+    expect(canContinueOnboarding('source', empty)).toBe(true);
     expect(canContinueOnboarding('terms', empty)).toBe(false);
   });
 

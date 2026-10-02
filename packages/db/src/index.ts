@@ -2,6 +2,8 @@ export { createSupabaseClient } from './client';
 export * from './platforms';
 export * from './onboarding';
 export * from './categories';
+export * from './attribution';
+export * from './signupSources';
 export * from './pricing';
 export * from './payouts';
 export * from './billing';
