@@ -21,13 +21,11 @@ const SCENES: Scene[] = [
     id: 'feed',
     label: '영상 단위 추천',
     icon: <Send size={26} />,
-    title: '팔로워가 아니라, 영상이 퍼져요.',
+    title: '팔로워가 적어도, 영상은 퍼져요.',
     body: (
       <>
-        <span className="cl-phrase">
-          틱톡은 팔로워 수도, 예전에 터진 영상이 있는지도 추천에 직접 반영하지 않는다고&nbsp;밝혔어요.<sup>1</sup>
-        </span>{' '}
-        <span className="cl-phrase">새 채널의 영상도 같은 추천 피드에 올라가요.</span>
+        <span className="cl-phrase">숏폼은 누가 올렸는지보다 영상 하나하나의 반응을 보고&nbsp;추천해요.</span>{' '}
+        <span className="cl-phrase">큰 계정을 섭외하지 않아도 되는 이유예요.</span>
       </>
     ),
   },
@@ -39,7 +37,7 @@ const SCENES: Scene[] = [
     body: (
       <>
         <span className="cl-phrase">
-          영상 10편이면 그중 하나가 상위 20%에 들 확률이 {HIT_PERCENT}%예요.<sup>2</sup>
+          영상 10편이면 그중 하나가 상위 20%에 들 확률이 {HIT_PERCENT}%예요.
         </span>{' '}
         <span className="cl-phrase">빗나간 영상엔 예산이 쓰이지 않아요.</span>
       </>
@@ -185,51 +183,44 @@ export default function ReachStory() {
   };
 
   return (
-    <>
-      <section aria-labelledby="reach-title" className="cl-kinds cl-reach" ref={rootRef} style={{ '--kinds': SCENES.length } as CSSProperties}>
-        <h2 className="cl-reach__title" id="reach-title">
-          팔로워가 아니라, 영상이 퍼져요
-        </h2>
-        <div className="cl-kinds__stage">
-          {SCENES.map((scene, index) => (
-            <article className="cl-kinds__item" data-kind={scene.id} data-state={index < active ? 'past' : index === active ? 'active' : 'next'} key={scene.id}>
-              <p className="cl-kinds__text">
-                <span aria-hidden className="cl-kinds__icon">
-                  {scene.icon}
-                </span>
-                <span>
-                  <strong>{scene.title}</strong> {scene.body}
-                </span>
-              </p>
-              <div aria-hidden className="cl-kinds__stack" inert>
-                {visual(scene, index)}
-              </div>
-            </article>
-          ))}
+    <section aria-labelledby="reach-title" className="cl-kinds cl-reach" ref={rootRef} style={{ '--kinds': SCENES.length } as CSSProperties}>
+      <h2 className="cl-reach__title" id="reach-title">
+        팔로워가 적어도, 영상은 퍼져요
+      </h2>
+      <div className="cl-kinds__stage">
+        {SCENES.map((scene, index) => (
+          <article className="cl-kinds__item" data-kind={scene.id} data-state={index < active ? 'past' : index === active ? 'active' : 'next'} key={scene.id}>
+            <p className="cl-kinds__text">
+              <span aria-hidden className="cl-kinds__icon">
+                {scene.icon}
+              </span>
+              <span>
+                <strong>{scene.title}</strong> {scene.body}
+              </span>
+            </p>
+            <div aria-hidden className="cl-kinds__stack" inert>
+              {visual(scene, index)}
+            </div>
+          </article>
+        ))}
 
-          <nav aria-label="영상이 퍼지는 방식 진행" className="cl-kinds__progress">
-            {SCENES.map((scene, index) => (
-              <button
-                aria-current={index === active ? 'step' : undefined}
-                aria-label={scene.label}
-                className="cl-kinds__step"
-                key={scene.id}
-                onClick={() => jumpTo(index)}
-                type="button"
-              >
-                <span aria-hidden className="cl-kinds__step-track">
-                  <span style={{ transform: `scaleX(${Math.min(1, Math.max(0, progress * SCENES.length - index))})` }} />
-                </span>
-              </button>
-            ))}
-          </nav>
-        </div>
-      </section>
-      <div className="cl-reach__notes">
-        <p>1. TikTok Newsroom, “How TikTok recommends videos #ForYou”, 2020년 6월 18일.</p>
-        <p>2. 영상 N편 가운데 하나 이상이 상위 20%에 들 확률, 1 − 0.8ᴺ. 영상마다 같은 분포를 따른다고 가정해요.</p>
-        <p>장면 속 계정과 조회수는 예시예요.</p>
+        <nav aria-label="영상이 퍼지는 방식 진행" className="cl-kinds__progress">
+          {SCENES.map((scene, index) => (
+            <button
+              aria-current={index === active ? 'step' : undefined}
+              aria-label={scene.label}
+              className="cl-kinds__step"
+              key={scene.id}
+              onClick={() => jumpTo(index)}
+              type="button"
+            >
+              <span aria-hidden className="cl-kinds__step-track">
+                <span style={{ transform: `scaleX(${Math.min(1, Math.max(0, progress * SCENES.length - index))})` }} />
+              </span>
+            </button>
+          ))}
+        </nav>
       </div>
-    </>
+  </section>
   );
 }
