@@ -107,6 +107,8 @@
 
   /* The wordmark's lettering is only ~53% of its height (the symbol sets the full height),
      so size it by the text: 32px renders the lettering at roughly a 17px heading. */
+  /* One header height for the site nav and every app header (topbar, onboarding, editor) */
+  --header-height: 64px;
   --logo-height: 32px;
   --logo-height-lg: 36px;
 
