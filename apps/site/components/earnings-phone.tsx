@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Heart, MessageCircle, Music2, Plus, Send } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Avatar, DeviceFrame, PlatformIcon, StatusDot, formatKRW } from '@clipers/ui';
+import ShortSlide from '@/components/short-slide';
 
 // Creator hero visual: a clip plays on a phone while its views climb, and the payout beside it climbs with them.
 // The slider takes over so visitors can try their own view count (views on a log scale, 1,000 to 1,000,000).
@@ -145,58 +146,18 @@ export default function EarningsPhone({ rate, minViews }: { rate: number; minVie
           <DeviceFrame>
             <div className="cl-short">
               {CLIPS.map((item, index) => (
-                <div className="cl-short__slide" data-state={index === clip ? 'active' : index === (clip + CLIPS.length - 1) % CLIPS.length ? 'past' : 'next'} key={item.video}>
-                  <video
-                    className="cl-short__media"
-                    loop
-                    muted
-                    playsInline
-                    poster={item.poster}
-                    preload={index === clip || index === (clip + 1) % CLIPS.length ? 'auto' : 'none'}
-                    ref={(element) => {
-                      videoRefs.current[index] = element;
-                    }}
-                    src={item.video}
-                  />
-                  <span className="cl-short__scrim" />
-                  <div className="cl-short__rail">
-                    <span className="cl-short__avatar">
-                      <Avatar name={item.handle} size="sm" />
-                      <i>
-                        <Plus size={9} strokeWidth={3} />
-                      </i>
-                    </span>
-                    <span className="cl-short__action">
-                      <Heart fill="currentColor" size={22} strokeWidth={0} />
-                      {item.likes}
-                    </span>
-                    <span className="cl-short__action">
-                      <MessageCircle fill="currentColor" size={21} strokeWidth={0} />
-                      {item.comments}
-                    </span>
-                    <span className="cl-short__action">
-                      <Send size={19} />
-                    </span>
-                  </div>
-                  <div className="cl-short__info">
-                    <p className="cl-short__handle">
-                      @{item.handle} <span>팔로우</span>
-                    </p>
-                    <p className="cl-short__caption">
-                      {item.caption} <b>{item.tag}</b>
-                    </p>
-                    <p className="cl-short__audio">
-                      <Music2 size={11} />
-                      <span>
-                        <span>
-                          오리지널 사운드 · @{item.handle} · 오리지널 사운드 · @{item.handle} ·{' '}
-                        </span>
-                      </span>
-                    </p>
-                  </div>
+                <ShortSlide
+                  clip={item}
+                  key={item.video}
+                  preload={index === clip || index === (clip + 1) % CLIPS.length ? 'auto' : 'none'}
+                  state={index === clip ? 'active' : index === (clip + CLIPS.length - 1) % CLIPS.length ? 'past' : 'next'}
+                  videoRef={(element) => {
+                    videoRefs.current[index] = element;
+                  }}
+                >
                   {index === clip && <Heart className="cl-short__burst" fill="currentColor" key={`burst-${clip}`} size={64} strokeWidth={0} />}
                   <span className="cl-short__progress" key={`progress-${index === clip ? clip : 'idle'}`} />
-                </div>
+                </ShortSlide>
               ))}
             </div>
           </DeviceFrame>
