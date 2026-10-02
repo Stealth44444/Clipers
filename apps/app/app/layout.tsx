@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+// Pretendard ships with the app (split into unicode-range subsets, font-display: swap) instead of a render-blocking
+// stylesheet from a CDN.
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -12,13 +15,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <head>
-        <link crossOrigin="anonymous" href="https://cdn.jsdelivr.net" rel="preconnect" />
-        <link
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
-          rel="stylesheet"
-        />
-      </head>
       <body>{children}</body>
     </html>
   );

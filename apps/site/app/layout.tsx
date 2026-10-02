@@ -5,6 +5,9 @@ import JsonLd from '@/components/json-ld';
 import { COMPANY, ORGANIZATION_ID } from '@/lib/company';
 import { siteUrl } from '@/lib/urls';
 import { siteVerification } from '@/lib/verification';
+// Pretendard ships with the site (split into unicode-range subsets, font-display: swap) instead of a render-blocking
+// stylesheet from a CDN, which held the first paint by about 1.2 s on mobile (2026-10-02 Lighthouse).
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -59,13 +62,6 @@ const ORGANIZATION = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <head>
-        <link crossOrigin="anonymous" href="https://cdn.jsdelivr.net" rel="preconnect" />
-        <link
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
-          rel="stylesheet"
-        />
-      </head>
       <body>
         {children}
         <JsonLd data={ORGANIZATION} />
