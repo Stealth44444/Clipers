@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import JsonLd from '@/components/json-ld';
 import LandingChrome from '@/components/landing-chrome';
 import { GUIDES, GUIDE_AUDIENCES, GUIDE_GROUPS } from '@/lib/guides';
+import { guideListJsonLd } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Clipers 가이드 — 숏폼으로 조회수만큼 받는 법',
@@ -13,6 +15,7 @@ export default function GuidesPage() {
   return (
     <LandingChrome cta="무료로 시작하기" path="/guides">
       <div className="cl-guides">
+        <JsonLd data={guideListJsonLd(GUIDES)} />
         <h1>Clipers 가이드</h1>
         <p className="cl-guides__lead">크리에이터와 광고주가 자주 묻는 질문에 답했어요.</p>
         {/* Jump links instead of tabs: every guide stays in the page for people and crawlers alike. */}

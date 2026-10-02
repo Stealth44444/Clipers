@@ -8,8 +8,10 @@ import ControlsBento from '@/components/brand/controls-bento';
 import UseCases from '@/components/brand/use-cases';
 import VerifyFlow from '@/components/brand/verify-flow';
 import ViewsStory from '@/components/brand/views-story';
+import JsonLd from '@/components/json-ld';
 import LandingChrome, { LandingFaq, signUpUrl } from '@/components/landing-chrome';
 import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
+import { brandServiceJsonLd } from '@/lib/structured-data';
 
 // Brand landing. Design: docs/superpowers/specs/2026-10-01-brand-page-redesign-design.md, the reach section and the
 // merged bento in 2026-10-02-brand-reach-section-design.md.
@@ -28,6 +30,7 @@ export const metadata: Metadata = {
 export default function BrandsPage() {
   return (
     <LandingChrome cta="캠페인 시작하기" overDark path="/brands">
+      <JsonLd data={brandServiceJsonLd()} />
       <HorizonHero signUpHref={signUpUrl('brand')} />
       <ViewsStory />
       <ReachStory />
