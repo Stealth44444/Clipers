@@ -1,4 +1,4 @@
-import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET, MIN_PAYOUT_VIEWS, MIN_WITHDRAWAL, REVIEW_SLA_OPTIONS } from '@clipers/db';
+import { DEFAULT_PRICING, categoryLabel, MIN_CAMPAIGN_BUDGET, MIN_PAYOUT_VIEWS, MIN_WITHDRAWAL, REVIEW_SLA_OPTIONS } from '@clipers/db';
 import { formatKRW } from '@clipers/ui';
 import { loadLiveCampaigns } from '@/lib/campaigns';
 import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
@@ -89,7 +89,7 @@ export async function GET() {
     ...(campaigns.length > 0
       ? campaigns.map(
           (campaign) =>
-            `- [${campaign.title}](${siteUrl(`/campaigns/${campaign.id}`)}): ${campaign.brandName} · ${campaign.category} · 1천 회당 ${formatKRW(campaign.creatorCpm)} · 남은 지급 한도 ${formatKRW(campaign.payoutRemaining)}`
+            `- [${campaign.title}](${siteUrl(`/campaigns/${campaign.id}`)}): ${campaign.brandName} · ${categoryLabel(campaign.category)} · 1천 회당 ${formatKRW(campaign.creatorCpm)} · 남은 지급 한도 ${formatKRW(campaign.payoutRemaining)}`
         )
       : ['- 현재 진행 중인 캠페인이 없습니다.']),
     '',

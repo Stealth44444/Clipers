@@ -1,5 +1,6 @@
 import { DEFAULT_DAILY_CLIP_LIMIT } from './dailyClipLimit';
 import { DEFAULT_PRICING, MIN_CAMPAIGN_BUDGET, MIN_PAYOUT_VIEWS, type CampaignPricing } from './pricing';
+import { isCategoryId } from './categories';
 
 export const CAMPAIGN_TITLE_MAX = 80;
 export const CAMPAIGN_DESCRIPTION_MAX = 2000;
@@ -68,7 +69,7 @@ export function campaignDraftErrors(draft: CampaignDraft): Partial<Record<Campai
   if (draft.description.trim().length > CAMPAIGN_DESCRIPTION_MAX) {
     errors.description = `설명은 ${CAMPAIGN_DESCRIPTION_MAX.toLocaleString('ko-KR')}자 이하로 입력해 주세요.`;
   }
-  if (!draft.category.trim()) errors.category = '카테고리를 골라 주세요.';
+  if (!isCategoryId(draft.category)) errors.category = '카테고리를 골라 주세요.';
   if (draft.platforms.length === 0) errors.platforms = '플랫폼을 하나 이상 골라 주세요.';
 
   const budget = Number(draft.totalBudget);

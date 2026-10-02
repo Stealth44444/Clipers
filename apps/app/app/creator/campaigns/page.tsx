@@ -1,5 +1,5 @@
 import { Megaphone } from 'lucide-react';
-import { kstDayStart, platformLabels, submissionsLeftToday } from '@clipers/db';
+import { categoryLabel, kstDayStart, platformLabels, submissionsLeftToday } from '@clipers/db';
 import {
   Badge,
   ButtonLink,
@@ -103,7 +103,7 @@ export default async function CreatorCampaignsPage() {
                 return (
                   <ListRow
                     description={
-                      [campaign ? `${campaign.category} · ${platformLabels(campaign.allowed_platforms)}` : null, CAP_NOTE[capState.get(application.campaign_id) ?? '']]
+                      [campaign ? `${categoryLabel(campaign.category)} · ${platformLabels(campaign.allowed_platforms)}` : null, CAP_NOTE[capState.get(application.campaign_id) ?? '']]
                         .filter(Boolean)
                         .join(' · ') || undefined
                     }
@@ -152,7 +152,7 @@ export default async function CreatorCampaignsPage() {
                     }
                     image={campaign.cover_image_url}
                     key={campaign.id}
-                    meta={`${campaign.category} · ${CREATOR_CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}`}
+                    meta={`${categoryLabel(campaign.category)} · ${CREATOR_CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}`}
                     title={campaign.title}
                   >
                     {rate && <p className="cl-number cl-emphasis">{rate}</p>}

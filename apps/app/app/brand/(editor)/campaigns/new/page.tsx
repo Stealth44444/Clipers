@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { DEFAULT_PRICING, campaignPricing, creatorPayoutToClipCap, emptyCampaignDraft, type CampaignDraft } from '@clipers/db';
+import { DEFAULT_PRICING, campaignPricing, categoryId, creatorPayoutToClipCap, emptyCampaignDraft, type CampaignDraft } from '@clipers/db';
 import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
 import CampaignForm from './campaign-form';
@@ -32,7 +32,7 @@ export default async function NewCampaignPage({ searchParams }: { searchParams: 
     title: campaign.title,
     description: campaign.description ?? '',
     contentType: campaign.content_type,
-    category: campaign.category,
+    category: categoryId(campaign.category) ?? '',
     platforms: campaign.allowed_platforms,
     totalBudget: String(finance.total_budget),
     maxPayoutPerClip: rates?.[0] ? String(creatorPayoutToClipCap(Number(rates[0].max_payout), pricing)) : '',

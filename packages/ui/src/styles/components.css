@@ -317,6 +317,10 @@
 .cl-chip:disabled { cursor: not-allowed; opacity: 0.4; }
 .cl-chip:hover { color: var(--color-text); }
 .cl-chip[aria-pressed="true"] { background: var(--brand-a4); color: var(--brand-11); }
+/* Chips as filter links (the discover page's platform row): the current one reads like a pressed chip */
+a.cl-chip { text-decoration: none; }
+.cl-chip[aria-current="true"] { background: var(--brand-a4); color: var(--brand-11); }
+.cl-filter-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
 
 .cl-option-card {
   position: relative;

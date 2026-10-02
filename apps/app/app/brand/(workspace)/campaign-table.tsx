@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { categoryLabel } from '@clipers/db';
 import { Badge, DataTable, ProgressBar, formatKRW } from '@clipers/ui';
 import type { BrandCampaign } from '@/lib/brand-data';
 import { CAMPAIGN_STATUS, CONTENT_TYPE_LABEL, statusDisplay } from '@/lib/status';
@@ -16,7 +17,7 @@ export default function CampaignTable({ campaigns }: { campaigns: BrandCampaign[
                 {campaign.title}
               </Link>
               <p className="cl-meta-subtle">
-                {campaign.category} · {CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}
+                {categoryLabel(campaign.category)} · {CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}
               </p>
             </div>
           ),

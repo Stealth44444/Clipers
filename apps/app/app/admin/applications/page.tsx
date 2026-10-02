@@ -1,5 +1,5 @@
 import { UserCheck } from 'lucide-react';
-import { INTERESTS } from '@clipers/db';
+import { INTERESTS, categoryLabel } from '@clipers/db';
 import { Card, DataTable, EmptyState, Page, PageHeader } from '@clipers/ui';
 import { getSession } from '@/lib/session';
 import { ApplicationActions } from '../review-actions';
@@ -48,7 +48,7 @@ export default async function AdminApplicationsPage() {
               render: (row) => (
                 <div>
                   <p>{row.campaign?.title ?? '캠페인'}</p>
-                  <p className="cl-meta-subtle">{row.campaign?.category}</p>
+                  <p className="cl-meta-subtle">{row.campaign ? categoryLabel(row.campaign.category) : null}</p>
                 </div>
               ),
             },

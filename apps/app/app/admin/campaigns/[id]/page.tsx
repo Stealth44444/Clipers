@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { campaignEconomics, campaignPricing, creatorPayoutToClipCap, depositAmount, fetchAllRows, platformLabels } from '@clipers/db';
+import { campaignEconomics, campaignPricing, categoryLabel, creatorPayoutToClipCap, depositAmount, fetchAllRows, platformLabels } from '@clipers/db';
 import { Badge, Card, Page, PageHeader, Stack, SummaryList, formatKRW } from '@clipers/ui';
 import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
@@ -40,7 +40,7 @@ export default async function AdminCampaignPage({ params }: { params: Promise<{ 
         description={
           <span className="cl-inline">
             <Badge tone={status.tone}>{status.label}</Badge>
-            {brandName} · {campaign.category} · {CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}
+            {brandName} · {categoryLabel(campaign.category)} · {CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}
           </span>
         }
         title={campaign.title}

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Search, Sparkles } from 'lucide-react';
-import { INTEREST_GROUPS, extractYouTubeVideoId, interestGroupOfCategory } from '@clipers/db';
-import { Card, CardGrid, EmptyState, Page, Rail, SectionHeader, Stack, Starfield, formatCompactNumber } from '@clipers/ui';
+import { INTEREST_GROUPS, PLATFORMS, categoryGroup, categoryLabel, extractYouTubeVideoId } from '@clipers/db';
+import { Card, CardGrid, EmptyState, Page, PlatformIcon, Rail, SectionHeader, Stack, Starfield, formatCompactNumber } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
 import JsonLd from '@/components/json-ld';
 import SiteShell, { discoverHref } from '@/components/site-shell';
@@ -14,20 +14,32 @@ export const metadata: Metadata = {
   alternates: { canonical: '/discover' },
 };
 
-type SearchParams = Promise<{ q?: string; group?: string }>;
+type SearchParams = Promise<{ q?: string; group?: string; platform?: string }>;
+
+/** The discover URL with the given filters; empty values drop out. */
+function filterHref(filters: { q?: string; group?: string | null; platform?: string | null }): string {
+  const params = new URLSearchParams();
+  if (filters.group) params.set('group', filters.group);
+  if (filters.platform) params.set('platform', filters.platform);
+  if (filters.q) params.set('q', filters.q);
+  const query = params.toString();
+  return query ? `/discover?${query}` : '/discover';
+}
 
 export default async function DiscoverPage({ searchParams }: { searchParams: SearchParams }) {
-  const { q = '', group } = await searchParams;
+  const { q = '', group, platform } = await searchParams;
   const activeGroup = INTEREST_GROUPS.find((item) => item.id === group) ?? null;
+  const activePlatform = PLATFORMS.find((item) => item.value === platform) ?? null;
   const all = await loadLiveCampaigns();
 
   const query = q.trim().toLowerCase();
   const campaigns = all.filter((campaign) => {
-    if (activeGroup && interestGroupOfCategory(campaign.category) !== activeGroup.id) return false;
+    if (activeGroup && categoryGroup(campaign.category) !== activeGroup.id) return false;
+    if (activePlatform && !campaign.platforms.includes(activePlatform.value)) return false;
     if (!query) return true;
-    return [campaign.title, campaign.category, campaign.brandName].some((field) => field.toLowerCase().includes(query));
+    return [campaign.title, categoryLabel(campaign.category), campaign.brandName].some((field) => field.toLowerCase().includes(query));
   });
-  const featured = !query && !activeGroup ? [...all].sort((left, right) => right.payoutRemaining - left.payoutRemaining).slice(0, 5) : [];
+  const featured = !query && !activeGroup && !activePlatform ? [...all].sort((left, right) => right.payoutRemaining - left.payoutRemaining).slice(0, 5) : [];
   const topClips = !query ? await loadTopClips(campaigns.map((campaign) => campaign.id)) : [];
 
   return (
@@ -37,13 +49,30 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
       </div>
       <Page>
         <section className="cl-market-hero">
-          <h1 className="cl-market-hero__title">{activeGroup ? `${activeGroup.label} 캠페인` : '지금 참여할 수 있는 캠페인'}</h1>
+          <h1 className="cl-market-hero__title">{activeGroup || activePlatform ? `${[activeGroup?.label, activePlatform?.label].filter(Boolean).join(' · ')} 캠페인` : '지금 참여할 수 있는 캠페인'}</h1>
           <p className="cl-market-hero__description">영상을 올리고, 검증된 조회수만큼 정산받으세요. 지원은 무료예요.</p>
           <form action="/discover" className="cl-search" role="search">
             <Search aria-hidden size={18} />
             {activeGroup && <input name="group" type="hidden" value={activeGroup.id} />}
+            {activePlatform && <input name="platform" type="hidden" value={activePlatform.value} />}
             <input aria-label="캠페인 검색" className="cl-input" defaultValue={q} name="q" placeholder="캠페인, 브랜드, 분야로 검색" type="search" />
           </form>
+          <nav aria-label="플랫폼" className="cl-filter-chips">
+            <a aria-current={activePlatform ? undefined : 'true'} className="cl-chip" href={filterHref({ q, group: activeGroup?.id })}>
+              모든 플랫폼
+            </a>
+            {PLATFORMS.map((item) => (
+              <a
+                aria-current={activePlatform?.value === item.value ? 'true' : undefined}
+                className="cl-chip"
+                href={filterHref({ q, group: activeGroup?.id, platform: item.value })}
+                key={item.value}
+              >
+                <PlatformIcon platform={item.value} size={16} />
+                {item.label}
+              </a>
+            ))}
+          </nav>
         </section>
 
         <Stack>
@@ -67,13 +96,13 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
               <Card>
                 <EmptyState
                   action={
-                    query || activeGroup ? (
+                    query || activeGroup || activePlatform ? (
                       <a className="cl-link" href={discoverHref()}>
                         모든 캠페인 보기
                       </a>
                     ) : undefined
                   }
-                  description={query || activeGroup ? '다른 검색어나 분야로 찾아보세요.' : '새 캠페인이 열리면 여기에 보여요.'}
+                  description={query || activeGroup || activePlatform ? '다른 검색어나 분야, 플랫폼으로 찾아보세요.' : '새 캠페인이 열리면 여기에 보여요.'}
                   icon={<Sparkles size={24} />}
                   title="조건에 맞는 캠페인이 없어요"
                 />

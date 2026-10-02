@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { interestGroupOfCategory, platformLabels } from '@clipers/db';
+import { categoryGroup, categoryLabel, platformLabels } from '@clipers/db';
 import { Page, formatKRW } from '@clipers/ui';
 import CampaignDetail from '@/components/campaign-detail';
 import JsonLd from '@/components/json-ld';
@@ -13,7 +13,7 @@ export const revalidate = 60;
 type Params = { params: Promise<{ id: string }> };
 
 function summary(campaign: NonNullable<Awaited<ReturnType<typeof loadCampaignDetail>>>): string {
-  return `${campaign.brandName}의 ${campaign.category} 숏폼 캠페인. ${platformLabels(campaign.platforms)}에 영상을 올리면 검증된 조회수 1천 회당 ${formatKRW(campaign.creatorCpm)}을 받아요. 남은 지급 한도 ${formatKRW(campaign.payoutRemaining)}.`;
+  return `${campaign.brandName}의 ${categoryLabel(campaign.category)} 숏폼 캠페인. ${platformLabels(campaign.platforms)}에 영상을 올리면 검증된 조회수 1천 회당 ${formatKRW(campaign.creatorCpm)}을 받아요. 남은 지급 한도 ${formatKRW(campaign.payoutRemaining)}.`;
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -41,7 +41,7 @@ export default async function CampaignPage({ params }: Params) {
   if (!campaign) notFound();
 
   return (
-    <SiteShell activeGroup={interestGroupOfCategory(campaign.category)}>
+    <SiteShell activeGroup={categoryGroup(campaign.category)}>
       <Page>
         <CampaignDetail campaign={campaign} />
       </Page>
@@ -58,7 +58,7 @@ export default async function CampaignPage({ params }: Params) {
           mainEntity: {
             '@type': 'Offer',
             name: `${campaign.title} 크리에이터 리워드`,
-            category: campaign.category,
+            category: categoryLabel(campaign.category),
             price: campaign.creatorCpm,
             priceCurrency: 'KRW',
             priceSpecification: {

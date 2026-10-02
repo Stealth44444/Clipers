@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ExternalLink, Film, Pencil } from 'lucide-react';
 import Link from 'next/link';
-import { campaignPricing, creatorPayoutToClipCap, depositAmount, platformLabel, platformLabels, vatOn } from '@clipers/db';
+import { campaignPricing, categoryLabel, creatorPayoutToClipCap, depositAmount, platformLabel, platformLabels, vatOn } from '@clipers/db';
 import {
   Badge,
   ButtonLink,
@@ -72,7 +72,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
         description={
           <span className="cl-inline">
             <Badge tone={status.tone}>{status.label}</Badge>
-            {campaign.category} · {CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}
+            {categoryLabel(campaign.category)} · {CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}
           </span>
         }
         title={campaign.title}

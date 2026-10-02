@@ -17,7 +17,7 @@ const valid: CampaignDraft = {
   title: '신곡 챌린지',
   description: '후렴 구간을 사용한 숏폼을 만들어 주세요.',
   contentType: 'clipping',
-  category: '음악',
+  category: 'music',
   platforms: ['youtube_shorts', 'tiktok'],
   totalBudget: '2000000',
   maxPayoutPerClip: '100000',

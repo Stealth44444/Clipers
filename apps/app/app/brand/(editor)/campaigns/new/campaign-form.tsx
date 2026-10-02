@@ -10,6 +10,7 @@ import {
   CAMPAIGN_TITLE_MAX,
   DAILY_CLIP_LIMIT_OPTIONS,
   INTEREST_GROUPS,
+  categoryLabel,
   INTERESTS,
   MAX_REFERENCE_LINKS,
   PLATFORMS,
@@ -211,7 +212,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
                 {categoryGroups.map((group) => (
                   <optgroup key={group.id} label={group.label}>
                     {group.options.map((option) => (
-                      <option key={option.id} value={option.label}>
+                      <option key={option.id} value={option.id}>
                         {option.label}
                       </option>
                     ))}
@@ -359,7 +360,7 @@ export default function CampaignForm({ brandId, campaignId, initial, initialCove
                 { label: '공개 범위', value: '공개 · 지원서 심사 후 참여' },
                 { label: '이름', value: draft.title.trim() || '—' },
                 { label: '유형', value: CONTENT_TYPES.find((type) => type.id === draft.contentType)?.label ?? '—' },
-                { label: '카테고리', value: draft.category || '—' },
+                { label: '카테고리', value: draft.category ? categoryLabel(draft.category) : '—' },
                 { label: '플랫폼', value: draft.platforms.length > 0 ? platformLabels(draft.platforms) : '—' },
                 { label: '예산', value: budget > 0 ? formatKRW(budget) : '—' },
                 { label: '예상 조회수', value: views > 0 ? `${views.toLocaleString('ko-KR')}회` : '—' },
