@@ -15,7 +15,7 @@
 - [x] 데이터 모델 설계: 캠페인 / 크리에이터 / 제출 클립(URL, 플랫폼, 상태) / 조회수 스냅샷(시계열) (`supabase/migrations/0001_init.sql` 등)
 - [x] 유튜브 Data API 연동 (API 키 기준 공개 조회수 수집) (`packages/db/src/services/youtubeViews.ts` + `/api/cron/youtube-views`)
 - [x] 틱톡·릴스 조회수 수집 방식 확정 → **2026-09-30 결정: 공식 API 없이 우회(비공식 스크래핑)는 하지 않음.** 틱톡 Display API·인스타 Graph API 모두 "크리에이터 본인이 OAuth로 앱을 연동해야만" 조회수 조회 가능(공개 URL 임의 조회 불가), 승인도 각각 2~6주/4~6주 소요. 파일럿 기간엔 **크리에이터 자진 신고(스크린샷 증빙) + 운영자 스팟체크**로 대체 구현 완료(`packages/db/src/services/manualViewReport.ts`, `supabase/migrations/0007_manual_view_reports.sql`, 크리에이터/운영자 화면). 사업자 계정으로 정식 심사는 별도 병행 신청 필요(코드 밖 작업)
-- [x] 조회수 폴링 스케줄러 (예: 1일 N회 배치) — 실시간 요구사항 여부 재확인 → 유튜브 1일 1회 GitHub Actions 배치(`youtube-view-snapshots.yml`)로 구현. SLA 에스컬레이션도 동일 방식으로 시간당 배치 추가(`sla-escalations.yml`) — 기존엔 크론 엔드포인트만 있고 아무것도 호출하지 않던 상태였음
+- [x] 조회수 폴링 스케줄러 (예: 1일 N회 배치) — 실시간 요구사항 여부 재확인 → 유튜브 1일 1회 GitHub Actions 배치(`youtube-view-snapshots.yml`)로 구현. SLA 에스컬레이션도 동일 방식으로 시간당 배치 추가(`sla-escalations.yml`) — 기존엔 크론 엔드포인트만 있고 아무것도 호출하지 않던 상태였음. **2026-10-02 변경**: GitHub 스케줄이 몇 시간씩 밀리고 설정 누락도 '성공'으로 남아서, 세 작업 모두 Supabase pg_cron으로 옮김(`supabase/migrations/20261002103028_cron_jobs.sql`, 실패 시 15분 감시 작업이 슬랙 알림)
 - [x] 예산 소진 계산 로직: 클립별 확정 조회수 × CPM 단가 누적 → 캠페인 총예산 대비 소진율 (`packages/db/src/services/settlement.ts`)
 - [x] 클립당 지급 상한 적용 로직 (스펙 4.1 자체 추가 요구사항) (`settlement.ts`의 `perClipCap` 처리)
 - [x] 예산 소진 시 캠페인 자동 마감 트리거 (`packages/db/src/services/campaignClosure.ts`, `settlement-panel.tsx`에서 정산 생성 직후 호출)
