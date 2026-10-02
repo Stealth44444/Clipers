@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
@@ -52,9 +53,9 @@ export default function ResetPasswordForm() {
   return (
     <main className="cl-auth">
       <section aria-labelledby="auth-title" className="cl-auth__card">
-        <a className="cl-auth__logo" href="/">
+        <Link className="cl-auth__logo" href="/">
           <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
-        </a>
+        </Link>
 
         {state === 'expired' ? (
           <>

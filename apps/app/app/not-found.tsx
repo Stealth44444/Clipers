@@ -1,12 +1,13 @@
+import Link from 'next/link';
 import { ButtonLink } from '@clipers/ui';
 
 export default function NotFound() {
   return (
     <main className="cl-auth">
       <section aria-labelledby="not-found-title" className="cl-auth__card">
-        <a className="cl-auth__logo" href="/">
+        <Link className="cl-auth__logo" href="/">
           <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
-        </a>
+        </Link>
         <div>
           <h1 className="cl-auth__title" id="not-found-title">
             페이지를 찾을 수 없어요

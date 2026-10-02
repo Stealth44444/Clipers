@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect } from 'react';
 import { Button, ButtonLink } from '@clipers/ui';
 
@@ -11,9 +12,9 @@ export default function AppError({ error, reset }: { error: Error & { digest?: s
   return (
     <main className="cl-auth">
       <section aria-labelledby="error-title" className="cl-auth__card">
-        <a className="cl-auth__logo" href="/">
+        <Link className="cl-auth__logo" href="/">
           <img alt="Clipers" src="/logo/clipers-wordmark.svg" />
-        </a>
+        </Link>
         <div>
           <h1 className="cl-auth__title" id="error-title">
             화면을 불러오지 못했어요
