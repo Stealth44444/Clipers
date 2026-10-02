@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { ButtonLink } from '@clipers/ui';
 import { HORIZON_FS, HORIZON_VS } from '@/lib/horizon-shader';
 
-// Spec §4: a dark full-bleed band under the white nav, the horizon shader behind the headline. As the band scrolls
+// Spec §4 (2026-10-02: the whole first screen, under a clear nav, not a band): the horizon shader behind the headline. As it scrolls
 // away the planet rises a little (native scroll, never hijacked). Off screen or in a hidden tab it stops drawing;
 // under reduced motion it draws one frame; without WebGL2 a CSS horizon stands in.
 
@@ -14,6 +14,29 @@ export default function HorizonHero({ signUpHref }: { signUpHref: string }) {
   const bandRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
+
+  // While the hero is behind the nav, the nav is clear with white text; past it, the usual frosted white nav.
+  useEffect(() => {
+    const band = bandRef.current;
+    const nav = document.querySelector<HTMLElement>('.cl-landing-nav');
+    if (!band || !nav) return;
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      nav.dataset.overDark = String(band.getBoundingClientRect().bottom > nav.offsetHeight);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const band = bandRef.current, canvas = canvasRef.current, copy = copyRef.current;

@@ -16,14 +16,16 @@ export const SIGN_UP = signUpUrl('creator');
 
 /**
  * Light marketing frame shared by the audience landings (/ for creators, /brands for brands):
- * sticky nav with the role menu, then the page, then the footer.
+ * sticky nav with the role menu, then the page, then the footer. A page whose first screen is dark (overDark) starts
+ * with a clear nav in white; the hero flips data-over-dark off once it scrolls out from under the nav.
  */
-export default function LandingChrome({ path, cta, children }: { path: string; cta: ReactNode; children: ReactNode }) {
+export default function LandingChrome({ path, cta, overDark = false, children }: { path: string; cta: ReactNode; overDark?: boolean; children: ReactNode }) {
   return (
     <div className="cl-landing">
-      <header className="cl-landing-nav">
+      <header className="cl-landing-nav" data-over-dark={overDark || undefined}>
         <Link className="cl-landing-nav__logo" href="/">
           <img alt="Clipers" src="/logo/clipers-wordmark-dark.svg" />
+          {overDark && <img alt="" className="cl-landing-nav__logo-light" src="/logo/clipers-wordmark.svg" />}
         </Link>
         <nav aria-label="주요 메뉴" className="cl-landing-nav__links">
           <Link href="/discover">캠페인 둘러보기</Link>

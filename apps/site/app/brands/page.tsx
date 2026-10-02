@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 export default function BrandsPage() {
   return (
-    <LandingChrome cta="캠페인 시작하기" path="/brands">
+    <LandingChrome cta="캠페인 시작하기" overDark path="/brands">
       <HorizonHero signUpHref={signUpUrl('brand')} />
       <ViewsStory />
       <ReachStory />

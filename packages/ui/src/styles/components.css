@@ -813,6 +813,20 @@
 
 .cl-landing-nav { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: var(--space-6); height: var(--header-height); padding: 0 max(var(--space-5), calc((100% - 1160px) / 2)); background: rgba(255, 255, 255, 0.8); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
 .cl-landing-nav__logo img { display: block; height: var(--logo-height); width: auto; }
+/* Over a dark first screen (brand hero): a clear nav with white text and the light wordmark; frosted white again once
+   the hero has scrolled out from under it (horizon-hero.tsx flips data-over-dark) */
+.cl-landing-nav { transition: background-color 0.3s ease; }
+.cl-landing-nav__logo-light { display: none !important; }
+.cl-landing-nav[data-over-dark="true"] { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.cl-landing-nav[data-over-dark="true"] .cl-landing-nav__logo img { display: none; }
+.cl-landing-nav[data-over-dark="true"] .cl-landing-nav__logo .cl-landing-nav__logo-light { display: block !important; }
+.cl-landing-nav[data-over-dark="true"] .cl-landing-nav__links { color: rgba(255, 255, 255, 0.72); }
+.cl-landing-nav[data-over-dark="true"] .cl-landing-nav__links > a:hover { color: #fff; }
+.cl-landing-nav[data-over-dark="true"] .cl-role-menu__trigger svg { color: rgba(255, 255, 255, 0.6); }
+.cl-landing-nav[data-over-dark="true"] .cl-role-menu__trigger:hover,
+.cl-landing-nav[data-over-dark="true"] .cl-role-menu__trigger[aria-expanded="true"] { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.cl-landing-nav[data-over-dark="true"] .cl-button--ghost { color: rgba(255, 255, 255, 0.78); }
+.cl-landing-nav[data-over-dark="true"] .cl-button--ghost:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 .cl-landing-nav__links { display: flex; gap: var(--space-5); color: var(--color-text-muted); font-size: var(--font-size-2); font-weight: 500; }
 .cl-landing-nav__links a:hover { color: var(--color-text); }
 .cl-landing-nav__actions { display: flex; gap: var(--space-2); margin-left: auto; }
