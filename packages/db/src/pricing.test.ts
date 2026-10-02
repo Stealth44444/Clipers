@@ -82,4 +82,8 @@ describe('creatorCampaignCap', () => {
     expect(creatorCampaignCap(1_234_567)).toBe(185_185);
     expect(creatorCampaignCap(0)).toBe(0);
   });
+
+  it('matches the share creator_campaign_cap_states() uses in the database', () => {
+    expect(migrations()).toContain(`floor(c.total_budget * ${CREATOR_CAMPAIGN_SHARE})`);
+  });
 });
