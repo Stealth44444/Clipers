@@ -109,21 +109,23 @@ export default function UseCases() {
                   <p className="cl-live__eyebrow">{active.kind}</p>
                   <p className="cl-live__title">{active.title}</p>
                 </div>
-                <StatusDot pulse tone="green">
-                  진행 중
-                </StatusDot>
+                <div className="cl-cases__head-side">
+                  <p className="cl-cases__filters">
+                    <span data-on="true">
+                      전체<b>{active.counts.all}</b>
+                    </span>
+                    <span>
+                      검수 대기<b>{active.counts.pending}</b>
+                    </span>
+                    <span>
+                      승인<b>{active.counts.approved}</b>
+                    </span>
+                  </p>
+                  <StatusDot pulse tone="green">
+                    진행 중
+                  </StatusDot>
+                </div>
               </header>
-              <p className="cl-cases__filters">
-                <span data-on="true">
-                  전체<b>{active.counts.all}</b>
-                </span>
-                <span>
-                  검수 대기<b>{active.counts.pending}</b>
-                </span>
-                <span>
-                  승인<b>{active.counts.approved}</b>
-                </span>
-              </p>
               <ul className="cl-cases__grid" ref={grid}>
                 {active.clips.map((clip, position) => (
                   <li key={clip.clip} style={{ animationDelay: `${position * 60}ms` }}>
