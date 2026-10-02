@@ -24,7 +24,7 @@ const SCENES: Scene[] = [
     title: '한 명 대신, 여러 크리에이터가 동시에 올려요.',
     body: (
       <>
-        <span className="cl-phrase">서로 다른 계정과 플랫폼에서 영상이 한꺼번에&nbsp;올라와요.</span>{' '}
+        <span className="cl-phrase">서로 다른 계정과 플랫폼에서 한꺼번에&nbsp;홍보해요.</span>{' '}
         <span className="cl-phrase">한 사람의 팔로워에만 머물지&nbsp;않아요.</span>
       </>
     ),
