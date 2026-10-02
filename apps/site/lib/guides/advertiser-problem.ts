@@ -1,4 +1,4 @@
-import { UPDATED } from './common';
+import { REVIEWED, UPDATED } from './common';
 import type { Guide } from './types';
 
 export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
@@ -30,6 +30,7 @@ export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
     related: ['pay-per-view', 'viral-without-influencers', 'repurpose-longform'],
     counterpart: 'what-is-clipping',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'pay-per-view',
@@ -58,6 +59,7 @@ export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
     faqIds: ['cost', 'expected-views', 'leftover'],
     related: ['verified-views', 'clipping-marketing', 'for-startups'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'viral-without-influencers',
@@ -86,6 +88,7 @@ export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
     faqIds: ['creators', 'cost', 'platforms'],
     related: ['clipping-marketing', 'for-brands', 'pay-per-view'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'repurpose-longform',
@@ -114,6 +117,7 @@ export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
     faqIds: ['cost', 'review-time', 'platforms'],
     related: ['for-broadcasters', 'clipping-marketing', 'for-content-ip'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'verified-views',
@@ -143,5 +147,6 @@ export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
     related: ['pay-per-view', 'clipping-marketing', 'for-agencies'],
     counterpart: 'is-it-legit',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
 ];

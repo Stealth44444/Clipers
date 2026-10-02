@@ -55,7 +55,7 @@ export async function GET() {
     '4. 검수를 통과한 영상의 조회수만큼 매주 정산받고, 원할 때 지급을 요청합니다.',
     '',
     '## 가이드 (크리에이터)',
-    ...GUIDE_GROUPS.filter((group) => group.audience === 'creator').flatMap((group) => [
+    ...GUIDE_GROUPS.filter((group) => group.audience === 'creator' && GUIDES.some((guide) => guide.group === group.id)).flatMap((group) => [
       `### ${group.label}`,
       ...GUIDES.filter((guide) => guide.group === group.id).map(
         (guide) => `- [${guide.title}](${siteUrl(`/guides/${guide.slug}`)}): ${guide.answer.join(' ')}`
@@ -70,7 +70,7 @@ export async function GET() {
     `- 자세한 안내: [브랜드 안내](${siteUrl('/brands')})`,
     '',
     '## 가이드 (광고주)',
-    ...GUIDE_GROUPS.filter((group) => group.audience === 'advertiser').flatMap((group) => [
+    ...GUIDE_GROUPS.filter((group) => group.audience === 'advertiser' && GUIDES.some((guide) => guide.group === group.id)).flatMap((group) => [
       `### ${group.label}`,
       ...GUIDES.filter((guide) => guide.group === group.id).map(
         (guide) => `- [${guide.title}](${siteUrl(`/guides/${guide.slug}`)}): ${guide.answer.join(' ')}`

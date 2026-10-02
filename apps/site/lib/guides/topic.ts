@@ -1,4 +1,4 @@
-import { UPDATED, YOUTUBE_PARTNER_HELP } from './common';
+import { REVIEWED, UPDATED, YOUTUBE_PARTNER_HELP } from './common';
 import { MIN_VIEWS, RATE, earnings } from './facts';
 import type { Guide } from './types';
 
@@ -45,6 +45,7 @@ export const TOPIC_GUIDES: Guide[] = [
     faqIds: ['small-channel', 'fees', 'when-paid'],
     related: ['shorts-earnings-calculator', 'monetization-rejected', 'what-is-clipping'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'what-is-clipping',
@@ -89,6 +90,7 @@ export const TOPIC_GUIDES: Guide[] = [
     related: ['faceless-shortform', 'copyright-safe-clipping', 'earn-before-monetization'],
     counterpart: 'clipping-marketing',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'shorts-earnings-calculator',
@@ -122,6 +124,7 @@ export const TOPIC_GUIDES: Guide[] = [
     faqIds: ['how-much', 'per-clip-max', 'min-views'],
     related: ['earn-before-monetization', 'platforms', 'is-it-legit'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'faceless-shortform',
@@ -150,5 +153,6 @@ export const TOPIC_GUIDES: Guide[] = [
     faqIds: ['small-channel', 'others-videos', 'platforms'],
     related: ['what-is-clipping', 'side-job-office-workers', 'side-job-stay-at-home-parents'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
 ];

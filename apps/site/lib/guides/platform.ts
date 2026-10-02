@@ -1,4 +1,4 @@
-import { UPDATED } from './common';
+import { REVIEWED, UPDATED } from './common';
 import type { Guide } from './types';
 
 export const PLATFORM_GUIDES: Guide[] = [
@@ -34,5 +34,6 @@ export const PLATFORM_GUIDES: Guide[] = [
     faqIds: ['platforms', 'view-check', 'min-views'],
     related: ['shorts-earnings-calculator', 'existing-shorts-channels', 'earn-before-monetization'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
 ];

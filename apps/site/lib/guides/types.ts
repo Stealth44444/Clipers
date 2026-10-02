@@ -1,6 +1,20 @@
 export type GuideAudience = 'creator' | 'advertiser';
 
-export type GuideGroup = 'topic' | 'situation' | 'problem' | 'platform' | 'industry' | 'advertiser-problem';
+/** Advertiser groups are listed in question-map order in GUIDE_GROUPS; the order is the stage. */
+export type GuideGroup =
+  | 'topic'
+  | 'situation'
+  | 'problem'
+  | 'platform'
+  | 'pillar'
+  | 'advertiser-platform'
+  | 'compare'
+  | 'cost'
+  | 'industry'
+  | 'advertiser-problem'
+  | 'execution'
+  | 'glossary'
+  | 'data';
 
 export type GuideSection = {
   heading: string;
@@ -8,6 +22,8 @@ export type GuideSection = {
   list?: string[];
   links?: { label: string; href: string }[];
 };
+
+export type GuideSource = { label: string; url: string; checked: string };
 
 export type Guide = {
   slug: string;
@@ -29,6 +45,18 @@ export type Guide = {
   counterpart?: string;
   /** Industry guides: preselects the contact form's industry (one of INQUIRY_INDUSTRIES). */
   industry?: string;
+  /** ISO date the facts were last checked against their sources; shown as "… 확인". */
+  reviewed: string;
+  /** Primary sources for outside facts. Required for compare and data guides. */
+  sources?: GuideSource[];
+  /** Named comparisons: what the other service says about itself, each pointing at a source index. */
+  claims?: { subject: string; text: string; source: number }[];
+  /** Named comparisons stay flagged until a lawyer has read them (the launch checklist lists the false ones). */
+  legalReviewed?: boolean;
+  /** Glossary only. */
+  terms?: { term: string; definition: string }[];
+  /** Data pages: one figure per row, each pointing at a source index. */
+  rows?: { label: string; value: string; source: number }[];
   /** ISO date of the last content change (Article dateModified). */
   updated: string;
 };

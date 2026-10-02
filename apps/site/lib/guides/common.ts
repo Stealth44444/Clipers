@@ -18,5 +18,7 @@ export const ADVERTISER_NOTES = [
 ];
 
 export const UPDATED = '2026-10-01';
+/** Facts in every guide were checked against the product and their sources on this day. */
+export const REVIEWED = '2026-10-02';
 export const YOUTUBE_PARTNER_HELP = 'https://support.google.com/youtube/answer/72851';
 export const YOUTUBE_MONETIZATION_POLICY = 'https://support.google.com/youtube/answer/1311392';

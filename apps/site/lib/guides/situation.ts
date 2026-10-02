@@ -1,4 +1,4 @@
-import { UPDATED } from './common';
+import { REVIEWED, UPDATED } from './common';
 import { WITHDRAW_FROM } from './facts';
 import type { Guide } from './types';
 
@@ -36,6 +36,7 @@ export const SITUATION_GUIDES: Guide[] = [
     faqIds: ['small-channel', 'when-paid', 'per-clip-max'],
     related: ['faceless-shortform', 'video-editors', 'shorts-earnings-calculator'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'side-job-stay-at-home-parents',
@@ -68,6 +69,7 @@ export const SITUATION_GUIDES: Guide[] = [
     faqIds: ['fees', 'when-paid', 'rejected'],
     related: ['faceless-shortform', 'side-job-seniors', 'what-is-clipping'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'side-job-students',
@@ -96,6 +98,7 @@ export const SITUATION_GUIDES: Guide[] = [
     faqIds: ['fees', 'small-channel', 'how-much'],
     related: ['video-editors', 'what-is-clipping', 'shorts-earnings-calculator'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'video-editors',
@@ -124,6 +127,7 @@ export const SITUATION_GUIDES: Guide[] = [
     faqIds: ['how-much', 'per-clip-max', 'rejected'],
     related: ['side-job-students', 'existing-shorts-channels', 'what-is-clipping'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'existing-shorts-channels',
@@ -152,6 +156,7 @@ export const SITUATION_GUIDES: Guide[] = [
     faqIds: ['small-channel', 'platforms', 'view-check'],
     related: ['earn-before-monetization', 'platforms', 'monetization-rejected'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'side-job-seniors',
@@ -180,5 +185,6 @@ export const SITUATION_GUIDES: Guide[] = [
     faqIds: ['fees', 'rejected', 'when-paid'],
     related: ['side-job-stay-at-home-parents', 'faceless-shortform', 'is-it-legit'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
 ];

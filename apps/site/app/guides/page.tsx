@@ -30,7 +30,7 @@ export default function GuidesPage() {
         {GUIDE_AUDIENCES.map((audience) => (
           <div className="cl-guides__audience" id={audience.id} key={audience.id}>
             <h2>{audience.label}</h2>
-            {GUIDE_GROUPS.filter((group) => group.audience === audience.id).map((group) => (
+            {GUIDE_GROUPS.filter((group) => group.audience === audience.id && GUIDES.some((guide) => guide.group === group.id)).map((group) => (
               <section className="cl-guides__group" key={group.id}>
                 <h3>{group.label}</h3>
                 <ul>

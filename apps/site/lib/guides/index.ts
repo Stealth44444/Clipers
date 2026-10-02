@@ -20,8 +20,16 @@ export const GUIDE_GROUPS: { id: GuideGroup; audience: GuideAudience; label: str
   { id: 'situation', audience: 'creator', label: '상황별' },
   { id: 'problem', audience: 'creator', label: '고민별' },
   { id: 'platform', audience: 'creator', label: '플랫폼' },
+  // Advertiser groups in question-map order: awareness → platform → compare → cost → execution → terms → data.
+  { id: 'pillar', audience: 'advertiser', label: '숏폼 마케팅 기본' },
+  { id: 'advertiser-platform', audience: 'advertiser', label: '플랫폼별 마케팅' },
+  { id: 'compare', audience: 'advertiser', label: '비교' },
+  { id: 'cost', audience: 'advertiser', label: '비용과 예산' },
   { id: 'industry', audience: 'advertiser', label: '업종별' },
   { id: 'advertiser-problem', audience: 'advertiser', label: '고민별' },
+  { id: 'execution', audience: 'advertiser', label: '실행과 신뢰' },
+  { id: 'glossary', audience: 'advertiser', label: '용어' },
+  { id: 'data', audience: 'advertiser', label: '데이터' },
 ];
 
 export const GUIDES: Guide[] = [

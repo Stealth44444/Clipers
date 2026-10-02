@@ -10,14 +10,28 @@ const creators = GUIDES.filter((guide) => guide.audience === 'creator');
 const advertisers = GUIDES.filter((guide) => guide.audience === 'advertiser');
 const count = (group: string) => GUIDES.filter((guide) => guide.group === group).length;
 
+// Advertiser guides per group, in question-map order (awareness → platform → compare → cost → execution → terms → data).
+const ADVERTISER_COUNTS: Record<string, number> = {
+  pillar: 0,
+  'advertiser-platform': 0,
+  compare: 0,
+  cost: 0,
+  industry: 11,
+  'advertiser-problem': 5,
+  execution: 0,
+  glossary: 0,
+  data: 0,
+};
+
 describe('guides', () => {
-  it('has 15 creator and 16 advertiser guides in their groups', () => {
+  it('has 15 creator guides and the advertiser guides of the question map, in its order', () => {
     expect(creators).toHaveLength(15);
-    expect(advertisers).toHaveLength(16);
     expect([count('topic'), count('situation'), count('problem'), count('platform')]).toEqual([4, 6, 4, 1]);
-    expect([count('industry'), count('advertiser-problem')]).toEqual([11, 5]);
+    for (const [group, expected] of Object.entries(ADVERTISER_COUNTS)) expect(count(group), group).toBe(expected);
+    expect(advertisers).toHaveLength(Object.values(ADVERTISER_COUNTS).reduce((sum, value) => sum + value, 0));
     expect(GUIDE_GROUPS.map((group) => `${group.audience}:${group.id}`)).toEqual([
-      'creator:topic', 'creator:situation', 'creator:problem', 'creator:platform', 'advertiser:industry', 'advertiser:advertiser-problem',
+      'creator:topic', 'creator:situation', 'creator:problem', 'creator:platform',
+      ...Object.keys(ADVERTISER_COUNTS).map((group) => `advertiser:${group}`),
     ]);
   });
 
@@ -78,6 +92,25 @@ describe('guides', () => {
     }
     expect(new Set(GUIDES.map((guide) => guide.title)).size).toBe(GUIDES.length);
     expect(new Set(GUIDES.map((guide) => guide.description)).size).toBe(GUIDES.length);
+  });
+
+  it('records when every guide was last fact-checked', () => {
+    for (const guide of GUIDES) expect(guide.reviewed, guide.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it('backs comparisons, data and named claims with dated https sources', () => {
+    for (const guide of GUIDES) {
+      const sources = guide.sources ?? [];
+      for (const source of sources) {
+        expect(source.url.startsWith('https://'), source.url).toBe(true);
+        expect(source.checked).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      }
+      if (guide.group === 'compare' || guide.group === 'data') expect(sources.length, guide.slug).toBeGreaterThan(0);
+      for (const claim of guide.claims ?? []) expect(sources[claim.source], `${guide.slug}: ${claim.text}`).toBeDefined();
+      for (const row of guide.rows ?? []) expect(sources[row.source], `${guide.slug}: ${row.label}`).toBeDefined();
+      if (guide.claims?.length) expect(typeof guide.legalReviewed, guide.slug).toBe('boolean');
+      if (guide.group === 'glossary') expect(guide.terms?.length ?? 0).toBeGreaterThanOrEqual(10);
+    }
   });
 
   it('links only to pages that exist', () => {

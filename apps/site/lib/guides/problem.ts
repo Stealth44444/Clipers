@@ -1,5 +1,5 @@
 import { COMPANY } from '../company';
-import { UPDATED, YOUTUBE_MONETIZATION_POLICY } from './common';
+import { REVIEWED, UPDATED, YOUTUBE_MONETIZATION_POLICY } from './common';
 import { MIN_VIEWS, RATE, WITHDRAW_FROM } from './facts';
 import type { Guide } from './types';
 
@@ -32,6 +32,7 @@ export const PROBLEM_GUIDES: Guide[] = [
     related: ['what-is-clipping', 'copyright-safe-clipping', 'video-editors'],
     counterpart: 'for-streamers',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'monetization-rejected',
@@ -61,6 +62,7 @@ export const PROBLEM_GUIDES: Guide[] = [
     faqIds: ['small-channel', 'how-much', 'view-check'],
     related: ['earn-before-monetization', 'existing-shorts-channels', 'is-it-legit'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'is-it-legit',
@@ -98,6 +100,7 @@ export const PROBLEM_GUIDES: Guide[] = [
     related: ['shorts-earnings-calculator', 'what-is-clipping', 'monetization-rejected'],
     counterpart: 'verified-views',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'copyright-safe-clipping',
@@ -127,5 +130,6 @@ export const PROBLEM_GUIDES: Guide[] = [
     related: ['what-is-clipping', 'fan-edits', 'monetization-rejected'],
     counterpart: 'for-broadcasters',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
 ];

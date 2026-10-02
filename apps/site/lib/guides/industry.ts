@@ -1,4 +1,4 @@
-import { UPDATED } from './common';
+import { REVIEWED, UPDATED } from './common';
 import { MIN_BUDGET } from './facts';
 import type { Guide } from './types';
 
@@ -34,6 +34,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     faqIds: ['cost', 'expected-views', 'review-time'],
     related: ['for-startups', 'viral-without-influencers', 'pay-per-view'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-broadcasters',
@@ -64,6 +65,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     related: ['repurpose-longform', 'clipping-marketing', 'verified-views'],
     counterpart: 'copyright-safe-clipping',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-film',
@@ -93,6 +95,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     faqIds: ['start-time', 'platforms', 'budget-exhausted'],
     related: ['for-broadcasters', 'repurpose-longform', 'pay-per-view'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-music',
@@ -123,6 +126,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     related: ['for-streamers', 'clipping-marketing', 'viral-without-influencers'],
     counterpart: 'fan-edits',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-streamers',
@@ -153,6 +157,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     related: ['for-music', 'clipping-marketing', 'repurpose-longform'],
     counterpart: 'fan-edits',
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-games',
@@ -182,6 +187,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     faqIds: ['start-time', 'platforms', 'expected-views'],
     related: ['for-streamers', 'for-startups', 'pay-per-view'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-startups',
@@ -211,6 +217,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     faqIds: ['min-budget', 'expected-views', 'clip-cap'],
     related: ['for-brands', 'pay-per-view', 'viral-without-influencers'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-content-ip',
@@ -240,6 +247,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     faqIds: ['cost', 'creators', 'review-time'],
     related: ['repurpose-longform', 'clipping-marketing', 'for-brands'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-live-events',
@@ -269,6 +277,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     faqIds: ['review-time', 'start-time', 'platforms'],
     related: ['for-broadcasters', 'repurpose-longform', 'verified-views'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-local-tourism',
@@ -299,6 +308,7 @@ export const INDUSTRY_GUIDES: Guide[] = [
     faqIds: ['min-budget', 'cost', 'leftover'],
     related: ['for-live-events', 'for-brands', 'viral-without-influencers'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
   {
     slug: 'for-agencies',
@@ -329,5 +339,6 @@ export const INDUSTRY_GUIDES: Guide[] = [
     faqIds: ['view-verification', 'budget-exhausted', 'leftover'],
     related: ['clipping-marketing', 'verified-views', 'pay-per-view'],
     updated: UPDATED,
+    reviewed: REVIEWED,
   },
 ];
