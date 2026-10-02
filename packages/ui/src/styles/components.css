@@ -227,6 +227,9 @@
 .cl-tab:hover { color: var(--color-text); }
 .cl-tab[aria-selected="true"] { background: var(--gray-6); color: var(--color-text); box-shadow: var(--shadow-control); }
 .cl-tab__count { color: var(--gray-9); font-weight: 500; }
+/* Full width, equal segments: a two-way switch that spans its container (sign-up role). */
+.cl-tabs--block { display: flex; flex-wrap: nowrap; }
+.cl-tabs--block .cl-tab { flex: 1; justify-content: center; height: 32px; }
 
 /* ---------- empty state ---------- */
 .cl-empty { display: grid; justify-items: center; gap: var(--space-2); padding: var(--space-9) var(--space-4); text-align: center; }

@@ -212,7 +212,7 @@ export default function LoginForm({
           </>
         ) : (
           <>
-            {isSignUp && <Tabs items={ROLE_TABS} label="가입 유형" onChange={setRole} value={role} />}
+            {isSignUp && <Tabs block items={ROLE_TABS} label="가입 유형" onChange={setRole} value={role} />}
             <div>
               <h1 className="cl-auth__title" id="auth-title">
                 {mode === 'sign-up' ? copy.title : mode === 'reset' ? '비밀번호 재설정' : '로그인'}

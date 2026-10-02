@@ -1,10 +1,13 @@
 'use client';
 
+import { cx } from '../lib/cx';
+
 export type TabItem<T extends string> = { value: T; label: string; count?: number };
 
-export function Tabs<T extends string>({ items, value, onChange, label }: { items: TabItem<T>[]; value: T; onChange: (value: T) => void; label: string }) {
+/** Segmented tabs. `block` spans the container with equal segments instead of sizing to the labels. */
+export function Tabs<T extends string>({ items, value, onChange, label, block }: { items: TabItem<T>[]; value: T; onChange: (value: T) => void; label: string; block?: boolean }) {
   return (
-    <div aria-label={label} className="cl-tabs" role="tablist">
+    <div aria-label={label} className={cx('cl-tabs', block && 'cl-tabs--block')} role="tablist">
       {items.map((item) => (
         <button
           aria-selected={item.value === value}
