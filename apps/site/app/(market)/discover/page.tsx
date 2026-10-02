@@ -76,7 +76,6 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
                   description={query || activeGroup ? '다른 검색어나 분야로 찾아보세요.' : '새 캠페인이 열리면 여기에 보여요.'}
                   icon={<Sparkles size={24} />}
                   title="조건에 맞는 캠페인이 없어요"
-                  tone="neutral"
                 />
               </Card>
             )}

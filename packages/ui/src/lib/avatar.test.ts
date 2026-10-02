@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { avatarGradient, initials } from './avatar';
+import { initials } from './avatar';
 
 describe('initials', () => {
   it('uses the first letters of the first two words', () => {
@@ -16,15 +16,5 @@ describe('initials', () => {
 
   it('falls back to a question mark for blank names', () => {
     expect(initials('   ')).toBe('?');
-  });
-});
-
-describe('avatarGradient', () => {
-  it('is deterministic for the same seed', () => {
-    expect(avatarGradient('user-1')).toBe(avatarGradient('user-1'));
-  });
-
-  it('returns a CSS linear-gradient', () => {
-    expect(avatarGradient('user-1')).toMatch(/^linear-gradient\(135deg, #[0-9a-f]{6}, #[0-9a-f]{6}\)$/);
   });
 });

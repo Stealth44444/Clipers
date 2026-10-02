@@ -1,4 +1,4 @@
-import { Banknote, CalendarDays, Clock, Wallet } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 import { bankName, fetchAllRows, maskAccountNumber, payoutRequest, settlementPeriodLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
@@ -40,8 +40,6 @@ type Payout = {
   paid_at: string | null;
 };
 
-const ICON = { size: 18 };
-
 const formatDate = (iso: string) => new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'long', day: 'numeric' }).format(new Date(iso));
 
 export default async function CreatorEarningsPage() {
@@ -72,10 +70,10 @@ export default async function CreatorEarningsPage() {
       <PageHeader description="검수를 통과한 클립은 조회수 1,000회부터 매주 정산돼요. 정산액은 세금을 떼기 전 금액이에요." title="수익" />
       <Stack>
         <StatGrid>
-          <StatCard highlight icon={<Wallet {...ICON} />} label="받을 금액" tone="brand" value={formatKRW(summary.unpaid)} />
-          <StatCard icon={<Clock {...ICON} />} label="지난주 정산액" tone="sky" value={formatKRW(summary.lastWeek)} />
-          <StatCard icon={<CalendarDays {...ICON} />} label="이번 달 정산액" tone="violet" value={formatKRW(summary.thisMonth)} />
-          <StatCard icon={<Banknote {...ICON} />} label="누적 정산액" tone="amber" value={formatKRW(summary.total)} />
+          <StatCard highlight label="받을 금액" value={formatKRW(summary.unpaid)} />
+          <StatCard label="지난주 정산액" value={formatKRW(summary.lastWeek)} />
+          <StatCard label="이번 달 정산액" value={formatKRW(summary.thisMonth)} />
+          <StatCard label="누적 정산액" value={formatKRW(summary.total)} />
         </StatGrid>
 
         <Card>
@@ -172,7 +170,6 @@ export default async function CreatorEarningsPage() {
                 description="승인된 클립의 조회수가 쌓이면 다음 정산부터 여기에 표시돼요."
                 icon={<Wallet size={24} />}
                 title="아직 정산 내역이 없어요"
-                tone="neutral"
               />
             </Card>
           )}

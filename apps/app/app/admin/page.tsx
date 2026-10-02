@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ClipboardCheck, Landmark, MessageSquareWarning, UserCheck } from 'lucide-react';
 import { campaignEconomics, campaignPricing, fetchAllRows, fetchAllRowsIn, getViewSpikeFlags } from '@clipers/db';
 import { Badge, DataTable, Page, PageHeader, ProgressBar, SectionHeader, Stack, StatCard, StatGrid, formatKRW } from '@clipers/ui';
 import { getAdminQueueCounts } from '@/lib/admin-data';
@@ -15,8 +14,6 @@ type CampaignRow = {
   brand: { display_name: string } | null;
 };
 type FlaggedClip = { id: string; url: string; campaign: { title: string } | null; creator: { display_name: string } | null };
-
-const ICON = { size: 18 };
 
 export default async function AdminOverviewPage() {
   const { supabase } = await getSession();
@@ -84,10 +81,10 @@ export default async function AdminOverviewPage() {
         )}
 
         <StatGrid>
-          <StatCard icon={<Landmark {...ICON} />} label="입금 확인 대기" tone="amber" value={counts.deposits} />
-          <StatCard icon={<UserCheck {...ICON} />} label="검토할 지원서" tone="sky" value={counts.applications} />
-          <StatCard icon={<ClipboardCheck {...ICON} />} label="검수할 클립" tone="violet" value={counts.clips} />
-          <StatCard icon={<MessageSquareWarning {...ICON} />} label="조회수 신고·이의제기" tone="tomato" value={counts.viewReports + counts.disputes} />
+          <StatCard label="입금 확인 대기" value={counts.deposits} />
+          <StatCard label="검토할 지원서" value={counts.applications} />
+          <StatCard label="검수할 클립" value={counts.clips} />
+          <StatCard label="조회수 신고·이의제기" value={counts.viewReports + counts.disputes} />
         </StatGrid>
 
         <section>

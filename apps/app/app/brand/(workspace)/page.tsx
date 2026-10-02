@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Banknote, Eye, Film, Megaphone, PlusCircle, Radio, ShieldCheck, Wallet } from 'lucide-react';
+import { Banknote, Film, Megaphone, PlusCircle, ShieldCheck } from 'lucide-react';
 import { brandChecklist } from '@clipers/db';
 import {
   ButtonLink,
@@ -79,10 +79,10 @@ export default async function BrandHomePage() {
 
         {campaigns.length > 0 && (
           <StatGrid>
-            <StatCard highlight icon={<Radio {...ICON} />} label="진행 중인 캠페인" tone="brand" value={live.length} />
-            <StatCard icon={<Wallet {...ICON} />} label="사용한 예산" tone="violet" value={formatKRW(totals.spent)} />
-            <StatCard icon={<Eye {...ICON} />} label="검증 조회수" tone="sky" value={formatCompactNumber(totals.views)} />
-            <StatCard icon={<Film {...ICON} />} label="받은 클립" tone="amber" value={totals.clips} />
+            <StatCard highlight label="진행 중인 캠페인" value={live.length} />
+            <StatCard label="사용한 예산" value={formatKRW(totals.spent)} />
+            <StatCard label="검증 조회수" value={formatCompactNumber(totals.views)} />
+            <StatCard label="받은 클립" value={totals.clips} />
           </StatGrid>
         )}
 

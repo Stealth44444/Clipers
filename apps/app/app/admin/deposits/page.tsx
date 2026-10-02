@@ -94,7 +94,7 @@ export default async function AdminDepositsPage() {
         />
       ) : (
         <Card>
-          <EmptyState description="브랜드가 입금을 알리면 여기에 보여요." icon={<Landmark size={24} />} title="확인할 입금이 없어요" tone="neutral" />
+          <EmptyState description="브랜드가 입금을 알리면 여기에 보여요." icon={<Landmark size={24} />} title="확인할 입금이 없어요" />
         </Card>
       )}
     </Page>

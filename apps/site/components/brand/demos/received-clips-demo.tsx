@@ -1,6 +1,5 @@
 'use client';
 
-import { Eye, Film } from 'lucide-react';
 import { platformLabel } from '@clipers/db';
 import { Badge, DataTable, StatCard, StatGrid, formatCompactNumber } from '@clipers/ui';
 import { useDemoFrame } from '@/components/brand/use-demo-frame';
@@ -15,8 +14,8 @@ export default function ReceivedClipsDemo() {
   return (
     <div className="cl-app-dark cl-bdemo cl-bdemo--clips" inert ref={ref}>
       <StatGrid>
-        <StatCard icon={<Eye size={16} />} label="검증 조회수" tone="sky" value={formatCompactNumber(frame.views)} />
-        <StatCard icon={<Film size={16} />} label="받은 클립" tone="amber" value={frame.clips} />
+        <StatCard label="검증 조회수" value={formatCompactNumber(frame.views)} />
+        <StatCard label="받은 클립" value={frame.clips} />
       </StatGrid>
       <p className="cl-bdemo__label">받은 클립</p>
       <DataTable

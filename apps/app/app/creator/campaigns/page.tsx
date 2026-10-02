@@ -84,7 +84,6 @@ export default async function CreatorCampaignsPage() {
                     icon={<Megaphone size={16} />}
                     key={application.id}
                     title={campaign?.title ?? '캠페인'}
-                    tone={status.tone}
                     trailing={
                       application.status === 'approved' && campaign ? (
                         <SubmitClipDialog
@@ -94,7 +93,7 @@ export default async function CreatorCampaignsPage() {
                           platforms={campaign.allowed_platforms}
                         />
                       ) : (
-                        <Badge tone={status.tone}>{status.label}</Badge>
+                        <Badge>{status.label}</Badge>
                       )
                     }
                   />
@@ -141,7 +140,6 @@ export default async function CreatorCampaignsPage() {
                 }
                 icon={<Megaphone size={24} />}
                 title="지원할 수 있는 캠페인이 없어요"
-                tone="neutral"
               />
             </Card>
           )}

@@ -66,7 +66,7 @@ export default async function AdminApplicationsPage() {
         />
       ) : (
         <Card>
-          <EmptyState description="새 지원서가 들어오면 여기에 보여요." icon={<UserCheck size={24} />} title="검토할 지원서가 없어요" tone="neutral" />
+          <EmptyState description="새 지원서가 들어오면 여기에 보여요." icon={<UserCheck size={24} />} title="검토할 지원서가 없어요" />
         </Card>
       )}
     </Page>

@@ -1,15 +1,12 @@
 import type { ReactNode } from 'react';
 import { cx } from '../lib/cx';
-import type { Tone } from './Badge';
 
-export function StatCard({ icon, value, label, tone = 'neutral', highlight }: { icon: ReactNode; value: ReactNode; label: ReactNode; tone?: Tone; highlight?: boolean }) {
+/** A label over one number. `highlight` marks the figure that matters most on the page (the number takes the brand colour). */
+export function StatCard({ value, label, highlight }: { value: ReactNode; label: ReactNode; highlight?: boolean }) {
   return (
-    <div className={cx('cl-stat', `cl-tone-${tone}`, highlight && 'cl-stat--highlight')}>
-      <span className="cl-stat__icon">{icon}</span>
-      <div>
-        <div className="cl-stat__value">{value}</div>
-        <div className="cl-stat__label">{label}</div>
-      </div>
+    <div className={cx('cl-stat', highlight && 'cl-stat--highlight')}>
+      <div className="cl-stat__label">{label}</div>
+      <div className="cl-stat__value">{value}</div>
     </div>
   );
 }

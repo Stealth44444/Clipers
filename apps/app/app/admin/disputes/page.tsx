@@ -70,7 +70,6 @@ export default async function AdminDisputesPage() {
             description="반려된 클립에 이의제기가 들어오면 여기에 보여요."
             icon={<MessageSquareWarning size={24} />}
             title="처리할 이의제기가 없어요"
-            tone="neutral"
           />
         </Card>
       )}

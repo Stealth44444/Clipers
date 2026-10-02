@@ -153,29 +153,28 @@
 .cl-icon-button:hover { background: var(--gray-a3); color: var(--color-text); }
 
 /* ---------- badge / avatar ---------- */
+/* Status label: a small dot in the tone's colour and plain text (macOS style), never a filled pill or tile */
 .cl-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  height: 22px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-3);
-  background: var(--tone-bg);
-  color: var(--tone-fg);
-  font-size: var(--font-size-1);
+  gap: 7px;
+  color: var(--color-text);
+  font-size: var(--font-size-2);
   font-weight: 500;
   white-space: nowrap;
 }
-.cl-badge--solid { background: var(--tone-solid); color: var(--brand-contrast); }
+.cl-badge::before { width: 7px; height: 7px; flex: 0 0 auto; border-radius: var(--radius-full); background: var(--tone-solid); content: ""; }
+.cl-tone-neutral.cl-badge { color: var(--color-text-muted); }
+.cl-badge--solid { font-weight: 600; }
 
 .cl-avatar {
+  background: var(--gray-5);
+  color: var(--color-text-muted);
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
-  background-size: cover;
-  color: #fff;
   font-weight: 600;
   letter-spacing: 0;
   object-fit: cover;
@@ -196,31 +195,12 @@
 .cl-progress__fill { height: 100%; border-radius: inherit; background: var(--tone-solid); transition: width 0.3s ease; }
 .cl-progress--bare { background: transparent; }
 
-/* ---------- stat card ---------- */
-.cl-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); }
-.cl-stat {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  min-width: 0;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-5);
-  background: var(--color-panel);
-}
-.cl-stat--highlight { background: linear-gradient(90deg, var(--tone-bg), var(--color-panel) 70%); }
-.cl-stat__icon {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-4);
-  background: var(--tone-bg);
-  color: var(--tone-fg);
-}
-.cl-stat__value { font-size: var(--font-size-5); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: var(--tracking-heading); line-height: 1.2; }
-.cl-stat__label { color: var(--color-text-muted); font-size: var(--font-size-1); }
+/* ---------- stat card: a label over a number ---------- */
+.cl-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); }
+.cl-stat { display: grid; gap: var(--space-1); min-width: 0; padding: var(--space-4) var(--space-5); border-radius: var(--radius-5); background: var(--color-panel); }
+.cl-stat__label { color: var(--color-text-muted); font-size: var(--font-size-2); }
+.cl-stat__value { font-size: var(--font-size-6); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: var(--tracking-heading); line-height: 1.2; }
+.cl-stat--highlight .cl-stat__value { color: var(--brand-11); }
 
 /* ---------- tabs ---------- */
 .cl-tabs {
@@ -250,17 +230,7 @@
 
 /* ---------- empty state ---------- */
 .cl-empty { display: grid; justify-items: center; gap: var(--space-2); padding: var(--space-9) var(--space-4); text-align: center; }
-.cl-empty__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  margin-bottom: var(--space-2);
-  border-radius: var(--radius-5);
-  background: var(--tone-bg);
-  color: var(--tone-fg);
-}
+.cl-empty__icon { display: inline-flex; margin-bottom: var(--space-2); color: var(--color-text-subtle); }
 .cl-empty__title { font-size: var(--font-size-3); font-weight: 600; }
 .cl-empty__description { max-width: 440px; color: var(--color-text-muted); }
 .cl-empty__action { margin-top: var(--space-3); }
@@ -363,22 +333,12 @@
   transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 .cl-option-card:hover { background: var(--gray-4); }
-.cl-option-card[aria-checked="true"] { background: var(--brand-a3); box-shadow: inset 0 0 0 1.5px var(--brand-9); }
+.cl-option-card[aria-checked="true"] { box-shadow: inset 0 0 0 1.5px var(--brand-9); }
 .cl-option-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
 .cl-option-list { display: grid; gap: var(--space-3); }
 @media (max-width: 420px) { .cl-option-grid { grid-template-columns: minmax(0, 1fr); } }
-.cl-option-card__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  margin-bottom: var(--space-3);
-  border-radius: var(--radius-4);
-  background: var(--gray-5);
-  color: var(--color-text-muted);
-}
-.cl-option-card[aria-checked="true"] .cl-option-card__icon { background: var(--brand-9); color: var(--brand-contrast); }
+.cl-option-card__icon { display: inline-flex; margin-bottom: var(--space-3); color: var(--color-text-muted); }
+.cl-option-card[aria-checked="true"] .cl-option-card__icon { color: var(--color-text); }
 .cl-option-card__radio {
   position: absolute;
   top: var(--space-4);
@@ -580,7 +540,7 @@
 .cl-list { overflow: hidden; border-radius: var(--radius-5); background: var(--color-panel); }
 .cl-list__row { display: flex; align-items: center; gap: var(--space-3); min-height: 56px; padding: var(--space-3) var(--space-4); }
 .cl-list__row + .cl-list__row { box-shadow: inset 0 1px 0 var(--gray-a2); }
-.cl-list__icon { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: var(--radius-3); background: var(--tone-bg, var(--gray-4)); color: var(--tone-fg, var(--color-text-muted)); }
+.cl-list__icon { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: var(--radius-3); background: var(--gray-a3); color: var(--color-text-muted); }
 .cl-list__text { flex: 1 1 auto; min-width: 0; }
 .cl-list__title { font-weight: 500; }
 .cl-list__description { color: var(--color-text-muted); font-size: var(--font-size-2); }

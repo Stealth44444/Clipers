@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CircleUserRound, Eye, Film, Megaphone, Send, Wallet } from 'lucide-react';
+import { CircleUserRound, Film, Megaphone, Send, Wallet } from 'lucide-react';
 import { creatorChecklist, fetchAllRows, platformLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
@@ -86,15 +86,13 @@ export default async function CreatorHomePage() {
         )}
 
         <StatGrid>
-          <StatCard highlight icon={<Wallet {...ICON} />} label="누적 정산액" tone="brand" value={formatKRW(earnings.total)} />
-          <StatCard icon={<Eye {...ICON} />} label="검증 조회수" tone="sky" value={formatCompactNumber(verifiedViews)} />
+          <StatCard highlight label="누적 정산액" value={formatKRW(earnings.total)} />
+          <StatCard label="검증 조회수" value={formatCompactNumber(verifiedViews)} />
           <StatCard
-            icon={<Megaphone {...ICON} />}
             label="참여 캠페인"
-            tone="violet"
             value={applicationRows.filter((row) => row.status === 'approved').length}
           />
-          <StatCard icon={<Film {...ICON} />} label="제출한 클립" tone="amber" value={clipRows.length} />
+          <StatCard label="제출한 클립" value={clipRows.length} />
         </StatGrid>
 
         <section>

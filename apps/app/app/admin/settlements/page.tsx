@@ -95,7 +95,7 @@ export default async function AdminSettlementsPage() {
             />
           ) : (
             <Card>
-              <EmptyState description="크리에이터가 지급을 요청하면 여기에 보여요." icon={<Wallet size={24} />} title="처리할 지급 요청이 없어요" tone="neutral" />
+              <EmptyState description="크리에이터가 지급을 요청하면 여기에 보여요." icon={<Wallet size={24} />} title="처리할 지급 요청이 없어요" />
             </Card>
           )}
         </section>

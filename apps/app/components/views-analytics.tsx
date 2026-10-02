@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { CircleCheck, Eye, Film, TrendingUp } from 'lucide-react';
 import { viewTrend } from '@clipers/db';
 import { Card, LineChart, Select, StatCard, StatGrid, Tabs, formatCompactNumber } from '@clipers/ui';
 
@@ -21,8 +20,6 @@ type Props = {
 
 type Range = '7' | '30' | '90';
 type Mode = 'cumulative' | 'daily';
-
-const ICON = { size: 18 };
 
 export default function ViewsAnalytics({ clips, filter, clipLabel }: Props) {
   const [range, setRange] = useState<Range>('30');
@@ -65,13 +62,11 @@ export default function ViewsAnalytics({ clips, filter, clipLabel }: Props) {
       </div>
 
       <StatGrid>
-        <StatCard highlight icon={<TrendingUp {...ICON} />} label={`최근 ${range}일 조회수`} tone="brand" value={formatCompactNumber(periodViews)} />
-        <StatCard icon={<Eye {...ICON} />} label="누적 조회수" tone="sky" value={formatCompactNumber(totalViews)} />
-        <StatCard icon={<Film {...ICON} />} label={clipLabel} tone="violet" value={selected.length} />
+        <StatCard highlight label={`최근 ${range}일 조회수`} value={formatCompactNumber(periodViews)} />
+        <StatCard label="누적 조회수" value={formatCompactNumber(totalViews)} />
+        <StatCard label={clipLabel} value={selected.length} />
         <StatCard
-          icon={<CircleCheck {...ICON} />}
           label="승인된 클립"
-          tone="amber"
           value={selected.filter((clip) => clip.status === 'approved').length}
         />
       </StatGrid>

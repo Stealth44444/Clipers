@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { ExternalLink, Eye, Film, Pencil, Target, Wallet } from 'lucide-react';
+import { ExternalLink, Film, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { campaignPricing, creatorPayoutToClipCap, depositAmount, platformLabel, platformLabels, vatOn } from '@clipers/db';
 import {
@@ -25,8 +25,6 @@ import { CAMPAIGN_STATUS, CLIP_STATUS, CONTENT_TYPE_LABEL, statusDisplay } from 
 import DepositButton from './deposit-button';
 
 type ClipRow = { id: string; url: string; platform: string; status: string; submitted_at: string; creator: { display_name: string } | null };
-
-const ICON = { size: 18 };
 
 export default async function BrandCampaignDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -114,10 +112,10 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
         )}
 
         <StatGrid>
-          <StatCard highlight icon={<Wallet {...ICON} />} label="사용한 예산" tone="brand" value={formatKRW(summary.spent)} />
-          <StatCard icon={<Target {...ICON} />} label="예상 조회수" tone="violet" value={formatCompactNumber(summary.expectedViews)} />
-          <StatCard icon={<Eye {...ICON} />} label="검증 조회수" tone="sky" value={formatCompactNumber(summary.verifiedViews)} />
-          <StatCard icon={<Film {...ICON} />} label="받은 클립" tone="amber" value={summary.clipCount} />
+          <StatCard highlight label="사용한 예산" value={formatKRW(summary.spent)} />
+          <StatCard label="예상 조회수" value={formatCompactNumber(summary.expectedViews)} />
+          <StatCard label="검증 조회수" value={formatCompactNumber(summary.verifiedViews)} />
+          <StatCard label="받은 클립" value={summary.clipCount} />
         </StatGrid>
 
         <Card title="예산">
@@ -206,7 +204,6 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
                 }
                 icon={<Film size={24} />}
                 title="아직 받은 클립이 없어요"
-                tone="neutral"
               />
             </Card>
           )}

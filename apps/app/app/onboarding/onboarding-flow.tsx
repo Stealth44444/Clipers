@@ -99,19 +99,16 @@ export default function OnboardingFlow() {
                 description="캠페인이 정해 준 영상을 내 방식대로 편집해 올려요."
                 icon={<Scissors {...ICON} />}
                 title="클리핑"
-                tone="brand"
               />
               <ListRow
                 description="제품이나 서비스를 내 스타일대로 소개하는 영상을 찍어요."
                 icon={<Clapperboard {...ICON} />}
                 title="소개"
-                tone="sky"
               />
               <ListRow
                 description="검수를 통과한 클립은 조회수 1,000회부터 정산되고, 그전 조회수도 함께 정산돼요."
                 icon={<BadgeCheck {...ICON} />}
                 title="검수와 정산"
-                tone="violet"
               />
             </List>
           </Step>
