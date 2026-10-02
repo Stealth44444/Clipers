@@ -20,7 +20,15 @@ export function guidesFullText(guides: Guide[], siteUrl: (path: string) => strin
       lines.push(`### ${section.heading}`, '', ...section.paragraphs.flatMap((paragraph) => [paragraph, '']));
       if (section.list) lines.push(...section.list.map((item) => `- ${item}`), '');
     }
+    if (guide.claims?.length) {
+      lines.push('### 각 서비스가 밝힌 내용', '', ...guide.claims.map((claim) => `- ${claim.subject}: ${claim.text} [${claim.source + 1}]`), '');
+    }
+    if (guide.terms?.length) lines.push('### 용어', '', ...guide.terms.map((term) => `- **${term.term}**: ${term.definition}`), '');
+    if (guide.rows?.length) lines.push('### 숫자로 보기', '', ...guide.rows.map((row) => `- ${row.label}: ${row.value} [${row.source + 1}]`), '');
     lines.push('### 자주 묻는 질문', '', ...guideFaqs(guide).map((faq) => `- **${faq.q}** ${faq.a}`), '');
+    if (guide.sources?.length) {
+      lines.push('### 출처', '', ...guide.sources.map((source, index) => `${index + 1}. ${source.label} — ${source.url} (${source.checked} 확인)`), '');
+    }
   }
   return lines.join('\n');
 }

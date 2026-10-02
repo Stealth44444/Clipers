@@ -18,6 +18,16 @@ describe('guidesFullText', () => {
     }
   });
 
+  it('carries glossary terms, named claims, data rows and sources', () => {
+    const text = guidesFullText(GUIDES, url);
+    for (const guide of GUIDES) {
+      for (const term of guide.terms ?? []) expect(text).toContain(`**${term.term}**: ${term.definition}`);
+      for (const claim of guide.claims ?? []) expect(text).toContain(claim.text);
+      for (const row of guide.rows ?? []) expect(text).toContain(row.value);
+      for (const source of guide.sources ?? []) expect(text).toContain(source.url);
+    }
+  });
+
   it('keeps per-view rates out of the advertiser guides', () => {
     for (const guide of GUIDES.filter((item) => item.audience === 'advertiser')) {
       const text = guidesFullText([guide], url);

@@ -2,10 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { DEFAULT_PRICING } from '@clipers/db';
 import { formatKRW } from '@clipers/ui';
 import { INQUIRY_INDUSTRIES } from '../inquiry';
-import { GUIDES, GUIDE_GROUPS, guideBySlug, guideFaqs } from './index';
+import { GUIDES, GUIDE_GROUPS, guideBySlug, guideFaqs, guideText } from './index';
 
-const text = (guide: (typeof GUIDES)[number]) =>
-  [guide.title, guide.description, ...guide.answer, ...guide.sections.flatMap((s) => [s.heading, ...s.paragraphs, ...(s.list ?? [])])].join('\n');
+const text = guideText;
 const creators = GUIDES.filter((guide) => guide.audience === 'creator');
 const advertisers = GUIDES.filter((guide) => guide.audience === 'advertiser');
 const count = (group: string) => GUIDES.filter((guide) => guide.group === group).length;

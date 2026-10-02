@@ -55,6 +55,19 @@ export function guideBySlug(slug: string): Guide | undefined {
   return GUIDES.find((guide) => guide.slug === slug);
 }
 
+/** Every word a guide shows a reader (body, glossary terms, named claims, data rows), for copy checks. */
+export function guideText(guide: Guide): string {
+  return [
+    guide.title,
+    guide.description,
+    ...guide.answer,
+    ...guide.sections.flatMap((section) => [section.heading, ...section.paragraphs, ...(section.list ?? [])]),
+    ...(guide.terms ?? []).flatMap((item) => [item.term, item.definition]),
+    ...(guide.claims ?? []).flatMap((claim) => [claim.subject, claim.text]),
+    ...(guide.rows ?? []).flatMap((row) => [row.label, row.value]),
+  ].join('\n');
+}
+
 /** A guide's FAQ entries, from its audience's FAQ. */
 export function guideFaqs(guide: Guide): { id: string; q: string; a: string }[] {
   return guide.faqIds.map((id) => (guide.audience === 'advertiser' ? advertiserFaqById(id) : faqById(id)));
