@@ -52,7 +52,7 @@ export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
       },
       {
         heading: '미리 확인해요',
-        paragraphs: ['캠페인을 만들 때 예산을 넣으면 그 예산으로 받을 수 있는 최대 조회수를 바로 보여 드려요. 다 못 쓴 예산은 캠페인을 마친 뒤 상담 문의로 요청하면 환불받거나 다음 캠페인으로 옮길 수 있어요.'],
+        paragraphs: ['캠페인을 만들 때 예산을 넣으면 그 예산으로 받을 수 있는 최대 조회수를 바로 보여 드려요. 다 못 쓴 예산은 캠페인을 중단하면 잔액이 되고, 다음 캠페인에 쓰거나 반환받을 수 있어요.'],
       },
     ],
     faqIds: ['cost', 'expected-views', 'leftover'],
