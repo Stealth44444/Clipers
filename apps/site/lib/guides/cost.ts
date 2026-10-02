@@ -50,6 +50,7 @@ export const COST_GUIDES: Guide[] = [
       {
         heading: '광고 표시 비용은 따로 없어요',
         paragraphs: ['어느 방식이든 대가를 받은 게시물에는 광고 표시가 필요해요. 표시 문구는 캠페인 요구사항에 적으면 돼요.'],
+        links: [{ label: '숏폼 광고 표시는 어떻게 해야 하나요?', href: '/guides/ad-disclosure-rules' }],
       },
     ],
     faqIds: ['min-budget', 'cost', 'leftover', 'budget-exhausted'],

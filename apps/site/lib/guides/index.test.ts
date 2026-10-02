@@ -18,7 +18,7 @@ const ADVERTISER_COUNTS: Record<string, number> = {
   cost: 2,
   industry: 11,
   'advertiser-problem': 5,
-  execution: 0,
+  execution: 3,
   glossary: 0,
   data: 0,
 };
