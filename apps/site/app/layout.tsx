@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     NAVER_SITE_VERIFICATION: process.env.NAVER_SITE_VERIFICATION,
     BING_SITE_VERIFICATION: process.env.BING_SITE_VERIFICATION,
   }),
+  alternates: { types: { 'application/rss+xml': [{ url: '/rss.xml', title: 'Clipers 가이드' }] } },
 };
 
 const ORGANIZATION = {

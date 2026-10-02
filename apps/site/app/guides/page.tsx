@@ -6,7 +6,7 @@ import { GUIDES, GUIDE_AUDIENCES, GUIDE_GROUPS } from '@/lib/guides';
 export const metadata: Metadata = {
   title: 'Clipers 가이드 — 숏폼으로 조회수만큼 받는 법',
   description: '크리에이터의 숏폼 부업과 수익, 광고주의 숏폼 바이럴과 클리핑 마케팅까지 자주 묻는 질문에 답했어요.',
-  alternates: { canonical: '/guides' },
+  alternates: { canonical: '/guides', types: { 'application/rss+xml': [{ url: '/rss.xml', title: 'Clipers 가이드' }] } },
 };
 
 export default function GuidesPage() {
