@@ -66,6 +66,7 @@ export default function CampaignDetail({ campaign }: { campaign: Detail }) {
             {formatCompactKRW(campaign.payoutRemaining)} <span className="cl-meta">남음 · 총 {formatCompactKRW(campaign.payoutLimit)}</span>
           </p>
           <ProgressBar label="지급 한도 사용률" value={campaign.usageRatio} />
+          <p className="cl-meta">한 명이 받을 수 있는 금액에는 상한이 있어요.</p>
         </div>
         <div className="cl-panel">
           <p className="cl-panel__label">검수</p>
@@ -73,6 +74,9 @@ export default function CampaignDetail({ campaign }: { campaign: Detail }) {
             {campaign.reviewSlaHours}시간 <span className="cl-meta">이내</span>
           </p>
           <p className="cl-meta">제출한 영상은 운영팀이 이 시간 안에 검수해요.</p>
+          <p className="cl-meta">
+            {campaign.dailyClipLimit === null ? '하루 제출 수에는 제한이 없어요.' : `1명당 하루 ${campaign.dailyClipLimit}개까지 제출할 수 있어요.`}
+          </p>
         </div>
       </section>
 

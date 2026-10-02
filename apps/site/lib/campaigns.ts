@@ -149,6 +149,8 @@ export type CampaignDetail = MarketCampaign & {
   requirements: string | null;
   referenceLinks: string[];
   reviewSlaHours: number;
+  /** Clips one creator may submit per day (null: no limit). */
+  dailyClipLimit: number | null;
   /** Per-platform creator payout cap for a single clip. */
   clipCaps: { platform: string; maxPayout: number }[];
   leaderboard: RankedCreatorEarning[];
@@ -161,7 +163,7 @@ export async function loadCampaignDetail(id: string): Promise<CampaignDetail | n
   const supabase = getSupabaseServerClient();
   const { data } = await supabase
     .from('campaigns')
-    .select(`${CAMPAIGN_FIELDS}, description, content_requirements, reference_links, review_sla_hours`)
+    .select(`${CAMPAIGN_FIELDS}, description, content_requirements, reference_links, review_sla_hours, daily_clip_limit`)
     .eq('id', id)
     .eq('track', 'self_serve')
     .eq('status', 'live')
@@ -172,6 +174,7 @@ export async function loadCampaignDetail(id: string): Promise<CampaignDetail | n
     content_requirements: string | null;
     reference_links: string[];
     review_sla_hours: number;
+    daily_clip_limit: number | null;
   };
 
   const [limits, rates, participants, settlements, approvedClips] = await Promise.all([
@@ -219,6 +222,7 @@ export async function loadCampaignDetail(id: string): Promise<CampaignDetail | n
     requirements: row.content_requirements,
     referenceLinks: row.reference_links ?? [],
     reviewSlaHours: row.review_sla_hours,
+    dailyClipLimit: row.daily_clip_limit,
     clipCaps: (rates.data ?? []).map((rate) => ({ platform: rate.platform, maxPayout: Number(rate.max_payout) })),
     leaderboard: ranked.slice(0, 3),
     averageEarning: ranked.length > 0 ? Math.round(creatorPaid / ranked.length) : 0,
