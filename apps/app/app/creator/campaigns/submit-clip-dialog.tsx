@@ -7,11 +7,15 @@ import { platformLabel } from '@clipers/db';
 import { Button, Dialog, Field, Input, Select } from '@clipers/ui';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
-export default function SubmitClipDialog({ campaignId, campaignTitle, platforms, creatorId }: {
+export default function SubmitClipDialog({ campaignId, campaignTitle, platforms, creatorId, dailyLimit, leftToday }: {
   campaignId: string;
   campaignTitle: string;
   platforms: string[];
   creatorId: string;
+  /** Clips one creator may submit here per day (null: no limit); the database enforces it too. */
+  dailyLimit: number | null;
+  /** Submissions left today (null: no limit). */
+  leftToday: number | null;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -39,7 +43,9 @@ export default function SubmitClipDialog({ campaignId, campaignTitle, platforms,
       setError(
         insertError.code === '23505'
           ? '이미 제출된 영상이에요. 같은 영상은 한 번만 제출할 수 있어요.'
-          : '제출하지 못했어요. 링크와 플랫폼을 확인한 뒤 다시 시도해 주세요.'
+          : insertError.message.includes('daily_clip_limit_reached')
+            ? `오늘은 이 캠페인에 영상을 ${dailyLimit ?? ''}개까지 올릴 수 있어요. 내일 다시 올려 주세요.`
+            : '제출하지 못했어요. 링크와 플랫폼을 확인한 뒤 다시 시도해 주세요.'
       );
       return;
     }
@@ -59,7 +65,7 @@ export default function SubmitClipDialog({ campaignId, campaignTitle, platforms,
         footer={
           <>
             <Button onClick={close} variant="secondary">취소</Button>
-            <Button disabled={submitting || !platform || !url.trim()} form={formId} type="submit" variant="primary">
+            <Button disabled={submitting || !platform || !url.trim() || leftToday === 0} form={formId} type="submit" variant="primary">
               {submitting ? '제출 중…' : '제출하기'}
             </Button>
           </>
@@ -69,6 +75,13 @@ export default function SubmitClipDialog({ campaignId, campaignTitle, platforms,
         title={`${campaignTitle} · 클립 제출`}
       >
         <form className="cl-auth__form" id={formId} onSubmit={submit}>
+          {leftToday !== null && (
+            <p className={leftToday === 0 ? 'cl-alert cl-tone-amber' : 'cl-meta'}>
+              {leftToday === 0
+                ? `오늘은 이 캠페인에 영상을 ${dailyLimit}개까지 올릴 수 있어요. 내일 다시 올려 주세요.`
+                : `오늘 남은 제출 ${leftToday}개 · 하루 최대 ${dailyLimit}개`}
+            </p>
+          )}
           <Field htmlFor={`${formId}-platform`} label="플랫폼">
             <Select id={`${formId}-platform`} onChange={(event) => setPlatform(event.target.value)} required value={platform}>
               <option value="">플랫폼 선택</option>

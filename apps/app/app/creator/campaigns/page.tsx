@@ -1,5 +1,5 @@
 import { Megaphone } from 'lucide-react';
-import { platformLabels } from '@clipers/db';
+import { kstDayStart, platformLabels, submissionsLeftToday } from '@clipers/db';
 import {
   Badge,
   ButtonLink,
@@ -35,7 +35,12 @@ type Application = {
   id: string;
   campaign_id: string;
   status: string;
-  campaign: Pick<Campaign, 'title' | 'category' | 'allowed_platforms'> | null;
+  campaign: (Pick<Campaign, 'title' | 'category' | 'allowed_platforms'> & { daily_clip_limit: number | null }) | null;
+};
+
+const CAP_NOTE: Record<string, string> = {
+  near: '이 캠페인에서 받을 수 있는 금액에 거의 다다랐어요',
+  reached: '이 캠페인에서 받을 수 있는 금액을 모두 받았어요. 다른 캠페인에도 참여해 보세요',
 };
 
 export default async function CreatorCampaignsPage() {
@@ -49,7 +54,7 @@ export default async function CreatorCampaignsPage() {
       .order('created_at', { ascending: false }),
     supabase
       .from('campaign_applications')
-      .select('id, campaign_id, status, campaign:campaigns!campaign_applications_campaign_id_fkey(title, category, allowed_platforms)')
+      .select('id, campaign_id, status, campaign:campaigns!campaign_applications_campaign_id_fkey(title, category, allowed_platforms, daily_clip_limit)')
       .eq('creator_id', user.id)
       .order('created_at', { ascending: false }),
   ]);
@@ -58,6 +63,23 @@ export default async function CreatorCampaignsPage() {
   const myApplications = (applications.data ?? []) as unknown as Application[];
   const appliedIds = new Set(myApplications.map((application) => application.campaign_id));
   const available = campaigns.filter((campaign) => !appliedIds.has(campaign.id));
+
+  // For approved campaigns: today's submissions (for the daily limit) and where the creator stands against their
+  // per-campaign cap. The cap state is only 'ok' / 'near' / 'reached' — the amount is never sent to creators.
+  const approvedIds = myApplications.filter((application) => application.status === 'approved').map((application) => application.campaign_id);
+  const [todayClips, capStates] = approvedIds.length
+    ? await Promise.all([
+        supabase
+          .from('clips')
+          .select('campaign_id, status, submitted_at')
+          .eq('creator_id', user.id)
+          .in('campaign_id', approvedIds)
+          .gte('submitted_at', kstDayStart().toISOString()),
+        supabase.rpc('creator_campaign_cap_states', { p_campaign_ids: approvedIds }),
+      ])
+    : [{ data: [] }, { data: [] }];
+  const clipsToday = (todayClips.data ?? []) as { campaign_id: string; status: string; submitted_at: string }[];
+  const capState = new Map(((capStates.data ?? []) as { campaign_id: string; state: string }[]).map((row) => [row.campaign_id, row.state]));
 
   const { data: rateRows } = available.length
     ? await supabase.from('campaign_platform_rates').select('campaign_id, cpm_rate').in('campaign_id', available.map((campaign) => campaign.id))
@@ -80,7 +102,11 @@ export default async function CreatorCampaignsPage() {
                 const campaign = application.campaign;
                 return (
                   <ListRow
-                    description={campaign ? `${campaign.category} · ${platformLabels(campaign.allowed_platforms)}` : undefined}
+                    description={
+                      [campaign ? `${campaign.category} · ${platformLabels(campaign.allowed_platforms)}` : null, CAP_NOTE[capState.get(application.campaign_id) ?? '']]
+                        .filter(Boolean)
+                        .join(' · ') || undefined
+                    }
                     icon={<Megaphone size={16} />}
                     key={application.id}
                     title={campaign?.title ?? '캠페인'}
@@ -90,6 +116,11 @@ export default async function CreatorCampaignsPage() {
                           campaignId={application.campaign_id}
                           campaignTitle={campaign.title}
                           creatorId={user.id}
+                          dailyLimit={campaign.daily_clip_limit}
+                          leftToday={submissionsLeftToday(
+                            campaign.daily_clip_limit,
+                            clipsToday.filter((clip) => clip.campaign_id === application.campaign_id)
+                          )}
                           platforms={campaign.allowed_platforms}
                         />
                       ) : (
