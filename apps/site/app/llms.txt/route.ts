@@ -84,6 +84,8 @@ export async function GET() {
     `- [캠페인 둘러보기](${siteUrl('/discover')}): 지금 참여할 수 있는 캠페인 목록`,
     `- [가이드](${siteUrl('/guides')}): 수익창출 전 수익, 클리핑 부업, 상황별·고민별 안내, 플랫폼별 정산`,
     `- [브랜드 안내](${siteUrl('/brands')}): 캠페인 개설과 예산 기준`,
+    `- [회사 소개](${siteUrl('/about')}): Clipers가 하는 일, 운영 방식, 핵심 사실, 운영 회사 정보`,
+    `- [가이드 전문](${siteUrl('/llms-full.txt')}): 모든 가이드의 본문을 한 파일로`,
     '',
     '## 진행 중인 캠페인',
     ...(campaigns.length > 0
