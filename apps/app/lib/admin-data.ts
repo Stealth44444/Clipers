@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import { fetchAllRows, signupsByHeardFrom, signupsByUtmSource, type SignupAttributionRow } from '@clipers/db';
 import { getSession } from './session';
 
 export type AdminQueueCounts = {
@@ -11,6 +12,18 @@ export type AdminQueueCounts = {
   /** Payout requests waiting for a bank transfer. */
   payouts: number;
 };
+
+export const SIGNUP_SOURCE_DAYS = 30;
+
+/** Where recent sign-ups came from (signup_attributions, admins only): per self-reported channel and per utm_source. */
+export const getSignupSources = cache(async () => {
+  const { supabase } = await getSession();
+  const since = new Date(Date.now() - SIGNUP_SOURCE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  const rows = (await fetchAllRows((from, to) =>
+    supabase.from('signup_attributions').select('requested_role, utm_source, heard_from').gte('created_at', since).order('created_at').range(from, to)
+  )) as SignupAttributionRow[];
+  return { total: rows.length, heardFrom: signupsByHeardFrom(rows), utmSource: signupsByUtmSource(rows) };
+});
 
 /** Open work per operator queue, deduplicated per request (sidebar badges and the overview share it). */
 export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => {

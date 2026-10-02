@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { campaignEconomics, campaignPricing, fetchAllRows, fetchAllRowsIn, getViewSpikeFlags } from '@clipers/db';
+import { campaignEconomics, campaignPricing, fetchAllRows, fetchAllRowsIn, getViewSpikeFlags, type SignupSourceCount } from '@clipers/db';
 import { Badge, DataTable, Page, PageHeader, ProgressBar, SectionHeader, Stack, StatCard, StatGrid, formatKRW } from '@clipers/ui';
-import { getAdminQueueCounts } from '@/lib/admin-data';
+import { SIGNUP_SOURCE_DAYS, getAdminQueueCounts, getSignupSources } from '@/lib/admin-data';
 import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
 import { loadSnapshotsByClip } from '@/lib/snapshots';
@@ -17,7 +17,7 @@ type FlaggedClip = { id: string; url: string; campaign: { title: string } | null
 
 export default async function AdminOverviewPage() {
   const { supabase } = await getSession();
-  const counts = await getAdminQueueCounts();
+  const [counts, signups] = await Promise.all([getAdminQueueCounts(), getSignupSources()]);
   const [campaignResult, approvedClipResult] = await Promise.all([
     supabase
       .from('campaigns')
@@ -131,6 +131,33 @@ export default async function AdminOverviewPage() {
             rowKey={(row) => row.id}
             rows={rows}
           />
+        </section>
+
+        <section>
+          <SectionHeader
+            description={`최근 ${SIGNUP_SOURCE_DAYS}일 가입 ${signups.total}명. 왼쪽은 가입 때 답한 경로, 오른쪽은 가입 링크의 utm_source예요.`}
+            title="가입 경로"
+          />
+          <div className="cl-two-up">
+            {[
+              { label: '답한 경로', rows: signups.heardFrom, empty: '아직 가입이 없어요.' },
+              { label: 'utm_source', rows: signups.utmSource, empty: '아직 가입이 없어요.' },
+            ].map((table) => (
+              <DataTable<SignupSourceCount>
+                columns={[
+                  { key: 'label', header: table.label, render: (row) => row.label },
+                  { key: 'brand', header: '브랜드', align: 'right', render: (row) => row.brand },
+                  { key: 'creator', header: '크리에이터', align: 'right', render: (row) => row.creator },
+                  { key: 'total', header: '합계', align: 'right', render: (row) => <span className="cl-emphasis">{row.total}</span> },
+                ]}
+                empty={table.empty}
+                key={table.label}
+                label={`가입 경로 — ${table.label}`}
+                rowKey={(row) => row.key}
+                rows={table.rows}
+              />
+            ))}
+          </div>
         </section>
 
         {flags.length > 0 && (

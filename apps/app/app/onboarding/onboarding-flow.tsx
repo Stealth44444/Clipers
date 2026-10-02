@@ -5,23 +5,25 @@ import { useRouter } from 'next/navigation';
 import { BadgeCheck, ChevronLeft, Clapperboard, FileText, Megaphone, Scissors, Shield, Wallet } from 'lucide-react';
 import {
   EXPERIENCE_OPTIONS,
+  HEARD_FROM_OPTIONS,
   MAX_INTERESTS,
   ON_CAMERA_OPTIONS,
   canContinueOnboarding,
   emptyOnboardingAnswers,
   onboardingSteps,
   type OnboardingAnswers,
+  type OnboardingRole,
 } from '@clipers/db';
-import { Badge, Button, List, ListRow, OptionCard, ProgressBar, Switch } from '@clipers/ui';
+import { Button, List, ListRow, OptionCard, ProgressBar, Switch } from '@clipers/ui';
 import InterestPicker from '@/components/interest-picker';
 import { EXPERIENCE_ICONS, ON_CAMERA_ICONS } from '@/components/profile-option-icons';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 const ICON = { size: 18 };
 
-export default function OnboardingFlow() {
+export default function OnboardingFlow({ initialRole = 'creator' }: { initialRole?: OnboardingRole }) {
   const router = useRouter();
-  const [answers, setAnswers] = useState<OnboardingAnswers>(emptyOnboardingAnswers);
+  const [answers, setAnswers] = useState<OnboardingAnswers>(() => ({ ...emptyOnboardingAnswers(), role: initialRole }));
   const [stepIndex, setStepIndex] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -41,6 +43,7 @@ export default function OnboardingFlow() {
       p_interests: isCreator ? answers.interests : [],
       p_on_camera: isCreator ? answers.onCamera : null,
       p_experience_level: isCreator ? answers.experienceLevel : null,
+      p_heard_from: answers.heardFrom,
     });
     if (rpcError) {
       setError('저장하지 못했습니다. 잠시 후 다시 시도해 주세요.');
@@ -74,7 +77,6 @@ export default function OnboardingFlow() {
           <Step description="선택한 역할에 맞춰 워크스페이스를 준비해 드려요." title="Clipers에서 무엇을 하고 싶으세요?">
             <div aria-label="역할" className="cl-option-list" role="radiogroup">
               <OptionCard
-                badge={<Badge tone="brand">추천</Badge>}
                 description="브랜드 캠페인에 숏폼을 올리고, 검증된 조회수만큼 정산받아요."
                 icon={<Wallet {...ICON} />}
                 onSelect={() => update({ role: 'creator' })}
@@ -157,6 +159,21 @@ export default function OnboardingFlow() {
           </Step>
         )}
 
+        {step === 'source' && (
+          <Step description="건너뛰어도 괜찮아요. Clipers를 더 잘 알리는 데 참고해요." title="Clipers를 어떻게 알게 되셨어요?">
+            <div aria-label="알게 된 경로" className="cl-option-list" role="radiogroup">
+              {HEARD_FROM_OPTIONS.map((option) => (
+                <OptionCard
+                  key={option.id}
+                  onSelect={() => update({ heardFrom: answers.heardFrom === option.id ? null : option.id })}
+                  selected={answers.heardFrom === option.id}
+                  title={option.label}
+                />
+              ))}
+            </div>
+          </Step>
+        )}
+
         {step === 'terms' && (
           <Step description="동의하면 바로 시작할 수 있어요." title="약관에 동의해 주세요">
             <List>
@@ -192,7 +209,7 @@ export default function OnboardingFlow() {
           size="lg"
           variant="primary"
         >
-          {isLastStep ? (submitting ? '저장 중…' : '시작하기') : '계속'}
+          {isLastStep ? (submitting ? '저장 중…' : '시작하기') : step === 'source' && answers.heardFrom === null ? '건너뛰기' : '계속'}
         </Button>
       </footer>
     </div>
