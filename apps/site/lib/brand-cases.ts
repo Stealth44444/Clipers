@@ -107,16 +107,17 @@ export const BRAND_CASES: BrandCase[] = [
   {
     id: 'tourism',
     label: '지역·관광',
-    lead: '축제와 관광지 홍보 영상을 크리에이터들이 숏폼으로 편집해 올리거나, 직접 다녀온 영상을 올려요. 클리핑과 UGC 중 맞는 쪽으로 열 수 있어요.',
+    lead: '여행 브이로그와 관광지 영상을 크리에이터들이 숏폼으로 편집해 올리거나, 직접 다녀온 영상을 올려요. 클리핑과 UGC 중 맞는 쪽으로 열 수 있어요.',
     kind: '클리핑 캠페인',
-    title: '청솔군 패러글라이딩 축제 영상 클리핑',
-    brand: '청솔군 문화관광과',
+    // The sky clips are an overseas activity YouTuber's skydive, cut from his travel vlog.
+    title: '여행 브이로그 스카이다이빙 편 클리핑',
+    brand: '레오의 여행',
     counts: { all: 58, pending: 2, approved: 56 },
     clips: [
-      { creator: '하루', platform: 'instagram_reels', views: 118_000, clip: 'sky', caption: '청솔군 패러글라이딩', look: 'subtitle' },
-      { creator: '숏츠랩', platform: 'youtube_shorts', views: 64_000, clip: 'sky-close', caption: '하늘에서 본 청솔', look: 'meme' },
-      { creator: '명장면', platform: 'tiktok', views: 39_000, clip: 'sky-slow', caption: '청솔군 축제 · 10월', look: 'letterbox' },
-      { creator: '클립데일리', platform: 'naver_clip', views: 21_000, clip: 'sky-late', caption: '#청솔군 #광고', look: 'tag', pending: true },
+      { creator: '하루', platform: 'instagram_reels', views: 118_000, clip: 'sky', caption: '인생 첫 스카이다이빙', look: 'subtitle' },
+      { creator: '숏츠랩', platform: 'youtube_shorts', views: 64_000, clip: 'sky-close', caption: '4,000m에서 뛰어내림', look: 'meme' },
+      { creator: '명장면', platform: 'tiktok', views: 39_000, clip: 'sky-slow', caption: '여행 브이로그 · 스카이다이빙 편', look: 'letterbox' },
+      { creator: '클립데일리', platform: 'naver_clip', views: 21_000, clip: 'sky-late', caption: '#스카이다이빙 #광고', look: 'tag', pending: true },
     ],
   },
   {
