@@ -527,6 +527,7 @@
 .cl-auth__secret .cl-icon-button { position: absolute; top: 50%; right: 4px; translate: 0 -50%; }
 .cl-auth__forgot { margin-top: calc(-1 * var(--space-2)); font-size: var(--font-size-2); text-align: right; }
 .cl-auth__note { color: var(--color-text-muted); font-size: var(--font-size-2); line-height: 1.6; }
+.cl-auth__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .cl-auth__subtitle strong { color: var(--color-text); font-weight: 600; }
 .cl-two-up { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
 @media (max-width: 860px) { .cl-two-up { grid-template-columns: minmax(0, 1fr); } }
@@ -1432,6 +1433,10 @@
 
 /* ---------- contact (advertiser inquiries) ---------- */
 .cl-contact { width: min(640px, 100% - 40px); margin: 0 auto; padding: 56px 0 96px; }
+.cl-status-page { width: min(560px, 100% - 40px); margin: 0 auto; padding: 96px 0 128px; }
+.cl-status-page h1 { font-size: clamp(28px, 4.2vw, 38px); font-weight: 600; letter-spacing: -0.03em; }
+.cl-status-page p { margin-top: var(--space-3); color: var(--color-text-muted); font-size: 17px; line-height: 1.7; }
+.cl-status-page__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-6); }
 .cl-contact h1 { font-size: clamp(30px, 4.6vw, 42px); font-weight: 600; letter-spacing: -0.03em; }
 .cl-contact__lead { margin-top: var(--space-3); color: var(--color-text-muted); font-size: 17px; line-height: 1.7; }
 .cl-contact__form { position: relative; display: grid; gap: var(--space-4); margin-top: var(--space-7); }
