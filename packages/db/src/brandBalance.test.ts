@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   REFUND_WINDOW_MONTHS,
@@ -120,5 +122,22 @@ describe('businessDaysSince', () => {
 describe('REFUND_WINDOW_MONTHS', () => {
   it('is one year', () => {
     expect(REFUND_WINDOW_MONTHS).toBe(12);
+  });
+});
+
+const MIGRATIONS_DIR = fileURLToPath(new URL('../../../supabase/migrations/', import.meta.url));
+const migrations = () =>
+  readdirSync(MIGRATIONS_DIR)
+    .filter((file) => file.endsWith('.sql'))
+    .sort()
+    .map((file) => readFileSync(MIGRATIONS_DIR + file, 'utf8'))
+    .join('\n');
+
+describe('migration mirrors brandBalance.ts', () => {
+  it('uses the same refund window, deposit math and refundable rule', () => {
+    const sql = migrations();
+    expect(sql).toContain(`now() + interval '${REFUND_WINDOW_MONTHS} months'`);
+    expect(sql).toContain('select (greatest(0, p_service) + floor(greatest(0, p_service) / 10))::integer');
+    expect(sql).toContain('greatest(0, balance - greatest(0, expired - used))');
   });
 });
