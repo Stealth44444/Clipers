@@ -18,6 +18,8 @@ function createInput(overrides: Partial<WeeklySettlementInput> = {}): WeeklySett
     cpmRate: 100,
     perClipCap: 500,
     campaignBudget: 1000,
+    creatorCap: 100_000,
+    previouslySettledCreatorAmount: 0,
     // A clip that has been paid before, so only this week's growth is due.
     previouslySettledClipAmount: 100,
     previouslySettledCampaignAmount: 0,
@@ -68,6 +70,32 @@ describe('settlementPeriodsToRun', () => {
 });
 
 describe('calculateWeeklySettlementDrafts', () => {
+  it('stops a creator at their campaign cap across clips, leaving other creators alone', () => {
+    // Each clip earns 200 this week. creator-1 has 450 - 100 = 350 left: clip a takes 200, clip b the last 150.
+    const drafts = calculateWeeklySettlementDrafts(
+      [
+        createInput({ clipId: 'a', creatorCap: 450, previouslySettledCreatorAmount: 100 }),
+        createInput({ clipId: 'b', creatorCap: 450, previouslySettledCreatorAmount: 100 }),
+        createInput({ clipId: 'c', creatorId: 'creator-2', creatorCap: 450 }),
+      ],
+      PERIOD
+    );
+    expect(drafts.map((draft) => [draft.clipId, draft.amount])).toEqual([
+      ['a', 200],
+      ['b', 150],
+      ['c', 200],
+    ]);
+  });
+
+  it('pays nothing more once a creator has reached the cap', () => {
+    expect(calculateWeeklySettlementDrafts([createInput({ creatorCap: 500, previouslySettledCreatorAmount: 500 })], PERIOD)).toEqual([]);
+  });
+
+  it('pays only what is left under the creator cap', () => {
+    const [draft] = calculateWeeklySettlementDrafts([createInput({ creatorCap: 160, previouslySettledCreatorAmount: 100 })], PERIOD);
+    expect(draft.amount).toBe(60);
+  });
+
   it('pays only verified view growth captured during the period', () => {
     expect(calculateWeeklySettlementDrafts([createInput()], PERIOD)).toEqual([
       {

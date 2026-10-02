@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { fetchAllRows, fetchAllRowsIn } from '../paging';
-import { campaignPricing, creatorPayoutCap } from '../pricing';
+import { campaignPricing, creatorCampaignCap, creatorPayoutCap } from '../pricing';
 import { getCampaignsToClose } from './campaignClosure';
 import { err, ok, type ServiceResult } from './errors';
 import { findPlatformRate, type PlatformRate } from './platformRate';
@@ -32,7 +32,7 @@ type FinanceRow = { campaign_id: string; total_budget: number | string; brand_cp
 
 type RateRow = { campaign_id: string; platform: string; cpm_rate: number | string; max_payout: number | string };
 type SnapshotRow = { clip_id: string; view_count: number | string; captured_at: string };
-type SettledRow = { clip_id: string; campaign_id: string; amount: number | string; period: string };
+type SettledRow = { clip_id: string; campaign_id: string; creator_id: string; amount: number | string; period: string };
 
 async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promise<{ settlements: number; closedCampaigns: number }> {
   const clips = (await fetchAllRows((from, to) =>
@@ -65,7 +65,7 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
         .range(from, to)
     ) as Promise<SnapshotRow[]>,
     fetchAllRowsIn(clipIds, (ids) => (from, to) =>
-      supabase.from('settlements').select('clip_id, campaign_id, amount, period').in('clip_id', ids).order('id').range(from, to)
+      supabase.from('settlements').select('clip_id, campaign_id, creator_id, amount, period').in('clip_id', ids).order('id').range(from, to)
     ) as Promise<SettledRow[]>,
   ]);
 
@@ -105,6 +105,11 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
         campaignBudget: creatorPayoutCap(Number(finance.total_budget), campaignPricing(finance)),
         previouslySettledClipAmount: sum(earlier.filter((row) => row.clip_id === clip.id)),
         previouslySettledCampaignAmount: sum(spentBefore.filter((row) => row.campaign_id === clip.campaign_id)),
+        // One creator can take at most a share of the brand's budget from a campaign.
+        creatorCap: creatorCampaignCap(Number(finance.total_budget)),
+        previouslySettledCreatorAmount: sum(
+          spentBefore.filter((row) => row.campaign_id === clip.campaign_id && row.creator_id === clip.creator_id)
+        ),
         snapshots: snapshotsByClip.get(clip.id) ?? [],
       },
     ];

@@ -15,6 +15,10 @@ export type WeeklySettlementInput = {
   campaignBudget: number;
   previouslySettledClipAmount: number;
   previouslySettledCampaignAmount: number;
+  /** Most this creator can be paid from this campaign (creatorCampaignCap of the brand budget). */
+  creatorCap: number;
+  /** What this creator has already been paid from this campaign: earlier weeks plus this week's existing rows. */
+  previouslySettledCreatorAmount: number;
   snapshots: SettlementSnapshot[];
 };
 
@@ -107,6 +111,8 @@ export function calculateWeeklySettlementDrafts(
       0,
       campaign.campaignBudget - campaign.previouslySettledCampaignAmount
     );
+    // Per creator in this campaign: what is left under their cap, shared by all of their clips this week.
+    const creatorRemaining = new Map<string, number>();
 
     for (const input of campaignInputs) {
       if (
@@ -153,9 +159,13 @@ export function calculateWeeklySettlementDrafts(
         0,
         input.perClipCap - input.previouslySettledClipAmount
       );
+      if (!creatorRemaining.has(input.creatorId)) {
+        creatorRemaining.set(input.creatorId, Math.max(0, input.creatorCap - input.previouslySettledCreatorAmount));
+      }
+      const creatorLeft = creatorRemaining.get(input.creatorId)!;
       const rawAmount = (verifiedViews / 1000) * input.cpmRate;
       const amount = Math.round(
-        Math.min(rawAmount, clipBudgetRemaining, budgetRemaining) * 100
+        Math.min(rawAmount, clipBudgetRemaining, budgetRemaining, creatorLeft) * 100
       ) / 100;
 
       if (amount <= 0) continue;
@@ -169,6 +179,7 @@ export function calculateWeeklySettlementDrafts(
         amount,
       });
       budgetRemaining = Math.max(0, budgetRemaining - amount);
+      creatorRemaining.set(input.creatorId, Math.max(0, creatorLeft - amount));
     }
   }
 
