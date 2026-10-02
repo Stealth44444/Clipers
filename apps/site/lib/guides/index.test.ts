@@ -15,7 +15,7 @@ const ADVERTISER_COUNTS: Record<string, number> = {
   pillar: 0,
   'advertiser-platform': 7,
   compare: 9,
-  cost: 0,
+  cost: 2,
   industry: 11,
   'advertiser-problem': 5,
   execution: 0,
