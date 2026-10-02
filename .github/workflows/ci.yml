@@ -14,9 +14,14 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Supabase realtime-js needs the native WebSocket that Node 22 has (Vercel and local use 22 too).
+          node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo run lint
       - run: pnpm turbo run test
+      # The site prerenders campaign pages from Supabase, so the build needs the public URL and key.
       - run: pnpm turbo run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
