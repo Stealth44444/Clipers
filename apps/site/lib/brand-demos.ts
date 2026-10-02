@@ -37,14 +37,3 @@ export function budgetFrames(): Frame<number>[] {
     2000
   );
 }
-
-// ---------- verification ----------
-
-export function verifiedFrames(): Frame<number>[] {
-  return Array.from({ length: 40 }, (_, step) => ({ ms: 300, state: 48_200 + step * 37 }));
-}
-
-// ---------- deposit (brand campaign page) ----------
-
-/** The deposit card's lead, worded as the brand app words it before the brand reports the transfer. */
-export const DEPOSIT_LEAD = '입금을 마치고 아래 버튼을 누르면 운영팀이 확인한 뒤 캠페인을 공개하고, 세금계산서를 발행해요.';

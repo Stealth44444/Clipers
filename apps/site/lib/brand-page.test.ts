@@ -36,7 +36,7 @@ describe('brand page sources', () => {
 
   it('uses the new sections', () => {
     const page = readFileSync(path.join(root, 'app/brands/page.tsx'), 'utf8');
-    for (const name of ['HorizonHero', 'ViewsStory', 'ReachStory', 'CompareTable', 'UseCases', 'ControlsBento', 'VerifyFlow', 'StartCard', 'ADVERTISER_FAQ']) {
+    for (const name of ['HorizonHero', 'ViewsStory', 'ReachStory', 'CompareTable', 'UseCases', 'ControlsBento', 'VerifyFlow', 'ADVERTISER_FAQ']) {
       expect(page).toContain(name);
     }
   });

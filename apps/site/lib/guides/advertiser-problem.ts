@@ -132,7 +132,7 @@ export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
       },
       {
         heading: '플랫폼별로 확인해요',
-        paragraphs: ['유튜브는 조회수를 자동으로 가져오고, 다른 플랫폼은 크리에이터가 낸 화면 캡처를 운영팀이 대조해요.'],
+        paragraphs: ['유튜브는 조회수를 자동으로 가져오고, 다른 플랫폼은 운영팀이 영상에 표시된 조회수를 직접 확인해요.'],
       },
       {
         heading: '급증은 따로 봐요',

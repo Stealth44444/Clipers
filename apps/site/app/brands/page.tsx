@@ -5,7 +5,6 @@ import CompareTable from '@/components/brand/compare-table';
 import HorizonHero from '@/components/brand/horizon-hero';
 import ReachStory from '@/components/brand/reach-story';
 import ControlsBento from '@/components/brand/controls-bento';
-import StartCard, { CONTACT } from '@/components/brand/start-card';
 import UseCases from '@/components/brand/use-cases';
 import VerifyFlow from '@/components/brand/verify-flow';
 import ViewsStory from '@/components/brand/views-story';
@@ -15,8 +14,10 @@ import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
 // Brand landing. Design: docs/superpowers/specs/2026-10-01-brand-page-redesign-design.md, the reach section and the
 // merged bento in 2026-10-02-brand-reach-section-design.md.
 // Order follows what a buyer asks: will it waste money → can it go further → how is it different → does it fit us →
-// how much work, and can we control it → are the views real → how do we start. The brand rate is never shown, and no
+// how much work, and can we control it → are the views real → start (the closing section). The brand rate is never shown, and no
 // visual pairs a won amount with views (that pair would reveal it).
+
+const CONTACT = '/contact?from=/brands';
 
 export const metadata: Metadata = {
   title: '브랜드 · Clipers — 바이럴을 운에 맡기지 마세요',
@@ -34,7 +35,6 @@ export default function BrandsPage() {
       <UseCases />
       <ControlsBento />
       <VerifyFlow />
-      <StartCard />
 
       <LandingFaq items={ADVERTISER_FAQ} path="/brands" />
       <p className="cl-faq-more">
