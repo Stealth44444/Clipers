@@ -2,6 +2,7 @@ import { advertiserFaqById } from '../advertiser-faq';
 import { faqById } from '../creator-faq';
 import { ADVERTISER_PLATFORM_GUIDES } from './advertiser-platform';
 import { ADVERTISER_PROBLEM_GUIDES } from './advertiser-problem';
+import { COMPARE_GUIDES } from './compare';
 import { INDUSTRY_GUIDES } from './industry';
 import { PLATFORM_GUIDES } from './platform';
 import { PROBLEM_GUIDES } from './problem';
@@ -41,6 +42,7 @@ export const GUIDES: Guide[] = [
   ...INDUSTRY_GUIDES,
   ...ADVERTISER_PROBLEM_GUIDES,
   ...ADVERTISER_PLATFORM_GUIDES,
+  ...COMPARE_GUIDES,
 ];
 
 export function guideBySlug(slug: string): Guide | undefined {

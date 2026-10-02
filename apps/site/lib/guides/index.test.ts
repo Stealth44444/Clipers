@@ -14,7 +14,7 @@ const count = (group: string) => GUIDES.filter((guide) => guide.group === group)
 const ADVERTISER_COUNTS: Record<string, number> = {
   pillar: 0,
   'advertiser-platform': 7,
-  compare: 0,
+  compare: 9,
   cost: 0,
   industry: 11,
   'advertiser-problem': 5,
@@ -111,6 +111,15 @@ describe('guides', () => {
       if (guide.claims?.length) expect(typeof guide.legalReviewed, guide.slug).toBe('boolean');
       if (guide.group === 'glossary') expect(guide.terms?.length ?? 0).toBeGreaterThanOrEqual(10);
     }
+  });
+
+  it('compares by structure, never by judgment, and keeps named claims flagged for legal review', () => {
+    const judgments = ['저렴', '비싸', '느리', '더 낫', '최고', '최악', '압도'];
+    for (const guide of GUIDES.filter((item) => item.group === 'compare')) {
+      const body = [text(guide), ...(guide.claims ?? []).map((claim) => claim.text)].join('\n');
+      for (const word of judgments) expect(body, `${guide.slug}: ${word}`).not.toContain(word);
+    }
+    expect(GUIDES.filter((guide) => guide.claims?.length).length).toBe(ADVERTISER_COUNTS.compare > 0 ? 6 : 0);
   });
 
   it('links only to pages that exist', () => {
