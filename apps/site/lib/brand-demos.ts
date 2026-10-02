@@ -10,23 +10,6 @@ function hold<S>(frames: Frame<S>[], ms: number): Frame<S>[] {
   return [...frames.slice(0, -1), { ...last, ms }];
 }
 
-// ---------- solution cards: still scenes of the real app, no cursor and no typing ----------
-
-export const EDITOR_PLATFORMS = ['유튜브 쇼츠', '틱톡', '릴스', '네이버 클립'] as const;
-export const EDITOR_SELECTED_PLATFORMS = 3;
-
-export type ReceivedClip = { creator: string; platform: string; review: 'approved' | 'pending' };
-
-/** The brand campaign page's 받은 클립 table: one clip still waiting for review, the rest approved. */
-export const RECEIVED_CLIPS: ReceivedClip[] = [
-  { creator: '하루', platform: 'youtube_shorts', review: 'pending' },
-  { creator: '서아', platform: 'naver_clip', review: 'approved' },
-  { creator: '도윤', platform: 'tiktok', review: 'approved' },
-  { creator: '민지', platform: 'instagram_reels', review: 'approved' },
-  { creator: '지호', platform: 'youtube_shorts', review: 'approved' },
-  { creator: '유나', platform: 'kakao_shorts', review: 'approved' },
-];
-
 // ---------- controls bento ----------
 
 export const REQUIREMENTS_TEXT = '음원 후렴을 15초 이상 사용\n영상 설명에 #여름밤챌린지 포함';

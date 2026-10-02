@@ -12,10 +12,11 @@ import ViewsStory from '@/components/brand/views-story';
 import LandingChrome, { LandingFaq, signUpUrl } from '@/components/landing-chrome';
 import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
 
-// Brand landing. Design: docs/superpowers/specs/2026-10-01-brand-page-redesign-design.md.
-// Order follows what a buyer asks: will it waste money → how is it different → how much work → does it fit us →
-// can we control it → are the views real → how do we start. The brand rate is never shown, and no visual pairs a
-// won amount with views (that pair would reveal it).
+// Brand landing. Design: docs/superpowers/specs/2026-10-01-brand-page-redesign-design.md, the reach section and the
+// merged bento in 2026-10-02-brand-reach-section-design.md.
+// Order follows what a buyer asks: will it waste money → can it go further → how is it different → does it fit us →
+// how much work, and can we control it → are the views real → how do we start. The brand rate is never shown, and no
+// visual pairs a won amount with views (that pair would reveal it).
 
 export const metadata: Metadata = {
   title: '브랜드 · Clipers — 조회수가 난 만큼만 예산을 쓰는 숏폼 캠페인',
