@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { campaignEconomics, campaignPricing, categoryLabel, creatorPayoutToClipCap, depositAmount, fetchAllRows, platformLabels } from '@clipers/db';
+import { campaignEconomics, campaignPricing, categoryLabel, creatorPayoutToClipCap, depositDue, fetchAllRows, platformLabels } from '@clipers/db';
 import { Badge, Card, Page, PageHeader, Stack, SummaryList, formatKRW } from '@clipers/ui';
 import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
@@ -8,7 +8,7 @@ import { ConfirmDepositAction, PricingForm } from '../../review-actions';
 
 export default async function AdminCampaignPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { supabase, user } = await getSession();
+  const { supabase } = await getSession();
   const { data: campaign } = await supabase
     .from('campaigns')
     .select('id, title, status, category, content_type, allowed_platforms, review_sla_hours, brand:profiles!campaigns_brand_id_fkey(display_name)')
@@ -16,10 +16,11 @@ export default async function AdminCampaignPage({ params }: { params: Promise<{ 
     .maybeSingle();
   if (!campaign) notFound();
 
-  const [finances, settlements, rates] = await Promise.all([
+  const [finances, settlements, rates, { data: escrow }] = await Promise.all([
     loadCampaignFinances(supabase, [id]),
     fetchAllRows((from, to) => supabase.from('settlements').select('amount').eq('campaign_id', id).order('id').range(from, to)),
     supabase.from('campaign_platform_rates').select('max_payout').eq('campaign_id', id).limit(1),
+    supabase.from('campaign_escrow').select('credit_applied, received_amount').eq('campaign_id', id).maybeSingle(),
   ]);
   const finance = finances.get(id);
   if (!finance) notFound();
@@ -29,13 +30,14 @@ export default async function AdminCampaignPage({ params }: { params: Promise<{ 
   const economics = campaignEconomics(totalBudget, creatorPaid, pricing);
   const clipCap = rates.data?.[0] ? Number(rates.data[0].max_payout) : null;
   const status = statusDisplay(CAMPAIGN_STATUS, campaign.status);
+  const depositRemaining = Math.max(0, depositDue(totalBudget, Number(escrow?.credit_applied ?? 0)) - Number(escrow?.received_amount ?? 0));
   const brandName = (campaign.brand as unknown as { display_name: string } | null)?.display_name ?? '브랜드';
 
   return (
     <Page>
       <PageHeader
         actions={
-          campaign.status === 'pending_escrow' ? <ConfirmDepositAction amount={depositAmount(totalBudget)} campaignId={campaign.id} reviewerId={user.id} /> : undefined
+          campaign.status === 'pending_escrow' ? <ConfirmDepositAction amount={depositRemaining} campaignId={campaign.id} /> : undefined
         }
         description={
           <span className="cl-inline">

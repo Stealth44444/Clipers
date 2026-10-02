@@ -138,20 +138,44 @@ export function DisputeResolveAction({ disputeId }: { disputeId: string }) {
   );
 }
 
-export function ConfirmDepositAction({ campaignId, reviewerId, amount }: { campaignId: string; reviewerId: string; amount: number }) {
+const DEPOSIT_RESULT: Record<string, string> = {
+  short: '아직 모자라요. 브랜드 화면에 차액 입금을 안내했어요.',
+  over: '캠페인을 공개했어요. 초과분은 반환 화면에 올라갔어요.',
+};
+
+/** Records the remaining due amount as received; the campaign goes live. */
+export function ConfirmDepositAction({ campaignId, amount }: { campaignId: string; amount: number }) {
   async function confirm(): Promise<ActionResult> {
-    if (!window.confirm(`${formatKRW(amount)} 입금을 통장에서 확인했나요? 확인하면 캠페인이 바로 공개돼요.`)) return { ok: true };
-    const { data, error } = await getSupabaseBrowserClient()
-      .from('campaign_escrow')
-      .update({ escrow_status: 'confirmed', confirmed_by: reviewerId, confirmed_at: new Date().toISOString() })
-      .eq('campaign_id', campaignId)
-      .eq('escrow_status', 'awaiting_manual_confirm')
-      .select('campaign_id')
-      .maybeSingle();
-    if (error) return fail('입금을 확인 처리하지 못했어요.');
-    return data ? { ok: true } : fail('이미 처리됐거나 입금 대기 상태가 아니에요.');
+    const question = amount > 0 ? `${formatKRW(amount)} 입금을 통장에서 확인했나요? 확인하면 캠페인이 바로 공개돼요.` : '잔액으로 낸 캠페인이에요. 공개할까요?';
+    if (!window.confirm(question)) return { ok: true };
+    const { error } = await getSupabaseBrowserClient().rpc('record_deposit', { p_campaign_id: campaignId, p_amount: amount });
+    return error ? fail('입금을 확인 처리하지 못했어요. 새로고침한 뒤 확인해 주세요.') : { ok: true };
   }
   return <ActionButton label="입금 확인" pendingLabel="처리 중…" run={confirm} variant="primary" />;
+}
+
+/** Records a different amount than asked: short keeps the campaign waiting, over queues the excess for return. */
+export function DepositMismatchAction({ campaignId, remaining }: { campaignId: string; remaining: number }) {
+  const [amount, setAmount] = useState('');
+  const value = Math.floor(Number(amount));
+  return (
+    <ActionDialog
+      canSubmit={Number.isFinite(value) && value > 0 && value !== remaining}
+      onSubmit={async () => {
+        const { data, error } = await getSupabaseBrowserClient().rpc('record_deposit', { p_campaign_id: campaignId, p_amount: value });
+        if (error) return fail('기록하지 못했어요. 새로고침한 뒤 확인해 주세요.');
+        if (DEPOSIT_RESULT[data as string]) window.alert(DEPOSIT_RESULT[data as string]);
+        return { ok: true };
+      }}
+      submitLabel="기록"
+      title="받은 금액 기록"
+      trigger="금액이 달라요"
+    >
+      <Field hint={`남은 안내 금액은 ${formatKRW(remaining)}이에요. 이번에 통장에서 확인한 금액(부가세 포함)을 적어 주세요.`} htmlFor={`deposit-${campaignId}`} label="확인한 금액">
+        <Input id={`deposit-${campaignId}`} inputMode="numeric" min={1} onChange={(event) => setAmount(event.target.value)} type="number" value={amount} />
+      </Field>
+    </ActionDialog>
+  );
 }
 
 /** Marks a payout paid, after the operator has made the bank transfer; its settlements follow. */
@@ -162,6 +186,16 @@ export function PayoutPaidAction({ payoutId, amount, legalName }: { payoutId: st
     return error ? fail('지급 완료로 바꾸지 못했어요. 새로고침한 뒤 확인해 주세요.') : { ok: true };
   }
   return <ActionButton label="지급 완료" pendingLabel="처리 중…" run={markPaid} variant="primary" />;
+}
+
+/** Marks a return sent, after the operator has made the bank transfer. */
+export function RefundPaidAction({ refundId, amount }: { refundId: string; amount: number }) {
+  async function markPaid(): Promise<ActionResult> {
+    if (!window.confirm(`${formatKRW(amount)}을 이체했나요? 이체를 마친 뒤에만 반환 완료로 바꿔 주세요.`)) return { ok: true };
+    const { error } = await getSupabaseBrowserClient().rpc('mark_refund_paid', { p_refund_id: refundId });
+    return error ? fail('반환 완료로 바꾸지 못했어요. 새로고침한 뒤 확인해 주세요.') : { ok: true };
+  }
+  return <ActionButton label="반환 완료" pendingLabel="처리 중…" run={markPaid} variant="primary" />;
 }
 
 export function PricingForm({ campaignId, brandCpm, creatorCpm }: { campaignId: string; brandCpm: number; creatorCpm: number }) {

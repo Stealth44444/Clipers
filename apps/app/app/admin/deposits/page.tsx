@@ -1,40 +1,47 @@
 import Link from 'next/link';
 import { Landmark } from 'lucide-react';
-import { depositAmount, formatBusinessNumber } from '@clipers/db';
+import { depositDue, formatBusinessNumber } from '@clipers/db';
 import { Card, DataTable, EmptyState, Page, PageHeader, formatKRW } from '@clipers/ui';
 import { loadCampaignFinances } from '@/lib/campaign-finances';
 import { getSession } from '@/lib/session';
-import { ConfirmDepositAction } from '../review-actions';
+import { ConfirmDepositAction, DepositMismatchAction } from '../review-actions';
 
 type Billing = { business_number: string; company_name: string; representative: string; invoice_email: string };
-type Row = { id: string; title: string; created_at: string; brand_id: string; brand: { display_name: string } | null; total_budget: number; billing: Billing | null };
+type Row = { id: string; title: string; created_at: string; brand_id: string; brand: { display_name: string } | null; total_budget: number; billing: Billing | null; credit_applied: number; received_amount: number };
 
 export default async function AdminDepositsPage() {
-  const { supabase, user } = await getSession();
+  const { supabase } = await getSession();
   const { data } = await supabase
     .from('campaigns')
     .select('id, title, created_at, brand_id, brand:profiles!campaigns_brand_id_fkey(display_name)')
     .eq('status', 'pending_escrow')
     .order('created_at', { ascending: true });
-  const campaigns = (data ?? []) as unknown as Omit<Row, 'total_budget' | 'billing'>[];
-  const [finances, { data: billingRows }] = await Promise.all([
-    loadCampaignFinances(supabase, campaigns.map((campaign) => campaign.id)),
+  const campaigns = (data ?? []) as unknown as Omit<Row, 'total_budget' | 'billing' | 'credit_applied' | 'received_amount'>[];
+  const ids = campaigns.map((campaign) => campaign.id);
+  const [finances, { data: billingRows }, { data: escrowRows }] = await Promise.all([
+    loadCampaignFinances(supabase, ids),
     supabase
       .from('brand_billing_profiles')
       .select('brand_id, business_number, company_name, representative, invoice_email')
       .in('brand_id', [...new Set(campaigns.map((campaign) => campaign.brand_id))]),
+    supabase.from('campaign_escrow').select('campaign_id, credit_applied, received_amount').in('campaign_id', ids),
   ]);
+  const escrowByCampaign = new Map(
+    ((escrowRows ?? []) as { campaign_id: string; credit_applied: number; received_amount: number }[]).map((row) => [row.campaign_id, row])
+  );
   const billingByBrand = new Map(((billingRows ?? []) as (Billing & { brand_id: string })[]).map((row) => [row.brand_id, row]));
   const rows: Row[] = campaigns.map((campaign) => ({
     ...campaign,
     total_budget: finances.get(campaign.id)?.total_budget ?? 0,
     billing: billingByBrand.get(campaign.brand_id) ?? null,
+    credit_applied: Number(escrowByCampaign.get(campaign.id)?.credit_applied ?? 0),
+    received_amount: Number(escrowByCampaign.get(campaign.id)?.received_amount ?? 0),
   }));
 
   return (
     <Page>
       <PageHeader
-        description="브랜드가 입금했다고 알린 캠페인이에요. 통장에서 금액(서비스 대금 + 부가세)과 입금자명을 확인한 뒤 처리하고, 세금계산서 정보로 홈택스에서 계산서를 발행해 주세요."
+        description="브랜드가 입금했다고 알린 캠페인이에요. 통장에서 금액(서비스 대금 − 잔액 사용 + 부가세)과 입금자명을 확인해 주세요. 금액이 다르면 받은 금액을 기록하고, 세금계산서는 실제 입금한 금액만큼 홈택스에서 발행해 주세요."
         title="입금 확인"
       />
       {rows.length > 0 ? (
@@ -75,8 +82,12 @@ export default async function AdminDepositsPage() {
               align: 'right',
               render: (row) => (
                 <div>
-                  <p className="cl-emphasis">{formatKRW(depositAmount(row.total_budget))}</p>
-                  <p className="cl-meta-subtle">서비스 대금 {formatKRW(row.total_budget)} + 부가세</p>
+                  <p className="cl-emphasis">{formatKRW(depositDue(row.total_budget, row.credit_applied))}</p>
+                  <p className="cl-meta-subtle">
+                    서비스 대금 {formatKRW(row.total_budget)}
+                    {row.credit_applied > 0 ? ` − 잔액 ${formatKRW(row.credit_applied)}` : ''} + 부가세
+                  </p>
+                  {row.received_amount > 0 && <p className="cl-meta-subtle">지금까지 {formatKRW(row.received_amount)} 확인</p>}
                 </div>
               ),
             },
@@ -84,7 +95,15 @@ export default async function AdminDepositsPage() {
               key: 'actions',
               header: '',
               align: 'right',
-              render: (row) => <ConfirmDepositAction amount={depositAmount(row.total_budget)} campaignId={row.id} reviewerId={user.id} />,
+              render: (row) => {
+                const remaining = Math.max(0, depositDue(row.total_budget, row.credit_applied) - row.received_amount);
+                return (
+                  <div className="cl-inline">
+                    <ConfirmDepositAction amount={remaining} campaignId={row.id} />
+                    {remaining > 0 && <DepositMismatchAction campaignId={row.id} remaining={remaining} />}
+                  </div>
+                );
+              },
             },
           ]}
           empty=""
