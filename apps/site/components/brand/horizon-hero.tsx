@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { PLATFORMS } from '@clipers/db';
 import { ButtonLink } from '@clipers/ui';
 import { HORIZON_FS, HORIZON_VS } from '@/lib/horizon-shader';
 
@@ -117,14 +116,14 @@ export default function HorizonHero({ signUpHref }: { signUpHref: string }) {
       <canvas aria-hidden className="cl-horizon__canvas" ref={canvasRef} />
       <div className="cl-horizon__copy" ref={copyRef}>
         <h1>
-          조회수가 난 만큼만,
+          바이럴을
           <br />
-          예산을 쓰세요
+          운에 맡기지 마세요
         </h1>
         <p>
-          승인된 크리에이터들이 각자 숏폼을 만들어 {PLATFORMS.length}개 플랫폼에 올려요.
+          숏폼 크리에이터 수십, 수백 명이 브랜드를 각자의 영상으로 퍼뜨려요.
           <br />
-          조회수가 나오지 않은 영상엔 예산이 쓰이지 않아요.
+          예산은 실제로 난 조회수에만 쓰여요.
         </p>
         <div className="cl-horizon__actions">
           <ButtonLink href={signUpHref} size="lg" variant="primary">

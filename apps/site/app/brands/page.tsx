@@ -19,8 +19,8 @@ import { ADVERTISER_FAQ } from '@/lib/advertiser-faq';
 // visual pairs a won amount with views (that pair would reveal it).
 
 export const metadata: Metadata = {
-  title: '브랜드 · Clipers — 조회수가 난 만큼만 예산을 쓰는 숏폼 캠페인',
-  description: '크리에이터들이 각자 숏폼을 만들어 올리고, 예산은 검수를 통과한 영상의 검증된 조회수에만 쓰여요. 캠페인은 100만 원부터 열 수 있어요.',
+  title: '브랜드 · Clipers — 바이럴을 운에 맡기지 마세요',
+  description: '숏폼 크리에이터 수십, 수백 명이 브랜드를 각자의 영상으로 퍼뜨리고, 예산은 검수를 통과한 영상의 검증된 조회수에만 쓰여요. 캠페인은 100만 원부터 열 수 있어요.',
   alternates: { canonical: '/brands' },
 };
 
