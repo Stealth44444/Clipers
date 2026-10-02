@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Search, Sparkles } from 'lucide-react';
 import { INTEREST_GROUPS, PLATFORMS, categoryGroup, categoryLabel, extractYouTubeVideoId } from '@clipers/db';
-import { Card, CardGrid, EmptyState, Page, PlatformIcon, Rail, SectionHeader, Stack, Starfield, formatCompactNumber } from '@clipers/ui';
+import { Card, CardGrid, EmptyState, Page, Rail, SectionHeader, Stack, Starfield, formatCompactNumber } from '@clipers/ui';
 import CampaignCard from '@/components/campaign-card';
 import JsonLd from '@/components/json-ld';
+import PlatformSelect from '@/components/platform-select';
 import SiteShell, { discoverHref } from '@/components/site-shell';
 import { loadLiveCampaigns, loadTopClips } from '@/lib/campaigns';
 import { siteUrl } from '@/lib/urls';
@@ -16,15 +17,6 @@ export const metadata: Metadata = {
 
 type SearchParams = Promise<{ q?: string; group?: string; platform?: string }>;
 
-/** The discover URL with the given filters; empty values drop out. */
-function filterHref(filters: { q?: string; group?: string | null; platform?: string | null }): string {
-  const params = new URLSearchParams();
-  if (filters.group) params.set('group', filters.group);
-  if (filters.platform) params.set('platform', filters.platform);
-  if (filters.q) params.set('q', filters.q);
-  const query = params.toString();
-  return query ? `/discover?${query}` : '/discover';
-}
 
 export default async function DiscoverPage({ searchParams }: { searchParams: SearchParams }) {
   const { q = '', group, platform } = await searchParams;
@@ -54,25 +46,9 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
           <form action="/discover" className="cl-search" role="search">
             <Search aria-hidden size={18} />
             {activeGroup && <input name="group" type="hidden" value={activeGroup.id} />}
-            {activePlatform && <input name="platform" type="hidden" value={activePlatform.value} />}
             <input aria-label="캠페인 검색" className="cl-input" defaultValue={q} name="q" placeholder="캠페인, 브랜드, 분야로 검색" type="search" />
+            <PlatformSelect value={activePlatform?.value ?? null} />
           </form>
-          <nav aria-label="플랫폼" className="cl-filter-chips">
-            <a aria-current={activePlatform ? undefined : 'true'} className="cl-chip" href={filterHref({ q, group: activeGroup?.id })}>
-              모든 플랫폼
-            </a>
-            {PLATFORMS.map((item) => (
-              <a
-                aria-current={activePlatform?.value === item.value ? 'true' : undefined}
-                className="cl-chip"
-                href={filterHref({ q, group: activeGroup?.id, platform: item.value })}
-                key={item.value}
-              >
-                <PlatformIcon platform={item.value} size={16} />
-                {item.label}
-              </a>
-            ))}
-          </nav>
         </section>
 
         <Stack>
