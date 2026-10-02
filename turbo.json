@@ -10,7 +10,11 @@
         "SLACK_WEBHOOK_URL",
         "SUPABASE_SERVICE_ROLE_KEY",
         "CRON_SECRET",
-        "PAYOUT_ENCRYPTION_KEY"
+        "PAYOUT_ENCRYPTION_KEY",
+        "GOOGLE_SITE_VERIFICATION",
+        "NAVER_SITE_VERIFICATION",
+        "BING_SITE_VERIFICATION",
+        "INDEXNOW_KEY"
       ],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
