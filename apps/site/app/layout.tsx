@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import AttributionCarrier from '@/components/attribution-carrier';
 import JsonLd from '@/components/json-ld';
 import { COMPANY } from '@/lib/company';
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <JsonLd data={ORGANIZATION} />
+        <Analytics />
         <AttributionCarrier />
       </body>
     </html>
