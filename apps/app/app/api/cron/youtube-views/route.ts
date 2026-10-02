@@ -8,7 +8,8 @@ export const runtime = 'nodejs';
 
 const PAGE_SIZE = 500;
 const MAX_CLIPS_PER_RUN = 500;
-const REFRESH_WINDOW_HOURS = 24;
+// Under a day: a daily run that starts a little earlier than yesterday's still refreshes every clip.
+const REFRESH_WINDOW_HOURS = 20;
 
 function isAuthorized(request: NextRequest, secret: string): boolean {
   const match = request.headers.get('authorization')?.match(/^Bearer\s+(.+)$/i);

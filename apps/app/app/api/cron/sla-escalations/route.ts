@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     .eq('status', 'pending_review');
 
   if (error) {
-    return NextResponse.json({ error: 'Could not load pending review clips.', status: 502 });
+    return NextResponse.json({ error: 'Could not load pending review clips.' }, { status: 502 });
   }
 
   const summary = buildEscalationSummary(
@@ -59,15 +59,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ escalated: 0, ids: [] });
   }
 
-  const { error: updateError } = await supabase
-    .from('clips')
-    .update({ escalation_sent_at: new Date().toISOString(), escalation_channel: 'internal' })
-    .in('id', summary.ids);
-
-  if (updateError) {
-    return NextResponse.json({ error: 'Could not mark escalations as sent.', status: 502 });
-  }
-
   const escalatedIds = new Set(summary.ids);
   const escalatedClips = (pendingItems ?? []).filter((item) => escalatedIds.has(item.id)) as unknown as Array<{
     url: string;
@@ -76,6 +67,7 @@ export async function GET(request: NextRequest) {
     creator: { display_name: string } | null;
   }>;
 
+  // Alert first, then mark: a failed Slack post leaves the clips unmarked so the next run tries again.
   let slackNotified = false;
   const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (slackWebhookUrl) {
@@ -88,7 +80,19 @@ export async function GET(request: NextRequest) {
       }))
     );
     const slackResult = await sendSlackNotification(slackWebhookUrl, message);
-    slackNotified = slackResult.ok;
+    if (!slackResult.ok) {
+      return NextResponse.json({ error: slackResult.message, pending: summary.total }, { status: 502 });
+    }
+    slackNotified = true;
+  }
+
+  const { error: updateError } = await supabase
+    .from('clips')
+    .update({ escalation_sent_at: new Date().toISOString(), escalation_channel: slackNotified ? 'slack' : 'internal' })
+    .in('id', summary.ids);
+
+  if (updateError) {
+    return NextResponse.json({ error: 'Could not mark escalations as sent.' }, { status: 502 });
   }
 
   return NextResponse.json({ escalated: summary.total, ids: summary.ids, slackNotified });
