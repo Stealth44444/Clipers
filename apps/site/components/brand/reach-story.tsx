@@ -87,10 +87,11 @@ export default function ReachStory() {
   // Each clip plays while it is on screen and, on wide screens, while its scene is the one showing.
   useEffect(() => {
     if (reducedMotion()) return;
+    const clips = videos.current;
     const narrow = window.matchMedia('(max-width: 860px)');
     const seen = new Set<HTMLVideoElement>();
     const sync = () => {
-      videos.current.forEach(({ scene, element }) => {
+      clips.forEach(({ scene, element }) => {
         if (seen.has(element) && (narrow.matches || scene === active)) void element.play().catch(() => undefined);
         else element.pause();
       });
@@ -99,12 +100,12 @@ export default function ReachStory() {
       entries.forEach((entry) => (entry.isIntersecting ? seen.add(entry.target as HTMLVideoElement) : seen.delete(entry.target as HTMLVideoElement)));
       sync();
     });
-    videos.current.forEach(({ element }) => observer.observe(element));
+    clips.forEach(({ element }) => observer.observe(element));
     narrow.addEventListener('change', sync);
     return () => {
       observer.disconnect();
       narrow.removeEventListener('change', sync);
-      videos.current.forEach(({ element }) => element.pause());
+      clips.forEach(({ element }) => element.pause());
     };
   }, [active]);
 
