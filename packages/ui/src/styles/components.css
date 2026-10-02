@@ -644,10 +644,23 @@
 /* One bar: the search field, then the platform filter on its right edge */
 .cl-search { position: relative; display: flex; align-items: center; max-width: 560px; height: 46px; margin-top: var(--space-5); border-radius: var(--radius-5); background: var(--gray-3); transition: box-shadow 0.15s ease; }
 .cl-search:focus-within { box-shadow: 0 0 0 1px var(--brand-8), var(--focus-ring); }
-.cl-search svg { position: absolute; top: 50%; left: 14px; color: var(--color-text-subtle); transform: translateY(-50%); pointer-events: none; }
+.cl-search > svg { position: absolute; top: 50%; left: 14px; color: var(--color-text-subtle); transform: translateY(-50%); pointer-events: none; }
 .cl-search .cl-input { flex: 1 1 auto; min-width: 0; height: 100%; padding-left: 42px; border-radius: inherit; background: transparent; }
 .cl-search .cl-input:hover, .cl-search .cl-input:focus { background: transparent; box-shadow: none; }
-.cl-search__select { flex: 0 0 auto; width: auto; height: 34px; margin-right: 6px; border-radius: var(--radius-4); background-color: var(--gray-4); font-size: var(--font-size-2); }
+/* Platform filter at the bar's right edge: a page-drawn menu (dark panel, logos, a check on the current one) */
+.cl-pmenu { position: relative; flex: 0 0 auto; margin-right: 6px; }
+.cl-pmenu__trigger { display: inline-flex; align-items: center; gap: var(--space-2); height: 34px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-4); background: var(--gray-4); color: var(--color-text); font: inherit; font-size: var(--font-size-2); font-weight: 500; cursor: pointer; transition: background-color 0.15s ease; }
+.cl-pmenu__trigger:hover, .cl-pmenu__trigger[aria-expanded="true"] { background: var(--gray-5); }
+.cl-pmenu__trigger svg { color: var(--color-text-subtle); transition: transform 0.2s ease; }
+.cl-pmenu__trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+.cl-pmenu__panel { position: absolute; top: 100%; right: 0; z-index: 40; display: grid; gap: 1px; width: 220px; margin-top: 8px; padding: 6px; border-radius: var(--radius-5); background: var(--gray-3); box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 16px 40px rgba(0, 0, 0, 0.45); animation: cl-role-menu-in 0.16s ease; }
+.cl-pmenu__panel[hidden] { display: none; }
+.cl-pmenu__item { display: flex; align-items: center; gap: var(--space-3); height: 36px; padding: 0 var(--space-3); border-radius: var(--radius-4); color: var(--color-text-muted); font-size: var(--font-size-2); text-decoration: none; transition: background-color 0.12s ease, color 0.12s ease; }
+.cl-pmenu__item:hover, .cl-pmenu__item:focus-visible { background: var(--gray-a3); color: var(--color-text); outline: none; }
+.cl-pmenu__item[aria-current="true"] { color: var(--color-text); }
+.cl-pmenu__icon { display: inline-flex; width: 16px; }
+.cl-pmenu__check { margin-left: auto; color: var(--brand-11); }
+@media (prefers-reduced-motion: reduce) { .cl-pmenu__panel { animation: none; } }
 .cl-card-brand { display: flex; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: var(--font-size-2); }
 .cl-clip { display: grid; gap: var(--space-2); }
 .cl-clip__thumb { position: relative; aspect-ratio: 9 / 16; overflow: hidden; border-radius: var(--radius-5); background: var(--gray-3); }

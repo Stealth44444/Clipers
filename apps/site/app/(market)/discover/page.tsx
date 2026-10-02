@@ -47,7 +47,8 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Sea
             <Search aria-hidden size={18} />
             {activeGroup && <input name="group" type="hidden" value={activeGroup.id} />}
             <input aria-label="캠페인 검색" className="cl-input" defaultValue={q} name="q" placeholder="캠페인, 브랜드, 분야로 검색" type="search" />
-            <PlatformSelect value={activePlatform?.value ?? null} />
+            {activePlatform && <input name="platform" type="hidden" value={activePlatform.value} />}
+            <PlatformSelect group={activeGroup?.id ?? null} q={q} value={activePlatform?.value ?? null} />
           </form>
         </section>
 
