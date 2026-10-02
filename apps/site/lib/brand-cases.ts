@@ -116,7 +116,7 @@ export const BRAND_CASES: BrandCase[] = [
     clips: [
       { creator: '하루', platform: 'instagram_reels', views: 118_000, clip: 'sky', caption: '인생 첫 스카이다이빙', look: 'subtitle' },
       { creator: '숏츠랩', platform: 'youtube_shorts', views: 64_000, clip: 'sky-close', caption: '4,000m에서 뛰어내림', look: 'meme' },
-      { creator: '명장면', platform: 'tiktok', views: 39_000, clip: 'sky-slow', caption: '여행 브이로그 · 스카이다이빙 편', look: 'letterbox' },
+      { creator: '명장면', platform: 'tiktok', views: 39_000, clip: 'sky-slow', caption: '여행 브이로그 · 다이빙 편', look: 'letterbox' },
       { creator: '클립데일리', platform: 'naver_clip', views: 21_000, clip: 'sky-late', caption: '#스카이다이빙 #광고', look: 'tag', pending: true },
     ],
   },
