@@ -122,6 +122,7 @@ export async function fetchYouTubeViewCounts(
 }
 
 export type UnavailableReason = 'missing' | 'unlisted' | 'manual';
+export type UnavailableClip = { clipId: string; reason: Exclude<UnavailableReason, 'manual'> };
 
 /**
  * Clips whose video stopped being public: YouTube no longer returns it (deleted or made private — an API key
@@ -130,12 +131,12 @@ export type UnavailableReason = 'missing' | 'unlisted' | 'manual';
 export function findUnavailableClips(
   clips: ReadonlyArray<{ id: string; videoId: string }>,
   counts: readonly YouTubeViewCount[]
-): Array<{ clipId: string; reason: Exclude<UnavailableReason, 'manual'> }> {
+): UnavailableClip[] {
   const byVideo = new Map(counts.map((count) => [count.videoId, count]));
-  return clips.flatMap((clip) => {
+  return clips.flatMap((clip): UnavailableClip[] => {
     const found = byVideo.get(clip.videoId);
-    if (!found) return [{ clipId: clip.id, reason: 'missing' as const }];
-    if (found.privacyStatus === 'unlisted') return [{ clipId: clip.id, reason: 'unlisted' as const }];
+    if (!found) return [{ clipId: clip.id, reason: 'missing' }];
+    if (found.privacyStatus === 'unlisted') return [{ clipId: clip.id, reason: 'unlisted' }];
     return [];
   });
 }

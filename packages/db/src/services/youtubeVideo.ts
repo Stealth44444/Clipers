@@ -42,7 +42,7 @@ export async function fetchYouTubeVideoInfo(videoId: string, apiKey: string, fet
 
 /** A channel's id and description, found by handle or id; null when there is no such channel. */
 export async function fetchYouTubeChannel(ref: YouTubeChannelRef, apiKey: string, fetcher: typeof fetch = fetch): Promise<ServiceResult<YouTubeChannelInfo | null>> {
-  const lookup = 'handle' in ref ? { forHandle: ref.handle } : { id: ref.channelId };
+  const lookup: Record<string, string> = 'handle' in ref ? { forHandle: ref.handle } : { id: ref.channelId };
   const result = await getJson<ChannelsResponse>('channels', { part: 'snippet', ...lookup }, apiKey, fetcher);
   if (!result.ok) return result;
   const item = result.data.items?.[0];
