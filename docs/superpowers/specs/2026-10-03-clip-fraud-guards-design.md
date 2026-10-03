@@ -15,6 +15,7 @@
 | 항목 | 결정 |
 |---|---|
 | 플랫폼 | 유튜브는 자동(공식 API), 다른 플랫폼은 운영팀이 검수할 때 확인 |
+| 계정 인증 | 필수. 인증된 계정이 없는 플랫폼은 클립을 제출할 수 없다(운영팀 확인 대기 계정만 있어도 불가). 2026-10-03 사용자 결정(다른 세션 경유) |
 | 계정 수 | 플랫폼당 여러 개 허용. 한 계정(유튜브는 채널 ID, 다른 플랫폼은 정규화한 주소)은 한 사람만 인증 |
 | 기존 클립 | 그대로. 새 규칙(게시일, 인증 계정)은 적용 이후 제출분부터. 삭제·비공개 감지는 기존 승인 클립에도 적용 |
 | 검사 시점 | 유튜브 클립은 제출 순간 앱 서버에서 확인(방식 A). 크리에이터가 DB에 유튜브 클립을 직접 넣는 경로는 막는다 |
@@ -32,7 +33,7 @@
 - `profiles.adult_confirmed_at timestamptz`. 프로필 보호 트리거(`prevent_profile_role_escalation`)가 이 칸도 지킨다(본인이 직접 못 바꾼다).
 - `campaigns`는 칸별 조회 권한을 쓰므로 `live_at`에 `authenticated` 조회 권한을 준다(`anon`은 주지 않는다).
 - `clips_creator_insert_own` 정책에 `platform <> 'youtube_shorts'`를 더한다. 유튜브 클립은 서버만 넣는다.
-- `prepare_clip_submission` 트리거: 서비스 역할(`auth.jwt()->>'role' = 'service_role'`)일 때는 `creator_id = auth.uid()` 검사를 건너뛴다(서버가 이미 세션으로 확인했다). 나머지(승인된 지원, 라이브, 플랫폼, 하루 한도)는 그대로. 또 `unavailable_*`는 항상 비우고, 서비스 역할이 아니면 `video_published_at`·`video_channel_id`도 비운다(크리에이터가 직접 써넣지 못하게).
+- `prepare_clip_submission` 트리거: 서비스 역할(`auth.jwt()->>'role' = 'service_role'`)일 때는 `creator_id = auth.uid()` 검사를 건너뛴다(서버가 이미 세션으로 확인했다). 나머지(승인된 지원, 라이브, 플랫폼, 하루 한도)는 그대로. 새로 그 플랫폼에 인증된 계정이 없으면 `account_not_verified`로 막는다(모든 플랫폼, 두 경로 모두). 또 `unavailable_*`는 항상 비우고, 서비스 역할이 아니면 `video_published_at`·`video_channel_id`도 비운다(크리에이터가 직접 써넣지 못하게).
 - `complete_onboarding`에 `p_adult_confirmed boolean`을 더한다(기존 함수는 지우고 새 시그니처로, PostgREST 오버로드 모호성 방지). `true`가 아니면 예외, `true`면 `adult_confirmed_at = now()`.
 
 ## 4. 흐름
@@ -57,13 +58,13 @@
 모두 통과하면 서비스 키로 `clips`에 `video_published_at`, `video_channel_id`와 함께 넣는다(하루 한도·중복 영상은 DB가 그대로 막는다). 유튜브 API 오류나 키가 없으면 "지금은 유튜브 영상을 확인할 수 없어요. 잠시 뒤 다시 시도해 주세요."로 거절한다(통과시키지 않는다).
 
 ### 4.3 다른 플랫폼 클립 — 검수 확인 항목
-제출은 지금처럼 받는다. 운영자 클립 검수에서 유튜브가 아닌 클립은 "캠페인 공개({live_at}) 이후 게시" "인증된 계정({인증 목록})의 게시물" 두 항목을 체크해야 승인 버튼이 켜진다. 유튜브 클립은 게시일·채널 자동 확인 결과를 표시만 한다.
+제출은 브라우저에서 바로 하되, 그 플랫폼에 인증된 계정이 없으면 DB가 막는다. 인증 계정이 여러 개일 수 있고 링크가 그중 하나의 게시물인지는 자동으로 알 수 없으므로, 운영자 클립 검수에서 유튜브가 아닌 클립은 "캠페인 공개({live_at}) 이후 게시" "인증된 계정({인증 목록})의 게시물" 두 항목을 체크해야 승인 버튼이 켜진다. 유튜브 클립은 게시일·채널 자동 확인 결과를 표시만 한다.
 
 ### 4.4 삭제·비공개 감지
 - 조회수 수집(`/api/cron/youtube-views`)이 `part=statistics,status`로 조회한다. 응답에 영상이 없으면(삭제 또는 비공개) `missing`, `privacyStatus`가 `unlisted`면 `unlisted`로 `unavailable_at`(비어 있을 때만)과 `unavailable_reason`을 기록하고, 새로 표시한 클립을 슬랙에 한 번 알린다. 이미 표시된 클립은 수집 대상에서 빼고 다시 알리지 않는다.
 - 운영자: 캠페인 상세의 "승인된 클립"에서 "삭제·비공개로 표시"(사유 `manual`), 클립 검수 화면의 "정산이 멈춘 클립"에서 "표시 해제".
 - 정산: `calculateWeeklySettlementDrafts` 입력에 `unavailableAt`을 더해, `unavailableAt < periodEnd`인 클립은 그 주부터 건너뛴다(이미 지급한 돈은 그대로).
-- 크리에이터 제출 현황: "영상이 삭제되거나 비공개로 바뀌어 정산이 멈췄어요. 다시 공개했다면 운영팀에 알려 주세요."
+- 크리에이터 제출 현황: "영상이 삭제되거나 비공개로 바뀌어 정산이 멈췄어요. 다시 공개했다면 이의제기로 알려 주세요." 그 클립에 이의제기 버튼을 보여 준다(이의제기는 본인 클립이면 상태와 관계없이 낼 수 있다).
 
 ### 4.5 만 19세 확인
 온보딩 `terms` 단계에 세 번째 필수 스위치 "만 19세 이상이에요"를 넣고, `canContinueOnboarding('terms')`가 셋 모두 켜졌을 때만 통과한다. `complete_onboarding(p_adult_confirmed => true)`.

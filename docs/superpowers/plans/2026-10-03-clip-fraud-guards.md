@@ -178,6 +178,14 @@ begin
     raise exception 'An approved application to a live campaign is required';
   end if;
 
+  -- Every platform needs a verified account before its clips are accepted (pending verification is not enough).
+  if not exists (
+    select 1 from creator_channels ch
+    where ch.creator_id = new.creator_id and ch.platform = new.platform and ch.verified_at is not null
+  ) then
+    raise exception 'account_not_verified';
+  end if;
+
   if campaign_daily_limit is not null then
     perform pg_advisory_xact_lock(hashtextextended(new.creator_id::text || ':' || new.campaign_id::text, 0));
     select count(*) into submitted_today
@@ -319,14 +327,14 @@ select
   (select count(*) from campaigns where status in ('live','paused','closed') and live_at is null) as live_without_live_at,
   (select count(*) from pg_trigger where tgname = 'stamp_campaign_live_at') as live_at_trigger,
   (select with_check like '%youtube_shorts%' from pg_policies where policyname = 'clips_creator_insert_own') as youtube_blocked,
-  (select prosrc like '%service_role%' from pg_proc where proname = 'prepare_clip_submission') as server_path,
+  (select prosrc like '%service_role%' and prosrc like '%account_not_verified%' from pg_proc where proname = 'prepare_clip_submission') as server_path,
   (select pg_get_function_identity_arguments(oid) from pg_proc where proname = 'complete_onboarding') as onboarding_args,
   (select relrowsecurity from pg_class where relname = 'creator_channels') as channels_rls;
 ```
 
 Expected: `live_without_live_at = 0`, `live_at_trigger = 1`, `youtube_blocked = true`, `server_path = true`, `onboarding_args`가 `…, p_adult_confirmed boolean`으로 끝남, `channels_rls = true`.
 
-그리고 트리거 동작을 롤백되는 트랜잭션에서 확인한다(초안 캠페인 하나를 `live`로 바꿨다가 되돌린다).
+그리고 트리거 동작을 롤백되는 블록에서 확인한다(초안 캠페인 하나를 `live`로 바꾼 뒤 일부러 오류를 내서 되돌린다).
 
 ```sql
 do $$
@@ -335,17 +343,15 @@ declare
   stamped timestamptz;
 begin
   select id into target from campaigns where status = 'draft' limit 1;
-  if target is null then raise notice 'no draft campaign to test'; return; end if;
-  perform set_config('session_replication_role', 'replica', true); -- skip other status triggers (billing check)
+  if target is null then raise exception 'no draft campaign to test'; end if;
   update campaigns set status = 'live' where id = target;
-  perform set_config('session_replication_role', 'origin', true);
   select live_at into stamped from campaigns where id = target;
   raise exception 'rollback: live_at=%', stamped;
 end;
 $$;
 ```
 
-Expected: 오류 메시지 `rollback: live_at=<지금 시각>`. `replica` 모드에서는 일반 트리거가 꺼지므로 `live_at`이 비어 있으면(`live_at=<NULL>`) 이 확인 방법이 맞지 않는 것이다. 그때는 `session_replication_role` 두 줄을 지우고 다시 실행한다(청구 정보 트리거가 막으면 `raise notice`로 결과만 보고 넘어간다). 어느 쪽이든 마지막 `raise exception`으로 변경은 롤백된다.
+Expected: 오류 메시지 `rollback: live_at=<지금 시각>`(변경은 오류로 롤백된다). 다른 트리거(`require_billing_before_deposit`)가 먼저 막으면 그 오류가 나오는데, 그때는 `select prosrc from pg_proc where proname = 'stamp_campaign_live_at'`로 함수 본문만 확인하고 넘어간다.
 
 - [ ] **Step 4: 보안 경고 확인**
 
@@ -1263,7 +1269,7 @@ export default function ChannelsCard({ channels }: { channels: CreatorChannel[] 
 
   return (
     <Card
-      description="클립을 올리는 계정을 등록하고 인증해 주세요. 인증한 계정에 캠페인 공개 이후 올린 영상만 정산돼요."
+      description="클립을 올리는 계정을 등록하고 인증해 주세요. 인증한 계정이 있는 플랫폼만 클립을 제출할 수 있고, 캠페인 공개 이후 올린 영상만 정산돼요."
       id="channels"
       title="내 채널"
     >
@@ -1449,7 +1455,7 @@ import { evaluateYouTubeSubmission, extractYouTubeVideoId, fetchYouTubeVideoInfo
 import { getSupabaseAdminClient } from '@/lib/supabase-admin';
 import { getSupabaseServerClient } from '@/lib/supabase-server';
 
-export type SubmitClipFailure = 'duplicate' | 'daily_limit' | 'other';
+export type SubmitClipFailure = 'duplicate' | 'daily_limit' | 'account_not_verified' | 'other';
 export type SubmitClipResult = { ok: true } | { ok: false; reason: SubmitClipFailure; message: string };
 
 const failure = (reason: SubmitClipFailure, message = ''): SubmitClipResult => ({ ok: false, reason, message });
@@ -1496,6 +1502,7 @@ export async function submitYouTubeClip(campaignId: string, rawUrl: string): Pro
   if (error) {
     if (error.code === '23505') return failure('duplicate');
     if (error.message.includes('daily_clip_limit_reached')) return failure('daily_limit');
+    if (error.message.includes('account_not_verified')) return failure('account_not_verified');
     return failure('other');
   }
   return { ok: true };
@@ -1518,6 +1525,7 @@ import { submitYouTubeClip, type SubmitClipFailure } from './submit-clip-action'
   function failureMessage(reason: SubmitClipFailure, message: string): string {
     if (reason === 'duplicate') return '이미 제출된 영상이에요. 같은 영상은 한 번만 제출할 수 있어요.';
     if (reason === 'daily_limit') return `오늘은 이 캠페인에 영상을 ${dailyLimit ?? ''}개까지 올릴 수 있어요. 내일 다시 올려 주세요.`;
+    if (reason === 'account_not_verified') return "설정의 '내 채널'에서 이 플랫폼 계정을 인증한 뒤 제출할 수 있어요. 운영팀 확인을 기다리는 계정은 아직 쓸 수 없어요.";
     return message || '제출하지 못했어요. 링크와 플랫폼을 확인한 뒤 다시 시도해 주세요.';
   }
 
@@ -1537,7 +1545,14 @@ import { submitYouTubeClip, type SubmitClipFailure } from './submit-clip-action'
         ? { ok: true }
         : {
             ok: false,
-            reason: insertError.code === '23505' ? 'duplicate' : insertError.message.includes('daily_clip_limit_reached') ? 'daily_limit' : 'other',
+            reason:
+              insertError.code === '23505'
+                ? 'duplicate'
+                : insertError.message.includes('daily_clip_limit_reached')
+                  ? 'daily_limit'
+                  : insertError.message.includes('account_not_verified')
+                    ? 'account_not_verified'
+                    : 'other',
             message: '',
           };
     }
@@ -1559,7 +1574,7 @@ import { submitYouTubeClip, type SubmitClipFailure } from './submit-clip-action'
             hint={
               platform === 'youtube_shorts'
                 ? "설정의 '내 채널'에서 인증한 채널에 캠페인 공개 이후 올린 공개 영상만 제출할 수 있어요."
-                : '캠페인 공개 이후 인증한 내 계정에 공개로 올린 영상 링크를 붙여 넣어 주세요.'
+                : "설정의 '내 채널'에서 인증한 계정에 캠페인 공개 이후 공개로 올린 영상 링크를 붙여 넣어 주세요."
             }
             htmlFor={`${formId}-url`}
             label="영상 링크"
@@ -1718,7 +1733,7 @@ export default async function AdminChannelsPage() {
                   header: '인증',
                   render: (row) => (
                     <span className="cl-meta">
-                      {row.verified_by === 'auto' ? '자동' : '운영팀'} · {dateLabel(row.verified_at!)}
+                      {row.verified_by === 'auto' ? '자동' : '운영팀'} · {row.verified_at ? dateLabel(row.verified_at) : ''}
                     </span>
                   ),
                 },
@@ -2117,11 +2132,9 @@ const shortDate = (value: string) => new Date(value).toLocaleDateString('ko-KR',
         .eq('status', 'approved')
         .order('reviewed_at', { ascending: false })
         .range(from, to)
-    ) as Promise<unknown[]> as Promise<ApprovedClip[]>,
+    ).then((rows) => rows as unknown as ApprovedClip[]),
   ]);
 ```
-
-(`as Promise<unknown[]> as Promise<ApprovedClip[]>`가 타입 검사에서 막히면 `.then((rows) => rows as unknown as ApprovedClip[])`로 바꾼다.)
 
 `<Card title="설정">…</Card>` 다음, `</Stack>` 앞에:
 
@@ -2213,13 +2226,7 @@ import { buildUnavailableClipsSlackMessage, extractYouTubeVideoId, fetchYouTubeV
       .is('unavailable_at', null)
 ```
 
-`const viewCounts = new Map(...)`와 `snapshots` 계산은 그대로 두되, `viewCounts`를 만드는 줄을 아래로 바꾼다(값이 객체가 됐다):
-
-```ts
-  const viewCounts = new Map(viewCountResult.data.map((item) => [item.videoId, item.viewCount]));
-```
-
-(이미 이 모양이면 그대로 둔다.)
+`viewCounts`와 `snapshots` 계산은 그대로 둔다(`item.viewCount`를 읽으므로 Task 4 뒤에도 맞다).
 
 스냅샷 저장(`if (snapshots.length > 0) { … }`) 다음, 최종 `return NextResponse.json(` 앞에 추가:
 
@@ -2401,7 +2408,7 @@ Expected: FAIL (`which-videos`가 없음)
   {
     id: 'which-videos',
     q: '어떤 영상을 제출할 수 있나요?',
-    a: "캠페인이 공개된 뒤 내 계정에 공개로 올린 영상만 제출할 수 있어요. 먼저 설정의 '내 채널'에서 계정을 등록하고, 안내받은 인증 코드를 채널 설명이나 프로필 소개에 넣어 인증해 주세요. 유튜브는 바로 자동으로 인증되고, 다른 플랫폼은 운영팀이 확인해요. 올린 영상을 삭제하거나 비공개로 바꾸면 그 주부터 정산이 멈춰요.",
+    a: "인증한 내 계정에 캠페인이 공개된 뒤 공개로 올린 영상만 제출할 수 있어요. 먼저 설정의 '내 채널'에서 계정을 등록하고, 안내받은 인증 코드를 채널 설명이나 프로필 소개에 넣어 인증해 주세요. 유튜브는 바로 자동으로 인증되고, 다른 플랫폼은 운영팀이 확인한 뒤부터 제출할 수 있어요. 올린 영상을 삭제하거나 비공개로 바꾸면 그 주부터 정산이 멈춰요.",
   },
 ```
 
