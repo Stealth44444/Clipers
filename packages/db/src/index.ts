@@ -12,6 +12,7 @@ export * from './brandBalance';
 export * from './notifications';
 export * from './topup';
 export * from './campaignDraft';
+export * from './managedCampaign';
 export * from './dailyClipLimit';
 export * from './paging';
 export * from './services/errors';
