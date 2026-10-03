@@ -174,10 +174,12 @@ const EMAIL_DETAILS: Record<string, (data: NotificationData) => EmailDetails> = 
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const FONT = "-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Malgun Gothic',sans-serif";
+// Geometric faces close to the wordmark where the reader has them.
+const WORDMARK_FONT = "'Poppins','Avenir Next','Futura','Helvetica Neue',Arial,sans-serif";
 const BRAND_GREEN = '#2f7d52';
 
 // Apple Mail, iOS Mail and Outlook for Mac follow prefers-color-scheme. Gmail ignores it and inverts colours itself but
-// never images, so the logo is a badge with its own dark background that reads the same in both modes.
+// never images, so the logo is the green mark as an image (readable on both) beside the name as text (which inverts).
 const DARK_MODE_STYLE = `<style>
 @media (prefers-color-scheme:dark){
 .page{background:#000000!important}
@@ -246,7 +248,10 @@ ${rows
 ${preheader}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="page" style="background:#f2f2f4"><tr><td align="center" style="padding:40px 16px 48px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px">
-<tr><td style="padding:0 4px 24px"><img src="${e(new URL('/logo/clipers-email-badge.png', appUrl).toString())}" width="96" height="40" alt="Clipers" style="display:block;border:0;width:96px;height:40px"></td></tr>
+<tr><td style="padding:0 4px 24px"><table role="presentation" cellpadding="0" cellspacing="0"><tr>
+<td valign="middle" style="padding-right:8px"><img src="${e(new URL('/logo/clipers-email-mark.png', appUrl).toString())}" width="25" height="28" alt="" style="display:block;border:0;width:25px;height:28px"></td>
+<td valign="middle" class="ink" style="font-family:${WORDMARK_FONT};font-size:21px;line-height:28px;font-weight:700;letter-spacing:-0.02em;color:#111111">Clipers</td>
+</tr></table></td></tr>
 <tr><td class="card" style="padding:36px 32px 32px;border:1px solid #e6e6ea;border-radius:20px;background:#ffffff">
 <p class="ink" style="margin:0;font-size:22px;line-height:1.4;font-weight:700;letter-spacing:-0.02em;color:#111111">${e(title)}</p>
 ${amountHtml}

@@ -6,7 +6,7 @@
  * Open while locked: cron routes carry their own secret, robots.txt tells crawlers to stay out, and the notification
  * emails' logo has to load in mail clients, which can't send the password.
  */
-const OPEN_PATHS = [/^\/api\/cron\//, /^\/robots\.txt$/, /^\/logo\/clipers-email-badge\.png$/];
+const OPEN_PATHS = [/^\/api\/cron\//, /^\/robots\.txt$/, /^\/logo\/clipers-email-mark\.png$/];
 
 const encoder = new TextEncoder();
 

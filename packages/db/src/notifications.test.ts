@@ -64,9 +64,9 @@ describe('buildNotificationEmail', () => {
     expect(buildNotificationEmail({ kind: 'clip_approved', data: {}, link: '/creator/submissions' }, appUrl).html).not.toContain('>캠페인</td>');
   });
 
-  it('shows the logo badge from the app and a hidden preview line', () => {
+  it('shows the logo mark from the app beside the name and a hidden preview line', () => {
     const email = buildNotificationEmail({ kind: 'application_approved', data: { campaign_title: '봄 캠페인' }, link: '/creator/campaigns' }, appUrl);
-    expect(email.html).toContain('src="https://app.clipers.site/logo/clipers-email-badge.png"');
+    expect(email.html).toContain('src="https://app.clipers.site/logo/clipers-email-mark.png"');
     expect(email.html).toMatch(/<div style="display:none[^"]*">지원한 캠페인에 이제 클립을 제출할 수 있어요\./);
   });
 

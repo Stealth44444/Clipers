@@ -42,8 +42,8 @@ describe('prelaunchGate', () => {
   });
 
   it('leaves only the email logo open among public files', () => {
-    expect(prelaunchGate('/logo/clipers-email-badge.png', null, 'secret')).toBeNull();
+    expect(prelaunchGate('/logo/clipers-email-mark.png', null, 'secret')).toBeNull();
     expect(prelaunchGate('/logo/clipers-wordmark.svg', null, 'secret')?.status).toBe(401);
-    expect(prelaunchGate('/logo/clipers-email-badge.png/x', null, 'secret')?.status).toBe(401);
+    expect(prelaunchGate('/logo/clipers-email-mark.png/x', null, 'secret')?.status).toBe(401);
   });
 });
