@@ -17,7 +17,7 @@ export default function BalanceCard({ summary, openRequest }: { summary: Balance
             { label: '잔액', value: <strong>{formatKRW(summary.balance)}</strong> },
             { label: '반환할 수 있는 금액', value: formatKRW(summary.refundable) },
             ...(summary.campaignOnly > 0
-              ? [{ label: '다음 캠페인에만 쓸 수 있는 금액', value: `${formatKRW(summary.campaignOnly)} (확정 후 1년 지남)` }]
+              ? [{ label: '다음 캠페인에만 쓸 수 있는 금액', value: `${formatKRW(summary.campaignOnly)} (확정 후 5년 지남)` }]
               : []),
           ]}
         />

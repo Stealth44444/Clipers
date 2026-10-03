@@ -139,8 +139,8 @@ describe('KOREAN_PUBLIC_HOLIDAYS', () => {
 });
 
 describe('REFUND_WINDOW_MONTHS', () => {
-  it('is one year', () => {
-    expect(REFUND_WINDOW_MONTHS).toBe(12);
+  it('is five years', () => {
+    expect(REFUND_WINDOW_MONTHS).toBe(60);
   });
 });
 

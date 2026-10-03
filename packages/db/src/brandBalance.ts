@@ -4,8 +4,11 @@
 import { depositAmount } from './billing';
 import { BANKS } from './payouts';
 
-/** A leftover can be returned for this many months after it is fixed; after that it can only go into a campaign. */
-export const REFUND_WINDOW_MONTHS = 12;
+/**
+ * A leftover can be returned for this many months after it is fixed (five years, the commercial limitation period);
+ * after that it can only go into a campaign. Was 12 until 2026-10-03, changed so the term isn't unfairly short.
+ */
+export const REFUND_WINDOW_MONTHS = 60;
 
 export type BalanceEntryKind = 'leftover' | 'applied' | 'refunded';
 /** One row of brand_balance_entries: leftovers are positive, spending and returns negative. */
