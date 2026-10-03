@@ -594,12 +594,15 @@ a.cl-notifications__item:hover { background: var(--gray-a3); }
 .cl-auth__forgot { margin-top: calc(-1 * var(--space-2)); font-size: var(--font-size-2); text-align: right; }
 .cl-auth__note { color: var(--color-text-muted); font-size: var(--font-size-2); line-height: 1.6; }
 /* Auth errors: a macOS status dot and plain text, wrapping under itself; the dot sits on the first line. */
-.cl-auth__status .cl-status-dot { align-items: flex-start; font-weight: 400; line-height: 1.5; white-space: normal; }
+.cl-auth__status { padding: 10px var(--space-3); border-radius: var(--radius-4); background: var(--gray-a3); }
+.cl-auth__status-line { display: block; }
+.cl-auth__status .cl-status-dot { align-items: flex-start; color: var(--color-text-muted); font-weight: 400; line-height: 1.5; white-space: normal; }
 .cl-auth__status .cl-status-dot__dot { margin-top: calc((1.5em - 8px) / 2); }
 .cl-auth__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .cl-auth__subtitle strong { color: var(--color-text); font-weight: 600; overflow-wrap: anywhere; }
 /* Korean breaks between words only, and never leaves one word alone on the last line. */
-.cl-auth__subtitle, .cl-auth__note, .cl-auth__status { word-break: keep-all; text-wrap: pretty; }
+.cl-auth__subtitle, .cl-auth__note { text-wrap: pretty; }
+.cl-auth__subtitle, .cl-auth__note, .cl-auth__status { word-break: keep-all; }
 .cl-two-up { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
 @media (max-width: 860px) { .cl-two-up { grid-template-columns: minmax(0, 1fr); } }
 .cl-link { border: 0; padding: 0; background: none; color: var(--brand-11); font-weight: 500; cursor: pointer; }
