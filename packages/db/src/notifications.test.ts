@@ -23,6 +23,14 @@ describe('renderNotification', () => {
     );
     expect(renderNotification('leftover_finalized', { campaign_title: 'B', amount: 700000 }).body).toBe('B에서 남은 700,000원을 잔액으로 옮겼어요.');
     expect(renderNotification('refund_paid', { refund_kind: 'leftover', amount: 330000 }).title).toBe('남은 금액을 보냈어요');
+    expect(renderNotification('topup_confirmed', { campaign_title: 'B', amount: 300000, reopened: true })).toEqual({
+      title: '예산을 늘려 캠페인을 다시 열었어요',
+      body: 'B: 입금을 확인해 예산에 300,000원을 더했어요.',
+    });
+    expect(renderNotification('topup_confirmed', { campaign_title: 'B', amount: 300000, reopened: false }).title).toBe('예산을 늘렸어요');
+    expect(renderNotification('topup_short', { campaign_title: 'B', received: 50000, difference: 60000 }).body).toBe(
+      'B: 50,000원이 확인됐어요. 차액 60,000원을 더 입금해 주세요.'
+    );
     expect(renderNotification('refund_paid', { refund_kind: 'over_deposit', amount: 50000 }).title).toBe('초과 입금을 돌려드렸어요');
   });
 

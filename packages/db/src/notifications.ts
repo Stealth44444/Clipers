@@ -32,6 +32,14 @@ const RENDER: Record<string, (data: NotificationData) => RenderedNotification> =
   first_clip_approved: (d) => ({ title: '첫 클립이 승인됐어요', body: `${text(d.campaign_title, '캠페인')}에 첫 클립이 올라왔어요.` }),
   campaign_exhausted: (d) => ({ title: '예산을 모두 썼어요', body: `${text(d.campaign_title, '캠페인')}: 예산을 모두 써서 종료됐어요.` }),
   leftover_finalized: (d) => ({ title: '남은 금액이 잔액이 됐어요', body: `${text(d.campaign_title, '중단한 캠페인')}에서 남은 ${won(d.amount)}을 잔액으로 옮겼어요.` }),
+  topup_confirmed: (d) => ({
+    title: d.reopened ? '예산을 늘려 캠페인을 다시 열었어요' : '예산을 늘렸어요',
+    body: `${text(d.campaign_title, '캠페인')}: 입금을 확인해 예산에 ${won(d.amount)}을 더했어요.`,
+  }),
+  topup_short: (d) => ({
+    title: '증액 입금액이 모자라요',
+    body: `${text(d.campaign_title, '캠페인')}: ${won(d.received)}이 확인됐어요. 차액 ${won(d.difference)}을 더 입금해 주세요.`,
+  }),
   refund_paid: (d) =>
     d.refund_kind === 'over_deposit'
       ? { title: '초과 입금을 돌려드렸어요', body: `${won(d.amount)}을 입금한 계좌로 보냈어요.` }
