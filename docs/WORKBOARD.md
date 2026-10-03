@@ -27,7 +27,7 @@
 | ~~`supabase/migrations/20261003160000_notification_email_cron.sql`~~ | 완료: `ea6eec1` 배포 뒤 운영 DB 적용, 5분마다 200 응답 확인 | clipers-f1 |
 | `supabase/migrations/social_views_cron.sql` (버전 미정) | `/api/cron/social-views`가 배포된 뒤 적용 | clipers-a1 |
 | 틱톡·Meta 개발자 앱 | 앱 등록·심사 후 `TIKTOK_CLIENT_KEY`·`TIKTOK_CLIENT_SECRET`·`INSTAGRAM_APP_ID`·`INSTAGRAM_APP_SECRET`를 clipers-app에 등록 | 사용자 |
-| Resend `clipers.site` 도메인 | DNS·인증·`RESEND_API_KEY`·`EMAIL_FROM`(clipers-app)은 완료(테스트 메일 받은편지함 도착). 남은 것: Supabase 인증 메일(SMTP) 연결 | 사용자 |
+| Resend `clipers.site` 도메인 | DNS·인증·`RESEND_API_KEY`·`EMAIL_FROM`(clipers-app), DMARC(`p=none`), Supabase 인증 메일 SMTP(`supabase-auth-smtp` 키) 모두 완료. 남은 것: 인증 메일 한국어 템플릿 적용 확인(아래 0-1) | 사용자 |
 
 ## 사용자가 할 일
 
