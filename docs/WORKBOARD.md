@@ -16,7 +16,7 @@
 |---|---|---|---|---|
 | clipers-0b | 클립 부정 방지: 캠페인 공개 이후 게시물만, 계정 인증 필수, 삭제·비공개 감지 후 정산 중단, 온보딩 만 19세 확인 | **완료** · DB 적용 · `e1b7e3e`로 배포(2026-10-03) · 실제 DB에서 제출 규칙과 조회수 수집(200) 확인 | `specs/2026-10-03-clip-fraud-guards-design.md`, `plans/2026-10-03-clip-fraud-guards.md` | 정책 4건 2026-10-03 회사 결정(구현 그대로) → clipers-a1이 약관 제13조 4·5항·처리방침 '계정 인증' 행으로 확정(시행 2026-10-04, 근거 `docs/legal/README.md` 0절). 추가: 정산 멈춤·재개 알림(`9d51145`, 마이그레이션 `20261003190000` 운영 적용, `4d6a151`로 배포) |
 | clipers-8a | 알림(앱 안·메일), 예산 증액, Resend 메일 | **완료** · 알림·예산 증액 DB 적용 · 앱 배포됨(origin/main에 포함) · Resend 연결은 clipers-f1이 마침 | `specs/2026-10-03-notifications-design.md`, `specs/2026-10-03-budget-topup-design.md` | 이 작업은 이제 clipers-a1(같은 대화)이 이어서 봄 |
-| clipers-a1 | 틱톡·인스타 OAuth 계정 연결·조회수 자동 수집, 매니지드 캠페인 | 코드 커밋 완료(로컬, push 전) · `20261003130900_social_connections`, `20261003131616_managed_campaigns` **운영 DB 적용**(되돌리는 검증 통과) · 키 없으면 연결 버튼이 숨겨져 배포해도 안전 | `specs/2026-10-03-social-oauth-views-design.md`, `specs/2026-10-03-managed-campaigns-design.md`, `docs/social-app-registration.md` | 틱톡·릴스 제출은 서버 액션(`submit-social-clip-action.ts`). 매니지드는 운영자 '매니지드 만들기'에서 만들고 공개·정산은 셀프서브와 같음(`campaigns.managed_by`) |
+| clipers-a1 | 틱톡·인스타 OAuth 계정 연결·조회수 자동 수집, 매니지드 캠페인, 약관·처리방침 확정, 실명 비교 가이드 법률 점검 | **완료** · DB 적용 · `4d6a151`로 배포 · 조회수 수집 정기 작업 적용(200 확인) · 연결 버튼은 틱톡·Meta 키가 들어오면 켜짐 | `specs/2026-10-03-social-oauth-views-design.md`, `specs/2026-10-03-managed-campaigns-design.md`, `docs/social-app-registration.md`, `docs/legal/README.md` 0절 | 남은 것: 사용자의 틱톡·Meta 앱 등록·심사 후 키 4개 등록 |
 | clipers-f1 | Resend 메일 연결(완료), 알림 메일 디자인 개편, 활동 알림 메일 끄기 설정 | 구현·커밋 완료(`0a4379e`, `70f1efb`) · 마이그레이션 `notification_email_preferences` **운영 적용 완료** · 앱 **배포 대기** | `specs/2026-10-03-notifications-design.md` | 돈 관련 알림 메일은 항상 보냄. 메일 로고는 `app.clipers.site/logo/clipers-wordmark-email*.png`(출시 전 잠금에서 이 두 파일만 열어 둠). a1 요청으로 `connection_expired` 문구 추가 |
 
 ## 적용·배포를 기다리는 것
@@ -25,7 +25,7 @@
 |---|---|---|
 | ~~origin/main 이후 커밋~~ | 완료: `4d6a151`까지 push·배포(2026-10-03, 앱·사이트 READY; 조회수 수집·알림 메일 정기 작업 200, 메일 로고 경로 200) | — |
 | ~~`supabase/migrations/20261003160000_notification_email_cron.sql`~~ | 완료: `ea6eec1` 배포 뒤 운영 DB 적용, 5분마다 200 응답 확인 | clipers-f1 |
-| `supabase/migrations/social_views_cron.sql` (버전 미정) | `/api/cron/social-views`가 배포된 뒤 적용 | clipers-a1 |
+| ~~`supabase/migrations/social_views_cron.sql`~~ | 완료: `4d6a151` 배포 뒤 `20261003134450_social_views_cron`으로 적용(매일 10:30), 직접 호출해 200 확인 | clipers-a1 |
 | 틱톡·Meta 개발자 앱 | 앱 등록·심사 후 `TIKTOK_CLIENT_KEY`·`TIKTOK_CLIENT_SECRET`·`INSTAGRAM_APP_ID`·`INSTAGRAM_APP_SECRET`를 clipers-app에 등록 | 사용자 |
 | Resend `clipers.site` 도메인 | DNS·인증·`RESEND_API_KEY`·`EMAIL_FROM`(clipers-app), DMARC(`p=none`), Supabase 인증 메일 SMTP(`supabase-auth-smtp` 키) 모두 완료. 남은 것: 인증 메일 한국어 템플릿 적용 확인(아래 0-1) | 사용자 |
 
