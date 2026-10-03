@@ -90,6 +90,12 @@ describe('buildNotificationEmail', () => {
     expect(brand.html).toContain('href="https://app.clipers.site/brand/settings"');
   });
 
+  it('tells people they can reply or write to the support address', () => {
+    const email = buildNotificationEmail({ kind: 'clip_approved', data: {}, link: '/creator/submissions' }, appUrl);
+    expect(email.html).toContain('href="mailto:help@clipers.site"');
+    expect(email.text).toContain('궁금한 점은 이 메일에 답장하거나 help@clipers.site로 보내 주세요.');
+  });
+
   it('falls back to a generic button for an unknown kind', () => {
     const email = buildNotificationEmail({ kind: 'something_new', data: {}, link: null }, appUrl);
     expect(email.subject).toBe('새 알림이 있어요');

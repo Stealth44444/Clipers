@@ -87,6 +87,9 @@ export const isMoneyNotification = (kind: string) => (MONEY_NOTIFICATION_KINDS a
 type DetailRow = { label: string; value: string };
 type EmailDetails = { action: string; lead?: string; amount?: DetailRow; rows?: DetailRow[] };
 
+/** Where people reach the team; notification emails set it as Reply-To and name it in the footer. */
+export const SUPPORT_EMAIL = 'help@clipers.site';
+
 const OPEN_CAMPAIGN = '캠페인 보기';
 const OPEN_SUBMISSIONS = '제출 현황 보기';
 const OPEN_EARNINGS = '수익 보기';
@@ -212,6 +215,7 @@ export function buildNotificationEmail(notification: { kind: string; data: Notif
     ...rows.map((row) => `${row.label}: ${row.value}`),
     `${details.action}: ${url}`,
     money ? reason : `${reason} ${settingsUrl}`,
+    `궁금한 점은 이 메일에 답장하거나 ${SUPPORT_EMAIL}로 보내 주세요.`,
   ]
     .filter(Boolean)
     .join('\n\n');
@@ -263,6 +267,7 @@ ${rowsHtml}
 </td></tr>
 <tr><td style="padding:24px 8px 0">
 <p class="muted" style="margin:0;font-size:12px;line-height:1.7;color:#8e8e93">${reasonHtml}</p>
+<p class="muted" style="margin:8px 0 0;font-size:12px;line-height:1.7;color:#8e8e93">궁금한 점은 이 메일에 답장하거나 <a href="mailto:${SUPPORT_EMAIL}" class="muted" style="color:#8e8e93;text-decoration:underline">${SUPPORT_EMAIL}</a>로 보내 주세요.</p>
 <p class="muted" style="margin:12px 0 0;font-size:12px;line-height:1.7;color:#aeaeb2">Clipers · <a href="https://clipers.site" class="muted" style="color:#aeaeb2;text-decoration:none">clipers.site</a></p>
 </td></tr>
 </table>

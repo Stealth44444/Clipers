@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
-import { buildNotificationEmail } from '@clipers/db';
+import { buildNotificationEmail, SUPPORT_EMAIL } from '@clipers/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
           // Resend drops a repeated request with the same key, so a retried run can't send twice.
           'Idempotency-Key': `notification-${item.id}`,
         },
-        body: JSON.stringify({ from, to: [item.email], subject: email.subject, html: email.html, text: email.text }),
+        body: JSON.stringify({ from, to: [item.email], reply_to: SUPPORT_EMAIL, subject: email.subject, html: email.html, text: email.text }),
       });
       if (!response.ok) errorMessage = `Resend HTTP ${response.status}: ${(await response.text()).slice(0, 300)}`;
     } catch (cause) {
