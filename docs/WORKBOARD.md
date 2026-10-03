@@ -17,7 +17,7 @@
 | clipers-0b | 클립 부정 방지: 캠페인 공개 이후 게시물만, 계정 인증 필수, 삭제·비공개 감지 후 정산 중단, 온보딩 만 19세 확인 | **완료** · DB 적용 · `e1b7e3e`로 배포(2026-10-03) · 실제 DB에서 제출 규칙과 조회수 수집(200) 확인 | `specs/2026-10-03-clip-fraud-guards-design.md`, `plans/2026-10-03-clip-fraud-guards.md` | 정책 4건 2026-10-03 회사 결정(구현 그대로). 변호사 확인만 남음 |
 | clipers-8a | 알림(앱 안·메일), 예산 증액, Resend 메일 | **완료** · 알림·예산 증액 DB 적용 · 앱 배포됨(origin/main에 포함) · Resend 연결은 clipers-f1이 마침 | `specs/2026-10-03-notifications-design.md`, `specs/2026-10-03-budget-topup-design.md` | 이 작업은 이제 clipers-a1(같은 대화)이 이어서 봄 |
 | clipers-a1 | 틱톡·인스타 OAuth 계정 연결, 조회수 자동 수집 | 코드 커밋 완료(로컬, push 전) · 마이그레이션 2개 **미적용** · 키 없으면 연결 버튼이 숨겨져 배포해도 안전 | `specs/2026-10-03-social-oauth-views-design.md` | 틱톡·릴스 제출은 서버 액션(`submit-social-clip-action.ts`)으로 바뀜. 연결 없으면 기존 수동 규칙 그대로 |
-| clipers-f1 | Resend 메일 연결(완료), 알림 메일 디자인 개편, 활동 알림 메일 끄기 설정 | Resend·알림 메일 정기 작업 **운영 적용 완료** · 메일 디자인·수신 설정 구현 중 | `specs/2026-10-03-notifications-design.md` | 수신 설정은 새 마이그레이션 예정(`profiles`에 활동 알림 메일 끄기 칸, `private.notify`가 끈 사람의 활동 알림은 메일 없이 기록). 돈 관련 알림 메일은 항상 보냄 |
+| clipers-f1 | Resend 메일 연결(완료), 알림 메일 디자인 개편, 활동 알림 메일 끄기 설정 | 구현·커밋 완료(`0a4379e`, `70f1efb`) · 마이그레이션 `notification_email_preferences` **운영 적용 완료** · 앱 **배포 대기** | `specs/2026-10-03-notifications-design.md` | 돈 관련 알림 메일은 항상 보냄. 메일 로고는 `app.clipers.site/logo/clipers-wordmark-email*.png`(출시 전 잠금에서 이 두 파일만 열어 둠). a1 요청으로 `connection_expired` 문구 추가 |
 
 ## 적용·배포를 기다리는 것
 
