@@ -27,6 +27,7 @@ type ApprovedClip = {
   creator_id: string;
   platform: string;
   reviewed_at: string | null;
+  unavailable_at: string | null;
 };
 
 type FinanceRow = { campaign_id: string; total_budget: number | string; brand_cpm: number | string; creator_cpm: number | string };
@@ -41,7 +42,7 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
   const clips = (await fetchAllRows((from, to) =>
     supabase
       .from('clips')
-      .select('id, campaign_id, creator_id, platform, reviewed_at')
+      .select('id, campaign_id, creator_id, platform, reviewed_at, unavailable_at')
       .eq('status', 'approved')
       .order('id')
       .range(from, to)
@@ -107,6 +108,7 @@ async function settle(supabase: SupabaseClient, period: SettlementPeriod): Promi
         campaignId: clip.campaign_id,
         creatorId: clip.creator_id,
         reviewedAt: clip.reviewed_at,
+        unavailableAt: clip.unavailable_at,
         cpmRate: rate.cpmRate,
         perClipCap: rate.maxPayout,
         // Creators can only be paid the creator-rate share of the brand's budget.

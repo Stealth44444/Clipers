@@ -19,6 +19,8 @@ export type WeeklySettlementInput = {
   creatorCap: number;
   /** What this creator has already been paid from this campaign: earlier weeks plus this week's existing rows. */
   previouslySettledCreatorAmount: number;
+  /** When the video was found deleted, private or unlisted (clips.unavailable_at); not paid from that week on. */
+  unavailableAt?: string | null;
   snapshots: SettlementSnapshot[];
 };
 
@@ -127,6 +129,8 @@ export function calculateWeeklySettlementDrafts(
 
       const reviewedAt = new Date(input.reviewedAt).getTime();
       if (!Number.isFinite(reviewedAt) || reviewedAt >= periodEnd) continue;
+      // A video that stopped being public is not paid from the week it was found that way (already paid weeks stay).
+      if (input.unavailableAt && Date.parse(input.unavailableAt) < periodEnd) continue;
 
       const snapshots = input.snapshots
         .map((snapshot) => ({

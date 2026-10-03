@@ -181,4 +181,17 @@ describe('calculateWeeklySettlementDrafts', () => {
     });
     expect(calculateWeeklySettlementDrafts([input], PERIOD)[0]).toMatchObject({ verifiedViews: 300, amount: 30 });
   });
+
+  it('stops paying a clip from the week its video was found missing or not public', () => {
+    // PERIOD is the Korea-time week 2026-09-21 ~ 2026-09-28 (2026-09-20T15:00Z ~ 2026-09-27T15:00Z).
+    expect(calculateWeeklySettlementDrafts([createInput({ unavailableAt: '2026-09-25T00:00:00.000Z' })], PERIOD)).toEqual([]);
+    expect(calculateWeeklySettlementDrafts([createInput({ unavailableAt: '2026-09-01T00:00:00.000Z' })], PERIOD)).toEqual([]);
+  });
+
+  it('still pays the weeks before the video was found missing', () => {
+    expect(calculateWeeklySettlementDrafts([createInput({ unavailableAt: '2026-09-28T00:00:00.000Z' })], PERIOD)).toEqual(
+      calculateWeeklySettlementDrafts([createInput()], PERIOD)
+    );
+    expect(calculateWeeklySettlementDrafts([createInput()], PERIOD)).toHaveLength(1);
+  });
 });
