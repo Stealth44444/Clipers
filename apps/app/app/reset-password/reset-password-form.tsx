@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
-import { Button, ButtonLink, Field, IconButton, Input } from '@clipers/ui';
+import { Button, ButtonLink, Field, IconButton, Input, StatusDot } from '@clipers/ui';
 import { authErrorMessage } from '@/lib/auth';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import { siteUrl } from '@/lib/urls';
@@ -108,7 +108,7 @@ export default function ResetPasswordForm() {
                   value={confirm}
                 />
               </Field>
-              {error && <p className="cl-alert cl-tone-tomato" role="alert">{error}</p>}
+              {error && <p className="cl-auth__status" role="alert"><StatusDot tone="red">{error}</StatusDot></p>}
               <Button block disabled={state !== 'ready' || submitting || mismatch} size="lg" type="submit" variant="primary">
                 {submitting ? '저장 중…' : '비밀번호 바꾸기'}
               </Button>

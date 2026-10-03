@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import type { Attribution, OnboardingRole } from '@clipers/db';
-import { Button, Field, IconButton, Input, Tabs } from '@clipers/ui';
+import { Button, Field, IconButton, Input, StatusDot, Tabs } from '@clipers/ui';
 import { authErrorMessage } from '@/lib/auth';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import { siteUrl } from '@/lib/urls';
@@ -196,7 +196,9 @@ export default function LoginForm({
                 {sent.kind === 'signup' ? '메일을 확인해 주세요' : '재설정 메일을 보냈어요'}
               </h1>
               <p className="cl-auth__subtitle">
-                <strong>{sent.email}</strong>로 {sent.kind === 'signup' ? '인증 메일을 보냈어요. 메일의 링크를 열면 가입이 끝나요.' : '보냈어요. 메일의 링크를 열어 새 비밀번호를 정해 주세요.'}
+                <strong>{sent.email}</strong>로 {sent.kind === 'signup' ? '인증 메일을 보냈어요.' : '보냈어요.'}
+                <br />
+                {sent.kind === 'signup' ? '메일의 링크를 열면 가입이 끝나요.' : '메일의 링크를 열어 새 비밀번호를 정해 주세요.'}
               </p>
             </div>
             <p className="cl-auth__note">
@@ -215,7 +217,7 @@ export default function LoginForm({
                 </>
               )}
             </p>
-            {error && <p className="cl-alert cl-tone-tomato" role="alert">{error}</p>}
+            {error && <p className="cl-auth__status" role="alert"><StatusDot tone="red">{error}</StatusDot></p>}
             <Button block disabled={wait > 0 || submitting} onClick={() => void resend()} size="lg" variant="secondary">
               {wait > 0 ? `다시 보내기 (${wait}초)` : submitting ? '보내는 중…' : '다시 보내기'}
             </Button>
@@ -274,7 +276,7 @@ export default function LoginForm({
                 </p>
               )}
 
-              {error && <p className="cl-alert cl-tone-tomato" role="alert">{error}</p>}
+              {error && <p className="cl-auth__status" role="alert"><StatusDot tone="red">{error}</StatusDot></p>}
 
               <Button block disabled={submitting} size="lg" type="submit" variant="primary">
                 {submitting ? '처리 중…' : mode === 'sign-up' ? '계정 만들기' : mode === 'reset' ? '재설정 메일 보내기' : '로그인'}
