@@ -1,21 +1,30 @@
 import { Page, PageHeader, Stack } from '@clipers/ui';
 import { getSession } from '@/lib/session';
+import ChannelsCard from './channels-card';
 import PayoutDetailsCard from './payout-details-card';
 import SettingsForm from './settings-form';
 
 export default async function CreatorSettingsPage() {
   const { supabase, user, profile } = await getSession();
-  const { data: account } = await supabase
-    .from('payout_accounts')
-    .select('legal_name, bank_code, account_number, updated_at')
-    .eq('creator_id', user.id)
-    .maybeSingle();
+  const [{ data: account }, { data: channels }] = await Promise.all([
+    supabase.from('payout_accounts').select('legal_name, bank_code, account_number, updated_at').eq('creator_id', user.id).maybeSingle(),
+    supabase.from('creator_channels').select('id, platform, url, verification_code, verified_at').eq('creator_id', user.id).order('created_at'),
+  ]);
 
   return (
     <Page>
       <PageHeader description="프로필과 관심 분야를 바꾸면 추천 캠페인에 반영돼요." title="설정" />
       <Stack>
         <SettingsForm email={user.email ?? ''} profile={profile} />
+        <ChannelsCard
+          channels={(channels ?? []).map((channel) => ({
+            id: channel.id,
+            platform: channel.platform,
+            url: channel.url,
+            verificationCode: channel.verification_code,
+            verifiedAt: channel.verified_at,
+          }))}
+        />
         <PayoutDetailsCard
           account={
             account

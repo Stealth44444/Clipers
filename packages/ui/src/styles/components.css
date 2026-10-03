@@ -1577,3 +1577,8 @@ a.cl-notifications__item:hover { background: var(--gray-a3); }
 .cl-legal__table table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: var(--font-size-2); line-height: 1.6; }
 .cl-legal__table th, .cl-legal__table td { padding: var(--space-3); text-align: left; vertical-align: top; box-shadow: inset 0 -1px 0 var(--gray-a3); }
 .cl-legal__table th { color: var(--color-text-muted); font-weight: 600; white-space: nowrap; }
+
+.cl-channel-list { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; gap: var(--space-3); }
+.cl-channel { display: grid; gap: var(--space-2); padding-bottom: var(--space-3); border-bottom: 1px solid var(--gray-a3); }
+.cl-channel:last-child { border-bottom: 0; padding-bottom: 0; }
+.cl-channel code { font-weight: 600; }
