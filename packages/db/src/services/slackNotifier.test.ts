@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { buildEscalationSlackMessage, sendSlackNotification } from './slackNotifier';
+import { buildEscalationSlackMessage, buildUnavailableClipsSlackMessage, sendSlackNotification } from './slackNotifier';
 
 describe('buildEscalationSlackMessage', () => {
   it('formats a single escalated clip', () => {
@@ -52,5 +52,20 @@ describe('sendSlackNotification', () => {
     const result = await sendSlackNotification('https://hooks.slack.example/x', 'hello', fetcher as unknown as typeof fetch);
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.code).toBe('SLACK_REQUEST_FAILED');
+  });
+});
+
+describe('buildUnavailableClipsSlackMessage', () => {
+  it('lists each clip with why its settlement stopped', () => {
+    expect(
+      buildUnavailableClipsSlackMessage([
+        { campaignTitle: '신곡 챌린지', creatorName: '민지', url: 'https://youtu.be/aaaaaaaaaaa', reason: 'missing' },
+        { campaignTitle: '신곡 챌린지', creatorName: '하늘', url: 'https://youtu.be/bbbbbbbbbbb', reason: 'unlisted' },
+      ])
+    ).toBe(
+      ':no_entry: 정산을 멈춘 클립 2건\n' +
+        '• [신곡 챌린지] 민지 — 삭제·비공개 https://youtu.be/aaaaaaaaaaa\n' +
+        '• [신곡 챌린지] 하늘 — 일부 공개 https://youtu.be/bbbbbbbbbbb'
+    );
   });
 });

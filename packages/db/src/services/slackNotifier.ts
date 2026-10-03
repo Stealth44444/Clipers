@@ -19,6 +19,24 @@ export function buildEscalationSlackMessage(clips: EscalatedClipSummary[]): stri
   return `:rotating_light: SLA 초과 검수 요청 ${clips.length}건\n${lines.join('\n')}`;
 }
 
+export type UnavailableClipSummary = {
+  campaignTitle: string;
+  creatorName: string;
+  url: string;
+  reason: 'missing' | 'unlisted' | 'manual';
+};
+
+export const UNAVAILABLE_REASON_LABEL: Record<UnavailableClipSummary['reason'], string> = {
+  missing: '삭제·비공개',
+  unlisted: '일부 공개',
+  manual: '운영자 표시',
+};
+
+export function buildUnavailableClipsSlackMessage(clips: UnavailableClipSummary[]): string {
+  const lines = clips.map((clip) => `• [${clip.campaignTitle}] ${clip.creatorName} — ${UNAVAILABLE_REASON_LABEL[clip.reason]} ${clip.url}`);
+  return `:no_entry: 정산을 멈춘 클립 ${clips.length}건\n${lines.join('\n')}`;
+}
+
 export async function sendSlackNotification(
   webhookUrl: string,
   text: string,
