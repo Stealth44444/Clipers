@@ -2,8 +2,11 @@
 // password (any user name), so the deployment can run without strangers signing up or search engines indexing it.
 // Middleware imports this file directly (not the package index) to keep the edge bundle small; it uses only web APIs.
 
-/** Open while locked: cron routes carry their own secret, and robots.txt tells crawlers to stay out. */
-const OPEN_PATHS = [/^\/api\/cron\//, /^\/robots\.txt$/];
+/**
+ * Open while locked: cron routes carry their own secret, robots.txt tells crawlers to stay out, and the notification
+ * emails' logo has to load in mail clients, which can't send the password.
+ */
+const OPEN_PATHS = [/^\/api\/cron\//, /^\/robots\.txt$/, /^\/logo\/clipers-wordmark-email(-dark)?\.png$/];
 
 const encoder = new TextEncoder();
 

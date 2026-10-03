@@ -1,4 +1,5 @@
 import { Page, PageHeader, Stack } from '@clipers/ui';
+import NotificationSettingsCard from '@/components/notification-settings-card';
 import { getSession } from '@/lib/session';
 import { connectablePlatforms } from '@/lib/social-oauth';
 import ChannelsCard from './channels-card';
@@ -12,6 +13,7 @@ export default async function CreatorSettingsPage({ searchParams }: { searchPara
     supabase.from('payout_accounts').select('legal_name, bank_code, account_number, updated_at').eq('creator_id', user.id).maybeSingle(),
     supabase.from('creator_channels').select('id, platform, url, verification_code, verified_at, verified_by').eq('creator_id', user.id).order('created_at'),
   ]);
+  const { data: preferences } = await supabase.from('profiles').select('email_activity_notifications').eq('id', user.id).maybeSingle();
 
   return (
     <Page>
@@ -29,6 +31,11 @@ export default async function CreatorSettingsPage({ searchParams }: { searchPara
           }))}
           connectResult={connect}
           connectable={connectablePlatforms()}
+        />
+        <NotificationSettingsCard
+          initialActivityEmails={preferences?.email_activity_notifications ?? true}
+          moneyDescription="정산과 지급 소식은 메일로 항상 보내 드려요."
+          profileId={profile.id}
         />
         <PayoutDetailsCard
           account={

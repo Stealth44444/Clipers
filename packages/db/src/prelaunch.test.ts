@@ -40,4 +40,11 @@ describe('prelaunchGate', () => {
     expect(prelaunchGate('/api/cronjob', null, 'secret')?.status).toBe(401);
     expect(prelaunchGate('/robots.txt.bak', null, 'secret')?.status).toBe(401);
   });
+
+  it('leaves only the email logo open among public files', () => {
+    expect(prelaunchGate('/logo/clipers-wordmark-email.png', null, 'secret')).toBeNull();
+    expect(prelaunchGate('/logo/clipers-wordmark-email-dark.png', null, 'secret')).toBeNull();
+    expect(prelaunchGate('/logo/clipers-wordmark.svg', null, 'secret')?.status).toBe(401);
+    expect(prelaunchGate('/logo/clipers-wordmark-email.png/x', null, 'secret')?.status).toBe(401);
+  });
 });

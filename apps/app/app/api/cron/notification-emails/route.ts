@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
-import { buildNotificationEmail, renderNotification } from '@clipers/db';
+import { buildNotificationEmail } from '@clipers/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
   let sent = 0;
   let failed = 0;
   for (const item of (data ?? []) as QueuedEmail[]) {
-    const email = buildNotificationEmail({ ...renderNotification(item.kind, item.data), link: item.link }, appUrl);
+    const email = buildNotificationEmail({ kind: item.kind, data: item.data, link: item.link }, appUrl);
     let errorMessage: string | null = null;
     try {
       const response = await fetch('https://api.resend.com/emails', {

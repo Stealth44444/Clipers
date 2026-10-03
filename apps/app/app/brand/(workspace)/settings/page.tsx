@@ -1,4 +1,5 @@
 import { Page, PageHeader, Stack } from '@clipers/ui';
+import NotificationSettingsCard from '@/components/notification-settings-card';
 import ProfileNameForm from '@/components/profile-name-form';
 import { getSession } from '@/lib/session';
 import BillingProfileForm from './billing-profile-form';
@@ -10,6 +11,7 @@ export default async function BrandSettingsPage() {
     .select('business_number, company_name, representative, invoice_email')
     .eq('brand_id', user.id)
     .maybeSingle();
+  const { data: preferences } = await supabase.from('profiles').select('email_activity_notifications').eq('id', user.id).maybeSingle();
 
   return (
     <Page>
@@ -23,6 +25,11 @@ export default async function BrandSettingsPage() {
               ? { businessNumber: billing.business_number, companyName: billing.company_name, representative: billing.representative, invoiceEmail: billing.invoice_email }
               : null
           }
+        />
+        <NotificationSettingsCard
+          initialActivityEmails={preferences?.email_activity_notifications ?? true}
+          moneyDescription="입금 확인, 예산, 환불 소식은 메일로 항상 보내 드려요."
+          profileId={profile.id}
         />
       </Stack>
     </Page>
