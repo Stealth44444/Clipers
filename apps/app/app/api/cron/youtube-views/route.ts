@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
-import { extractYouTubeVideoId, fetchYouTubeViewCounts } from '@clipers/db';
+import { buildUnavailableClipsSlackMessage, extractYouTubeVideoId, fetchYouTubeViewCounts, findUnavailableClips, sendSlackNotification, type UnavailableClipSummary } from '@clipers/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
       .from('clips')
       .select('id,url')
       .eq('status', 'approved')
+      .is('unavailable_at', null)
       .order('id', { ascending: true })
       .range(offset, offset + PAGE_SIZE - 1);
 
@@ -112,11 +113,50 @@ export async function GET(request: NextRequest) {
     if (error) return responseError('Could not save view snapshots.', 502);
   }
 
+  // Videos YouTube no longer returns (deleted or private) or returns as unlisted stop being settled from today.
+  const unavailable = findUnavailableClips(candidates, viewCountResult.data);
+  const markedIds: string[] = [];
+  for (const reason of ['missing', 'unlisted'] as const) {
+    const ids = unavailable.filter((clip) => clip.reason === reason).map((clip) => clip.clipId);
+    if (ids.length === 0) continue;
+    const { data: marked, error } = await supabase
+      .from('clips')
+      .update({ unavailable_at: new Date().toISOString(), unavailable_reason: reason })
+      .in('id', ids)
+      .is('unavailable_at', null)
+      .select('id');
+    if (error) return responseError('Could not mark unavailable clips.', 502);
+    markedIds.push(...(marked ?? []).map((clip) => clip.id));
+  }
+
+  // Marked clips leave the candidate list, so each is announced once. A failed post doesn't undo the marks.
+  let slackNotified = false;
+  const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+  if (markedIds.length > 0 && slackWebhookUrl) {
+    const { data: details } = await supabase
+      .from('clips')
+      .select('url, unavailable_reason, campaign:campaigns!clips_campaign_id_fkey(title), creator:profiles!clips_creator_id_fkey(display_name)')
+      .in('id', markedIds);
+    const summaries: UnavailableClipSummary[] = ((details ?? []) as unknown as Array<{
+      url: string;
+      unavailable_reason: UnavailableClipSummary['reason'];
+      campaign: { title: string } | null;
+      creator: { display_name: string } | null;
+    }>).map((clip) => ({
+      campaignTitle: clip.campaign?.title ?? '캠페인',
+      creatorName: clip.creator?.display_name ?? '크리에이터',
+      url: clip.url,
+      reason: clip.unavailable_reason,
+    }));
+    slackNotified = (await sendSlackNotification(slackWebhookUrl, buildUnavailableClipsSlackMessage(summaries))).ok;
+  }
+
   return NextResponse.json({
     scanned,
     selected: candidates.length,
     inserted: snapshots.length,
-    unavailable: candidates.length - snapshots.length,
+    markedUnavailable: markedIds.length,
+    slackNotified,
     skippedRecent,
     skippedInvalidUrl,
   });
