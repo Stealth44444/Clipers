@@ -238,29 +238,39 @@ export function DisputeResolveAction({ disputeId }: { disputeId: string }) {
 
 const DEPOSIT_RESULT: Record<string, string> = {
   short: '아직 모자라요. 브랜드 화면에 차액 입금을 안내했어요.',
-  over: '캠페인을 공개했어요. 초과분은 반환 화면에 올라갔어요.',
+  over: '처리했어요. 초과분은 반환 화면에 올라갔어요.',
 };
 
-/** Records the remaining due amount as received; the campaign goes live. */
-export function ConfirmDepositAction({ campaignId, amount }: { campaignId: string; amount: number }) {
+/** What a deposit pays for: a campaign's first deposit, or one budget top-up. */
+export type DepositTarget = { campaignId: string } | { topupId: string };
+
+const recordDeposit = (target: DepositTarget, amount: number) =>
+  'topupId' in target
+    ? getSupabaseBrowserClient().rpc('record_topup', { p_topup_id: target.topupId, p_amount: amount })
+    : getSupabaseBrowserClient().rpc('record_deposit', { p_campaign_id: target.campaignId, p_amount: amount });
+
+/** Records the remaining due amount as received; the campaign goes live, or the top-up joins its budget. */
+export function ConfirmDepositAction({ target, amount }: { target: DepositTarget; amount: number }) {
   async function confirm(): Promise<ActionResult> {
-    const question = amount > 0 ? `${formatKRW(amount)} 입금을 통장에서 확인했나요? 확인하면 캠페인이 바로 공개돼요.` : '잔액으로 낸 캠페인이에요. 공개할까요?';
+    const effect = 'topupId' in target ? '예산에 바로 더해져요' : '캠페인이 바로 공개돼요';
+    const question = amount > 0 ? `${formatKRW(amount)} 입금을 통장에서 확인했나요? 확인하면 ${effect}.` : `잔액으로 낸 건이에요. 확인하면 ${effect}.`;
     if (!window.confirm(question)) return { ok: true };
-    const { error } = await getSupabaseBrowserClient().rpc('record_deposit', { p_campaign_id: campaignId, p_amount: amount });
+    const { error } = await recordDeposit(target, amount);
     return error ? fail('입금을 확인 처리하지 못했어요. 새로고침한 뒤 확인해 주세요.') : { ok: true };
   }
   return <ActionButton label="입금 확인" pendingLabel="처리 중…" run={confirm} variant="primary" />;
 }
 
 /** Records a different amount than asked: short keeps the campaign waiting, over queues the excess for return. */
-export function DepositMismatchAction({ campaignId, remaining }: { campaignId: string; remaining: number }) {
+export function DepositMismatchAction({ target, remaining }: { target: DepositTarget; remaining: number }) {
   const [amount, setAmount] = useState('');
   const value = Math.floor(Number(amount));
+  const fieldId = `deposit-${'topupId' in target ? target.topupId : target.campaignId}`;
   return (
     <ActionDialog
       canSubmit={Number.isFinite(value) && value > 0 && value !== remaining}
       onSubmit={async () => {
-        const { data, error } = await getSupabaseBrowserClient().rpc('record_deposit', { p_campaign_id: campaignId, p_amount: value });
+        const { data, error } = await recordDeposit(target, value);
         if (error) return fail('기록하지 못했어요. 새로고침한 뒤 확인해 주세요.');
         if (DEPOSIT_RESULT[data as string]) window.alert(DEPOSIT_RESULT[data as string]);
         return { ok: true };
@@ -269,8 +279,8 @@ export function DepositMismatchAction({ campaignId, remaining }: { campaignId: s
       title="받은 금액 기록"
       trigger="금액이 달라요"
     >
-      <Field hint={`남은 안내 금액은 ${formatKRW(remaining)}이에요. 이번에 통장에서 확인한 금액(부가세 포함)을 적어 주세요.`} htmlFor={`deposit-${campaignId}`} label="확인한 금액">
-        <Input id={`deposit-${campaignId}`} inputMode="numeric" min={1} onChange={(event) => setAmount(event.target.value)} type="number" value={amount} />
+      <Field hint={`남은 안내 금액은 ${formatKRW(remaining)}이에요. 이번에 통장에서 확인한 금액(부가세 포함)을 적어 주세요.`} htmlFor={fieldId} label="확인한 금액">
+        <Input id={fieldId} inputMode="numeric" min={1} onChange={(event) => setAmount(event.target.value)} type="number" value={amount} />
       </Field>
     </ActionDialog>
   );

@@ -57,7 +57,7 @@ export default async function AdminCampaignPage({ params }: { params: Promise<{ 
     <Page>
       <PageHeader
         actions={
-          campaign.status === 'pending_escrow' ? <ConfirmDepositAction amount={depositRemaining} campaignId={campaign.id} /> : undefined
+          campaign.status === 'pending_escrow' ? <ConfirmDepositAction amount={depositRemaining} target={{ campaignId: campaign.id }} /> : undefined
         }
         description={
           <span className="cl-inline">

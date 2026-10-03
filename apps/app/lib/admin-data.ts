@@ -32,8 +32,9 @@ export const getSignupSources = cache(async () => {
 export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => {
   const { supabase } = await getSession();
   const count = { count: 'exact' as const, head: true };
-  const [deposits, applications, clips, overdueClips, viewReports, disputes, payouts, refunds, channels] = await Promise.all([
+  const [deposits, topups, applications, clips, overdueClips, viewReports, disputes, payouts, refunds, channels] = await Promise.all([
     supabase.from('campaigns').select('id', count).eq('status', 'pending_escrow'),
+    supabase.from('campaign_topups').select('id', count).eq('status', 'pending'),
     supabase.from('campaign_applications').select('id', count).eq('status', 'applied'),
     supabase.from('clips').select('id', count).eq('status', 'pending_review'),
     supabase.from('clips').select('id', count).eq('status', 'pending_review').lt('sla_deadline', new Date().toISOString()),
@@ -44,7 +45,7 @@ export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => 
     supabase.from('creator_channels').select('id', count).is('verified_at', null).neq('platform', 'youtube_shorts'),
   ]);
   return {
-    deposits: deposits.count ?? 0,
+    deposits: (deposits.count ?? 0) + (topups.count ?? 0),
     applications: applications.count ?? 0,
     clips: clips.count ?? 0,
     overdueClips: overdueClips.count ?? 0,
