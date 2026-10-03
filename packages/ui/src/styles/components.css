@@ -450,6 +450,69 @@
 .cl-chart__line { fill: none; stroke: var(--brand-9); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
 .cl-chart__last { fill: var(--brand-9); }
 
+/* ---------- notifications ---------- */
+.cl-notifications { position: relative; }
+.cl-notifications__trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--radius-3);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.cl-notifications__trigger:hover { background: var(--gray-a3); color: var(--color-text); }
+.cl-notifications__dot {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--tomato-9);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.cl-notifications__panel {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 50;
+  width: min(360px, calc(100vw - 32px));
+  max-height: min(480px, 70vh);
+  overflow-y: auto;
+  padding: var(--space-2);
+  border-radius: var(--radius-5);
+  background: rgba(34, 34, 34, 0.92);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: var(--shadow-popover);
+}
+.cl-notifications__heading { margin: 0; padding: var(--space-2) var(--space-3); font-weight: 600; }
+.cl-notifications__empty { margin: 0; padding: var(--space-3); color: var(--color-text-muted); font-size: var(--font-size-2); }
+.cl-notifications__list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.cl-notifications__item {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-3);
+  color: var(--color-text);
+  text-decoration: none;
+}
+a.cl-notifications__item:hover { background: var(--gray-a3); }
+.cl-notifications__title { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-2); font-weight: 500; }
+.cl-notifications__unread { width: 6px; height: 6px; flex: none; border-radius: 50%; background: var(--brand-9); }
+.cl-notifications__body { color: var(--color-text-muted); font-size: var(--font-size-1); line-height: 1.5; }
+.cl-notifications__time { color: var(--color-text-subtle, var(--color-text-muted)); font-size: var(--font-size-1); }
+
 /* ---------- user menu ---------- */
 .cl-user-menu { position: relative; }
 .cl-user-menu__trigger {

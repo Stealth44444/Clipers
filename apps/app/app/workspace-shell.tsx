@@ -26,6 +26,7 @@ import {
 import { AppShell, Sidebar, UserMenu, type SidebarSection } from '@clipers/ui';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import { siteUrl } from '@/lib/urls';
+import NotificationBell from '@/components/notification-bell';
 
 export type WorkspaceRole = 'admin' | 'brand' | 'creator';
 
@@ -129,6 +130,7 @@ export default function WorkspaceShell({ role, displayName, topbarExtra, badges,
       topbarEnd={
         <>
           {topbarExtra}
+          {role !== 'admin' && <NotificationBell />}
           <UserMenu
             links={[{ href: siteUrl('/'), label: 'Clipers 홈', icon: <Globe size={16} /> }]}
             name={displayName}
