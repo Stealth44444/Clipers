@@ -17,6 +17,7 @@ import {
   Landmark,
   Megaphone,
   MessageSquareWarning,
+  Plus,
   Receipt,
   ScrollText,
   Settings,
@@ -81,7 +82,10 @@ const NAVIGATION: Record<WorkspaceRole, SidebarSection[]> = {
   admin: [
     {
       title: '개요',
-      items: [{ href: '/admin', label: '현황', icon: <Gauge {...ICON} />, exact: true }],
+      items: [
+        { href: '/admin', label: '현황', icon: <Gauge {...ICON} />, exact: true },
+        { href: '/admin/campaigns/new', label: '매니지드 만들기', icon: <Plus {...ICON} /> },
+      ],
     },
     {
       title: '검수',

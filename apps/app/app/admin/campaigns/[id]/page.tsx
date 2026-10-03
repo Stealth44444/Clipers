@@ -22,7 +22,7 @@ export default async function AdminCampaignPage({ params }: { params: Promise<{ 
   const { supabase } = await getSession();
   const { data: campaign } = await supabase
     .from('campaigns')
-    .select('id, title, status, category, content_type, allowed_platforms, review_sla_hours, brand:profiles!campaigns_brand_id_fkey(display_name)')
+    .select('id, title, status, category, content_type, allowed_platforms, review_sla_hours, managed_by, brand:profiles!campaigns_brand_id_fkey(display_name)')
     .eq('id', id)
     .maybeSingle();
   if (!campaign) notFound();
@@ -62,6 +62,7 @@ export default async function AdminCampaignPage({ params }: { params: Promise<{ 
         description={
           <span className="cl-inline">
             <Badge tone={status.tone}>{status.label}</Badge>
+            {campaign.managed_by && <Badge tone="violet">매니지드</Badge>}
             {brandName} · {categoryLabel(campaign.category)} · {CONTENT_TYPE_LABEL[campaign.content_type] ?? campaign.content_type}
           </span>
         }

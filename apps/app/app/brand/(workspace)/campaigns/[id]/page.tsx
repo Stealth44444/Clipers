@@ -34,7 +34,7 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
   const { supabase, user } = await getSession();
   const { data: campaign } = await supabase
     .from('campaigns')
-    .select('id, title, status, description, content_requirements, reference_links, review_sla_hours, daily_clip_limit, allowed_platforms, category, content_type')
+    .select('id, title, status, description, content_requirements, reference_links, review_sla_hours, daily_clip_limit, allowed_platforms, category, content_type, managed_by')
     .eq('id', id)
     .eq('brand_id', user.id)
     .maybeSingle();
@@ -90,6 +90,11 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
         title={campaign.title}
       />
       <Stack>
+        {campaign.managed_by && (
+          <p className="cl-alert cl-tone-sky" role="status">
+            Clipers 운영팀이 계약 조건대로 만들고 관리하는 캠페인이에요. 궁금한 점은 담당자에게 문의해 주세요.
+          </p>
+        )}
         {campaign.status === 'draft' && (
           <Card description="입금을 마치고 아래 버튼을 누르면 운영팀이 확인한 뒤 캠페인을 공개하고, 입금한 금액만큼 세금계산서를 발행해요." title="예산 입금">
             <DepositPanel
