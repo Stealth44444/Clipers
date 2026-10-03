@@ -30,3 +30,6 @@ create trigger notify_clip_availability
   after update of unavailable_at on public.clips
   for each row when ((old.unavailable_at is null) <> (new.unavailable_at is null) and new.status = 'approved')
   execute function public.notify_clip_availability();
+
+-- The trigger function is not an API: only the trigger calls it (same as the other notify_* functions).
+revoke execute on function public.notify_clip_availability() from public, anon, authenticated;
