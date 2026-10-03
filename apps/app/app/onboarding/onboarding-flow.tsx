@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { BadgeCheck, ChevronLeft, Clapperboard, FileText, Megaphone, Scissors, Shield, Wallet } from 'lucide-react';
+import { BadgeCheck, ChevronLeft, Clapperboard, FileText, Megaphone, Scissors, Shield, UserCheck, Wallet } from 'lucide-react';
 import {
   EXPERIENCE_OPTIONS,
   HEARD_FROM_OPTIONS,
@@ -45,6 +45,7 @@ export default function OnboardingFlow({ initialRole = 'creator' }: { initialRol
       p_on_camera: isCreator ? answers.onCamera : null,
       p_experience_level: isCreator ? answers.experienceLevel : null,
       p_heard_from: answers.heardFrom,
+      p_adult_confirmed: answers.adultConfirmed,
     });
     if (rpcError) {
       setError('저장하지 못했습니다. 잠시 후 다시 시도해 주세요.');
@@ -191,6 +192,12 @@ export default function OnboardingFlow({ initialRole = 'creator' }: { initialRol
                 icon={<Shield {...ICON} />}
                 title="개인정보 수집·이용 동의 (필수)"
                 trailing={<Switch checked={answers.privacyAgreed} label="개인정보 수집·이용 동의" onChange={(privacyAgreed) => update({ privacyAgreed })} />}
+              />
+              <ListRow
+                description="Clipers는 만 19세 이상만 이용할 수 있어요."
+                icon={<UserCheck {...ICON} />}
+                title="만 19세 이상이에요 (필수)"
+                trailing={<Switch checked={answers.adultConfirmed} label="만 19세 이상 확인" onChange={(adultConfirmed) => update({ adultConfirmed })} />}
               />
             </List>
             {error && <p className="cl-alert cl-tone-tomato" role="alert">{error}</p>}

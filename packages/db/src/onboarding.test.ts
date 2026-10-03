@@ -60,6 +60,7 @@ const completeCreator: OnboardingAnswers = {
   heardFrom: null,
   termsAgreed: true,
   privacyAgreed: true,
+  adultConfirmed: true,
 };
 
 describe('onboardingSteps', () => {
@@ -102,8 +103,10 @@ describe('canContinueOnboarding', () => {
     }
   });
 
-  it('needs both consents on the terms step', () => {
+  it('needs both consents and the adult confirmation on the terms step', () => {
     expect(canContinueOnboarding('terms', { ...completeCreator, privacyAgreed: false })).toBe(false);
+    expect(canContinueOnboarding('terms', { ...completeCreator, adultConfirmed: false })).toBe(false);
+    expect(canContinueOnboarding('terms', completeCreator)).toBe(true);
   });
 });
 

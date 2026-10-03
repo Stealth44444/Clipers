@@ -99,10 +99,21 @@ export type OnboardingAnswers = {
   heardFrom: HeardFrom | null;
   termsAgreed: boolean;
   privacyAgreed: boolean;
+  /** "만 19세 이상이에요" — Clipers is for adults only (terms art. 5). */
+  adultConfirmed: boolean;
 };
 
 export function emptyOnboardingAnswers(): OnboardingAnswers {
-  return { role: null, interests: [], onCamera: null, experienceLevel: null, heardFrom: null, termsAgreed: false, privacyAgreed: false };
+  return {
+    role: null,
+    interests: [],
+    onCamera: null,
+    experienceLevel: null,
+    heardFrom: null,
+    termsAgreed: false,
+    privacyAgreed: false,
+    adultConfirmed: false,
+  };
 }
 
 /** Both roles answer where they heard of Clipers (optional) before the terms. */
@@ -131,7 +142,7 @@ export function canContinueOnboarding(step: OnboardingStep, answers: OnboardingA
     case 'source':
       return true;
     case 'terms':
-      return answers.termsAgreed && answers.privacyAgreed;
+      return answers.termsAgreed && answers.privacyAgreed && answers.adultConfirmed;
   }
 }
 
