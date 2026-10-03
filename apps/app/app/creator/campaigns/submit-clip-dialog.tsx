@@ -7,6 +7,7 @@ import { platformLabel } from '@clipers/db';
 import { Button, Dialog, Field, Input, Select } from '@clipers/ui';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import { submitYouTubeClip, type SubmitClipFailure } from './submit-clip-action';
+import { submitSocialClip } from './submit-social-clip-action';
 
 export default function SubmitClipDialog({ campaignId, campaignTitle, platforms, creatorId, dailyLimit, leftToday }: {
   campaignId: string;
@@ -45,6 +46,8 @@ export default function SubmitClipDialog({ campaignId, campaignTitle, platforms,
     let result: { ok: true } | { ok: false; reason: SubmitClipFailure; message: string };
     if (platform === 'youtube_shorts') {
       result = await submitYouTubeClip(campaignId, url);
+    } else if (platform === 'tiktok' || platform === 'instagram_reels') {
+      result = await submitSocialClip(campaignId, platform, url);
     } else {
       const { error: insertError } = await getSupabaseBrowserClient()
         .from('clips')
