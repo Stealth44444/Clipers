@@ -57,6 +57,45 @@ export function ApplicationActions({ applicationId, reviewerId }: { applicationI
   );
 }
 
+/** Verifies a non-YouTube account after the operator saw the code in its bio, or rejects (removes) the registration. */
+export function ChannelVerifyActions({ channelId }: { channelId: string }) {
+  async function verify(): Promise<ActionResult> {
+    const { data, error } = await getSupabaseBrowserClient()
+      .from('creator_channels')
+      .update({ verified_at: new Date().toISOString(), verified_by: 'admin' })
+      .eq('id', channelId)
+      .is('verified_at', null)
+      .select('id')
+      .maybeSingle();
+    if (error) return fail(error.code === '23505' ? '같은 계정을 이미 다른 크리에이터가 인증했어요.' : '인증하지 못했어요.');
+    return data ? { ok: true } : fail('이미 처리된 계정이에요.');
+  }
+  async function reject(): Promise<ActionResult> {
+    if (!window.confirm('소개에서 코드를 찾지 못했나요? 거절하면 등록이 지워지고, 크리에이터는 다시 등록할 수 있어요.')) return { ok: true };
+    const { error } = await getSupabaseBrowserClient().from('creator_channels').delete().eq('id', channelId).is('verified_at', null);
+    return error ? fail('거절하지 못했어요.') : { ok: true };
+  }
+  return (
+    <div className="cl-inline">
+      <ActionButton label="인증" pendingLabel="처리 중…" run={verify} variant="primary" />
+      <ActionButton label="거절" pendingLabel="처리 중…" run={reject} />
+    </div>
+  );
+}
+
+/** Releases a verified account, e.g. when the creator asks or the account changed hands. */
+export function ChannelRevokeAction({ channelId }: { channelId: string }) {
+  async function revoke(): Promise<ActionResult> {
+    if (!window.confirm('인증을 해제할까요? 이 계정의 새 클립은 다시 인증하기 전까지 받을 수 없어요.')) return { ok: true };
+    const { error } = await getSupabaseBrowserClient()
+      .from('creator_channels')
+      .update({ verified_at: null, verified_by: null, external_id: null })
+      .eq('id', channelId);
+    return error ? fail('해제하지 못했어요.') : { ok: true };
+  }
+  return <ActionButton label="인증 해제" pendingLabel="처리 중…" run={revoke} />;
+}
+
 export function ClipReviewActions({ clipId, reviewerId }: { clipId: string; reviewerId: string }) {
   const [reason, setReason] = useState('');
   async function approve(): Promise<ActionResult> {

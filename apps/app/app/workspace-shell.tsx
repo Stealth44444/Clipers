@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   ArrowUpRight,
+  BadgeCheck,
   Banknote,
   ChartLine,
   ClipboardCheck,
@@ -87,6 +88,7 @@ const NAVIGATION: Record<WorkspaceRole, SidebarSection[]> = {
       items: [
         { href: '/admin/applications', label: '지원서', icon: <UserCheck {...ICON} /> },
         { href: '/admin/clips', label: '클립', icon: <ClipboardCheck {...ICON} /> },
+        { href: '/admin/channels', label: '계정 인증', icon: <BadgeCheck {...ICON} /> },
         { href: '/admin/view-reports', label: '조회수 신고', icon: <ScrollText {...ICON} /> },
         { href: '/admin/disputes', label: '이의제기', icon: <MessageSquareWarning {...ICON} /> },
       ],

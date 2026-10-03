@@ -12,6 +12,8 @@ export type AdminQueueCounts = {
   /** Payout requests waiting for a bank transfer. */
   payouts: number;
   refunds: number;
+  /** Non-YouTube accounts waiting for an operator to check the code. */
+  channels: number;
 };
 
 export const SIGNUP_SOURCE_DAYS = 30;
@@ -30,7 +32,7 @@ export const getSignupSources = cache(async () => {
 export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => {
   const { supabase } = await getSession();
   const count = { count: 'exact' as const, head: true };
-  const [deposits, applications, clips, overdueClips, viewReports, disputes, payouts, refunds] = await Promise.all([
+  const [deposits, applications, clips, overdueClips, viewReports, disputes, payouts, refunds, channels] = await Promise.all([
     supabase.from('campaigns').select('id', count).eq('status', 'pending_escrow'),
     supabase.from('campaign_applications').select('id', count).eq('status', 'applied'),
     supabase.from('clips').select('id', count).eq('status', 'pending_review'),
@@ -39,6 +41,7 @@ export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => 
     supabase.from('clip_disputes').select('id', count).eq('status', 'open'),
     supabase.from('payouts').select('id', count).eq('status', 'requested'),
     supabase.from('brand_refunds').select('id', count).eq('status', 'requested'),
+    supabase.from('creator_channels').select('id', count).is('verified_at', null).neq('platform', 'youtube_shorts'),
   ]);
   return {
     deposits: deposits.count ?? 0,
@@ -49,5 +52,6 @@ export const getAdminQueueCounts = cache(async (): Promise<AdminQueueCounts> => 
     disputes: disputes.count ?? 0,
     payouts: payouts.count ?? 0,
     refunds: refunds.count ?? 0,
+    channels: channels.count ?? 0,
   };
 });

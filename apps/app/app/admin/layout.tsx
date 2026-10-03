@@ -11,6 +11,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       badges={{
         '/admin/applications': counts.applications,
         '/admin/clips': counts.clips,
+        '/admin/channels': counts.channels,
         '/admin/view-reports': counts.viewReports,
         '/admin/disputes': counts.disputes,
         '/admin/deposits': counts.deposits,
