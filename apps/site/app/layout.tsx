@@ -41,6 +41,7 @@ const ORGANIZATION = {
       description: '검증된 조회수 기반으로 정산하는 국내 숏폼 클리핑 캠페인 플랫폼',
       address: { '@type': 'PostalAddress', streetAddress: COMPANY.address, addressLocality: '용인시', addressRegion: '경기도', addressCountry: 'KR' },
       taxID: COMPANY.registrationNumber,
+      email: COMPANY.email,
       contactPoint: { '@type': 'ContactPoint', contactType: 'sales', url: siteUrl('/contact'), availableLanguage: 'ko' },
     },
     {

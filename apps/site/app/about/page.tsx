@@ -88,6 +88,12 @@ export default function AboutPage() {
                 <th scope="row">주소</th>
                 <td>{COMPANY.address}</td>
               </tr>
+              <tr>
+                <th scope="row">이메일</th>
+                <td>
+                  <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+                </td>
+              </tr>
             </tbody>
           </table>
         </section>
