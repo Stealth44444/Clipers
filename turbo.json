@@ -16,7 +16,11 @@
         "BING_SITE_VERIFICATION",
         "INDEXNOW_KEY",
         "RESEND_API_KEY",
-        "EMAIL_FROM"
+        "EMAIL_FROM",
+        "TIKTOK_CLIENT_KEY",
+        "TIKTOK_CLIENT_SECRET",
+        "INSTAGRAM_APP_ID",
+        "INSTAGRAM_APP_SECRET"
       ],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },

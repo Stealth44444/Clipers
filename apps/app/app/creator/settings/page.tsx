@@ -1,14 +1,16 @@
 import { Page, PageHeader, Stack } from '@clipers/ui';
 import { getSession } from '@/lib/session';
+import { connectablePlatforms } from '@/lib/social-oauth';
 import ChannelsCard from './channels-card';
 import PayoutDetailsCard from './payout-details-card';
 import SettingsForm from './settings-form';
 
-export default async function CreatorSettingsPage() {
+export default async function CreatorSettingsPage({ searchParams }: { searchParams: Promise<{ connect?: string }> }) {
+  const { connect } = await searchParams;
   const { supabase, user, profile } = await getSession();
   const [{ data: account }, { data: channels }] = await Promise.all([
     supabase.from('payout_accounts').select('legal_name, bank_code, account_number, updated_at').eq('creator_id', user.id).maybeSingle(),
-    supabase.from('creator_channels').select('id, platform, url, verification_code, verified_at').eq('creator_id', user.id).order('created_at'),
+    supabase.from('creator_channels').select('id, platform, url, verification_code, verified_at, verified_by').eq('creator_id', user.id).order('created_at'),
   ]);
 
   return (
@@ -23,7 +25,10 @@ export default async function CreatorSettingsPage() {
             url: channel.url,
             verificationCode: channel.verification_code,
             verifiedAt: channel.verified_at,
+            verifiedBy: channel.verified_by,
           }))}
+          connectResult={connect}
+          connectable={connectablePlatforms()}
         />
         <PayoutDetailsCard
           account={
