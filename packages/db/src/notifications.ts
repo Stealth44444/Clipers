@@ -45,6 +45,14 @@ const RENDER: Record<string, (data: NotificationData) => RenderedNotification> =
     d.refund_kind === 'over_deposit'
       ? { title: '초과 입금을 돌려드렸어요', body: `${won(d.amount)}을 입금한 계좌로 보냈어요.` }
       : { title: '남은 금액을 보냈어요', body: `${won(d.amount)}을 요청한 계좌로 보냈어요.` },
+  clip_unavailable: (d) => ({
+    title: '클립 정산이 멈췄어요',
+    body: `${text(d.campaign_title, '캠페인')}: 영상이 삭제되거나 비공개로 바뀐 것을 확인했어요. 다시 공개했다면 제출 현황에서 이의제기로 알려 주세요.`,
+  }),
+  clip_available_again: (d) => ({
+    title: '클립 정산을 다시 시작해요',
+    body: `${text(d.campaign_title, '캠페인')}: 영상이 다시 공개된 것을 확인했어요. 다음 정산부터 다시 포함돼요.`,
+  }),
   connection_expired: (d) => ({
     title: '계정 연결이 끊겼어요',
     body: `${CONNECTED_PLATFORMS[String(d.platform)] ?? '계정'} 연결이 만료됐어요. 설정의 '내 채널'에서 다시 연결해야 조회수를 계속 가져올 수 있어요.`,
@@ -69,6 +77,9 @@ export const MONEY_NOTIFICATION_KINDS = [
   'leftover_finalized',
   'campaign_live',
   'campaign_exhausted',
+  // A clip's settlement stopping or resuming decides whether it is paid (2026-10-03 decision).
+  'clip_unavailable',
+  'clip_available_again',
 ] as const;
 
 export const isMoneyNotification = (kind: string) => (MONEY_NOTIFICATION_KINDS as readonly string[]).includes(kind);
@@ -99,6 +110,8 @@ const EMAIL_DETAILS: Record<string, (data: NotificationData) => EmailDetails> = 
   topup_confirmed: (d) => ({ action: OPEN_CAMPAIGN, amount: { label: '늘어난 예산', value: won(d.amount) } }),
   topup_short: (d) => ({ action: OPEN_CAMPAIGN, amount: { label: '더 입금할 금액', value: won(d.difference) } }),
   refund_paid: (d) => ({ action: OPEN_SPEND, amount: { label: '보낸 금액', value: won(d.amount) } }),
+  clip_unavailable: () => ({ action: OPEN_SUBMISSIONS }),
+  clip_available_again: () => ({ action: OPEN_SUBMISSIONS }),
   connection_expired: () => ({ action: '다시 연결하기' }),
 };
 

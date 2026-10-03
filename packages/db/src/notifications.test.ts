@@ -107,3 +107,24 @@ describe('connection_expired', () => {
     expect(email.html).toContain('>다시 연결하기</a>');
   });
 });
+
+describe('clip availability', () => {
+  it('tells a creator their clip stopped settling and how to report it back', () => {
+    expect(renderNotification('clip_unavailable', { campaign_title: '봄 캠페인' })).toEqual({
+      title: '클립 정산이 멈췄어요',
+      body: '봄 캠페인: 영상이 삭제되거나 비공개로 바뀐 것을 확인했어요. 다시 공개했다면 제출 현황에서 이의제기로 알려 주세요.',
+    });
+    expect(renderNotification('clip_available_again', { campaign_title: '봄 캠페인' })).toEqual({
+      title: '클립 정산을 다시 시작해요',
+      body: '봄 캠페인: 영상이 다시 공개된 것을 확인했어요. 다음 정산부터 다시 포함돼요.',
+    });
+  });
+
+  it('are always emailed, like money notifications, and open the submissions page', () => {
+    expect(isMoneyNotification('clip_unavailable')).toBe(true);
+    expect(isMoneyNotification('clip_available_again')).toBe(true);
+    const email = buildNotificationEmail({ kind: 'clip_unavailable', data: { campaign_title: 'A' }, link: '/creator/submissions' }, appUrl);
+    expect(email.html).toContain('href="https://app.clipers.site/creator/submissions"');
+    expect(email.html).toContain('>제출 현황 보기</a>');
+  });
+});
