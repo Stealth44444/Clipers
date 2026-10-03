@@ -1582,3 +1582,5 @@ a.cl-notifications__item:hover { background: var(--gray-a3); }
 .cl-channel { display: grid; gap: var(--space-2); padding-bottom: var(--space-3); border-bottom: 1px solid var(--gray-a3); }
 .cl-channel:last-child { border-bottom: 0; padding-bottom: 0; }
 .cl-channel code { font-weight: 600; }
+.cl-review-actions { display: grid; gap: var(--space-2); justify-items: end; }
+.cl-review-checks { display: grid; gap: var(--space-1); justify-items: start; max-width: 320px; }

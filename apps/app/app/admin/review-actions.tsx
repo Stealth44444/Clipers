@@ -10,10 +10,11 @@ import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 const fail = (message: string): ActionResult => ({ ok: false, message });
 
 /** One-click action that refreshes server data and shows a short inline error when it fails. */
-function ActionButton({ label, pendingLabel, variant = 'secondary', run }: {
+function ActionButton({ label, pendingLabel, variant = 'secondary', disabled = false, run }: {
   label: string;
   pendingLabel: string;
   variant?: ButtonVariant;
+  disabled?: boolean;
   run: () => Promise<ActionResult>;
 }) {
   const router = useRouter();
@@ -31,7 +32,7 @@ function ActionButton({ label, pendingLabel, variant = 'secondary', run }: {
   }
 
   return (
-    <Button disabled={working} onClick={() => void click()} size="sm" title={error || undefined} variant={variant}>
+    <Button disabled={working || disabled} onClick={() => void click()} size="sm" title={error || undefined} variant={variant}>
       {working ? pendingLabel : error ? '다시 시도' : label}
     </Button>
   );
@@ -96,8 +97,25 @@ export function ChannelRevokeAction({ channelId }: { channelId: string }) {
   return <ActionButton label="인증 해제" pendingLabel="처리 중…" run={revoke} />;
 }
 
-export function ClipReviewActions({ clipId, reviewerId }: { clipId: string; reviewerId: string }) {
+export type ClipManualChecks = {
+  /** When the campaign went live (videos posted earlier don't count). */
+  liveAt: string | null;
+  /** The creator's verified accounts on the clip's platform. */
+  accounts: string[];
+};
+
+const shortDate = (value: string) => new Date(value).toLocaleString('ko-KR', { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+/**
+ * Approve or reject a clip. Clips the server didn't check against YouTube (other platforms, and YouTube clips from
+ * before that check) need the operator to confirm the posting time and the account first.
+ */
+export function ClipReviewActions({ clipId, reviewerId, manualChecks }: { clipId: string; reviewerId: string; manualChecks: ClipManualChecks | null }) {
   const [reason, setReason] = useState('');
+  const [postedAfterLive, setPostedAfterLive] = useState(false);
+  const [fromVerifiedAccount, setFromVerifiedAccount] = useState(false);
+  const checked = !manualChecks || (postedAfterLive && fromVerifiedAccount);
+
   async function approve(): Promise<ActionResult> {
     const { data, error } = await getSupabaseBrowserClient()
       .from('clips')
@@ -110,31 +128,72 @@ export function ClipReviewActions({ clipId, reviewerId }: { clipId: string; revi
     return data ? { ok: true } : fail('이미 검수된 클립이에요.');
   }
   return (
-    <div className="cl-inline">
-      <ActionButton label="승인" pendingLabel="승인 중…" run={approve} variant="primary" />
-      <ActionDialog
-        canSubmit={reason.trim().length > 0}
-        onSubmit={async () => {
-          const result = await rejectClip(getSupabaseBrowserClient(), clipId, reason, reviewerId);
-          return result.ok ? { ok: true } : fail(result.message);
-        }}
-        submitLabel="반려하기"
-        submitVariant="danger"
-        title="클립 반려"
-        trigger="반려"
-      >
-        <Field count={reason.length} htmlFor={`reject-${clipId}`} label="반려 사유" maxLength={500}>
-          <Textarea
-            id={`reject-${clipId}`}
-            maxLength={500}
-            onChange={(event) => setReason(event.target.value)}
-            placeholder="크리에이터에게 그대로 보여요. 어떤 요구사항을 지키지 않았는지 구체적으로 적어 주세요."
-            value={reason}
-          />
-        </Field>
-      </ActionDialog>
+    <div className="cl-review-actions">
+      {manualChecks && (
+        <div className="cl-review-checks">
+          <label className="cl-inline cl-meta">
+            <input checked={postedAfterLive} onChange={(event) => setPostedAfterLive(event.target.checked)} type="checkbox" />
+            캠페인 공개({manualChecks.liveAt ? shortDate(manualChecks.liveAt) : '날짜 없음'}) 이후 게시
+          </label>
+          <label className="cl-inline cl-meta">
+            <input
+              checked={fromVerifiedAccount}
+              disabled={manualChecks.accounts.length === 0}
+              onChange={(event) => setFromVerifiedAccount(event.target.checked)}
+              type="checkbox"
+            />
+            인증된 계정의 게시물
+          </label>
+          <p className="cl-meta-subtle">
+            {manualChecks.accounts.length > 0
+              ? `인증된 계정: ${manualChecks.accounts.map((url) => url.replace(/^https:\/\//, '')).join(', ')}`
+              : '이 플랫폼에 인증된 계정이 없어요. 반려 사유에 계정 인증을 안내해 주세요.'}
+          </p>
+        </div>
+      )}
+      <div className="cl-inline">
+        <ActionButton disabled={!checked} label="승인" pendingLabel="승인 중…" run={approve} variant="primary" />
+        <ActionDialog
+          canSubmit={reason.trim().length > 0}
+          onSubmit={async () => {
+            const result = await rejectClip(getSupabaseBrowserClient(), clipId, reason, reviewerId);
+            return result.ok ? { ok: true } : fail(result.message);
+          }}
+          submitLabel="반려하기"
+          submitVariant="danger"
+          title="클립 반려"
+          trigger="반려"
+        >
+          <Field count={reason.length} htmlFor={`reject-${clipId}`} label="반려 사유" maxLength={500}>
+            <Textarea
+              id={`reject-${clipId}`}
+              maxLength={500}
+              onChange={(event) => setReason(event.target.value)}
+              placeholder="크리에이터에게 그대로 보여요. 어떤 요구사항을 지키지 않았는지 구체적으로 적어 주세요."
+              value={reason}
+            />
+          </Field>
+        </ActionDialog>
+      </div>
     </div>
   );
+}
+
+/** Stops (or resumes) a clip's settlement after the operator checked its video by hand. */
+export function ClipAvailabilityAction({ clipId, unavailable }: { clipId: string; unavailable: boolean }) {
+  async function run(): Promise<ActionResult> {
+    const question = unavailable
+      ? '영상이 다시 공개된 것을 확인했나요? 표시를 지우면 다음 정산부터 다시 포함돼요.'
+      : '영상이 삭제됐거나 공개 상태가 아닌 것을 확인했나요? 표시한 날이 속한 주부터 정산에서 빠져요.';
+    if (!window.confirm(question)) return { ok: true };
+    const { error } = await getSupabaseBrowserClient()
+      .from('clips')
+      .update(unavailable ? { unavailable_at: null, unavailable_reason: null } : { unavailable_at: new Date().toISOString(), unavailable_reason: 'manual' })
+      .eq('id', clipId)
+      .eq('status', 'approved');
+    return error ? fail('바꾸지 못했어요. 새로고침한 뒤 확인해 주세요.') : { ok: true };
+  }
+  return <ActionButton label={unavailable ? '표시 해제' : '삭제·비공개로 표시'} pendingLabel="처리 중…" run={run} />;
 }
 
 export function ViewReportActions({ reportId, reviewerId }: { reportId: string; reviewerId: string }) {
