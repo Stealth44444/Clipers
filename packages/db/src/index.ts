@@ -8,6 +8,7 @@ export * from './pricing';
 export * from './payouts';
 export * from './billing';
 export * from './brandBalance';
+export * from './notifications';
 export * from './campaignDraft';
 export * from './dailyClipLimit';
 export * from './paging';
