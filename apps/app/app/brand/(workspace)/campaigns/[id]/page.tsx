@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ExternalLink, Film, Pencil } from 'lucide-react';
 import Link from 'next/link';
-import { campaignPricing, categoryLabel, classifyDeposit, creatorPayoutToClipCap, depositDue, platformLabel, platformLabels } from '@clipers/db';
+import { campaignPricing, canTopUp, categoryLabel, classifyDeposit, creatorPayoutToClipCap, depositDue, platformLabel, platformLabels } from '@clipers/db';
 import {
   Badge,
   ButtonLink,
@@ -25,6 +25,7 @@ import { CAMPAIGN_STATUS, CLIP_STATUS, CONTENT_TYPE_LABEL, statusDisplay } from 
 import { getBrandBalance } from '@/lib/brand-balance';
 import DepositPanel from './deposit-panel';
 import StopCampaignButton from './stop-campaign-button';
+import TopUpCard from './topup-card';
 
 type ClipRow = { id: string; url: string; platform: string; status: string; submitted_at: string; creator: { display_name: string } | null };
 
@@ -49,11 +50,12 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
       .order('submitted_at', { ascending: false }),
   ]);
 
-  const [finances, { data: billing }, { data: escrow }, { data: overDeposit }, balance] = await Promise.all([
+  const [finances, { data: billing }, { data: escrow }, { data: overDeposits }, { data: pendingTopUp }, balance] = await Promise.all([
     loadCampaignFinances(supabase, [id]),
     supabase.from('brand_billing_profiles').select('company_name').eq('brand_id', user.id).maybeSingle(),
     supabase.from('campaign_escrow').select('received_amount, credit_applied').eq('campaign_id', id).maybeSingle(),
-    supabase.from('brand_refunds').select('transfer_amount, status').eq('campaign_id', id).eq('kind', 'over_deposit').maybeSingle(),
+    supabase.from('brand_refunds').select('id, transfer_amount, status').eq('campaign_id', id).eq('kind', 'over_deposit').order('requested_at'),
+    supabase.from('campaign_topups').select('amount, credit_applied, received_amount').eq('campaign_id', id).eq('status', 'pending').maybeSingle(),
     getBrandBalance(),
   ]);
   const finance = finances.get(id);
@@ -106,13 +108,13 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
               : '운영팀이 입금을 확인하고 있어요. 확인되면 캠페인이 공개되고 크리에이터 지원을 받기 시작해요.'}
           </p>
         )}
-        {overDeposit && (
-          <p className="cl-alert cl-tone-sky" role="status">
-            {overDeposit.status === 'paid'
-              ? `초과 입금한 ${formatKRW(overDeposit.transfer_amount)}을 입금한 계좌로 돌려드렸어요.`
-              : `초과 입금한 ${formatKRW(overDeposit.transfer_amount)}은 영업일 7일 안에 입금한 계좌로 돌려드려요.`}
+        {(overDeposits ?? []).map((refund) => (
+          <p className="cl-alert cl-tone-sky" key={refund.id} role="status">
+            {refund.status === 'paid'
+              ? `초과 입금한 ${formatKRW(refund.transfer_amount)}을 입금한 계좌로 돌려드렸어요.`
+              : `초과 입금한 ${formatKRW(refund.transfer_amount)}은 영업일 7일 안에 입금한 계좌로 돌려드려요.`}
           </p>
-        )}
+        ))}
         {campaign.status === 'closed' && summary.stoppedAt && !summary.finalizedAt && (
           <p className="cl-alert cl-tone-sky" role="status">
             중단한 캠페인이에요. 이번 주 조회수까지 정산한 뒤 다음 월요일에 남은 금액이 확정돼요.
@@ -147,6 +149,21 @@ export default async function BrandCampaignDetailPage({ params }: { params: Prom
             />
           </div>
         </Card>
+
+        {canTopUp(campaign.status, summary.stoppedAt) && (
+          <TopUpCard
+            balance={balance.summary.balance}
+            bankTransferInfo={bankTransferInfo ?? null}
+            billingReady={Boolean(billing)}
+            campaignId={campaign.id}
+            pending={
+              pendingTopUp
+                ? { amount: pendingTopUp.amount, credit: pendingTopUp.credit_applied, received: pendingTopUp.received_amount }
+                : null
+            }
+            reopens={campaign.status === 'closed'}
+          />
+        )}
 
         <Card title="브리프">
           <SummaryList

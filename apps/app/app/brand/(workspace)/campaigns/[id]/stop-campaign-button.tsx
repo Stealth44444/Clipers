@@ -7,7 +7,11 @@ import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 export default function StopCampaignButton({ campaignId }: { campaignId: string }) {
   async function stop(): Promise<ActionResult> {
     const { error } = await getSupabaseBrowserClient().rpc('stop_campaign', { p_campaign_id: campaignId });
-    return error ? { ok: false, message: '중단하지 못했어요. 새로고침한 뒤 다시 시도해 주세요.' } : { ok: true };
+    if (!error) return { ok: true };
+    return {
+      ok: false,
+      message: error.hint === 'topup_pending' ? '예산 증액 입금을 확인하는 중이라 지금은 중단할 수 없어요.' : '중단하지 못했어요. 새로고침한 뒤 다시 시도해 주세요.',
+    };
   }
 
   return (
