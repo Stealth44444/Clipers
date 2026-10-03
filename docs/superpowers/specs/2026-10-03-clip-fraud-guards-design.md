@@ -28,10 +28,11 @@
   `id uuid pk`, `creator_id uuid → profiles on delete cascade`, `platform` (클립 플랫폼 값과 같은 집합), `url text`(정규화한 계정 주소, 500자 이하), `external_id text`(유튜브 채널 ID, 다른 플랫폼은 null), `verification_code text`(`CLIPERS-` + 영문·숫자 5자), `verified_at timestamptz`, `verified_by text check in ('auto','admin')`, `created_at`.
   - 유일성: `(creator_id, platform, url)`; 인증된 계정끼리 `(platform, coalesce(external_id, url))` 부분 유니크(`where verified_at is not null`).
   - RLS: 크리에이터는 자기 행 조회만, 운영자는 전체 조회·수정. 추가·인증·삭제는 앱 서버(서비스 키)와 운영자만 한다(크리에이터가 `verified_at`을 직접 쓰지 못하게).
-- `clips`: `video_published_at timestamptz`, `video_channel_id text`, `unavailable_at timestamptz`, `unavailable_reason text check in ('deleted','private','unlisted','manual')`.
-- `profiles.adult_confirmed_at timestamptz`.
+- `clips`: `video_published_at timestamptz`, `video_channel_id text`, `unavailable_at timestamptz`, `unavailable_reason text check in ('missing','unlisted','manual')`. API 키 조회는 비공개 영상을 돌려주지 않아 삭제와 비공개를 가를 수 없으므로 둘 다 `missing`(화면 문구 "삭제·비공개")이다.
+- `profiles.adult_confirmed_at timestamptz`. 프로필 보호 트리거(`prevent_profile_role_escalation`)가 이 칸도 지킨다(본인이 직접 못 바꾼다).
+- `campaigns`는 칸별 조회 권한을 쓰므로 `live_at`에 `authenticated` 조회 권한을 준다(`anon`은 주지 않는다).
 - `clips_creator_insert_own` 정책에 `platform <> 'youtube_shorts'`를 더한다. 유튜브 클립은 서버만 넣는다.
-- `prepare_clip_submission` 트리거: 서비스 역할(`auth.jwt()->>'role' = 'service_role'`)일 때는 `creator_id = auth.uid()` 검사를 건너뛴다(서버가 이미 세션으로 확인했다). 나머지(승인된 지원, 라이브, 플랫폼, 하루 한도)는 그대로.
+- `prepare_clip_submission` 트리거: 서비스 역할(`auth.jwt()->>'role' = 'service_role'`)일 때는 `creator_id = auth.uid()` 검사를 건너뛴다(서버가 이미 세션으로 확인했다). 나머지(승인된 지원, 라이브, 플랫폼, 하루 한도)는 그대로. 또 `unavailable_*`는 항상 비우고, 서비스 역할이 아니면 `video_published_at`·`video_channel_id`도 비운다(크리에이터가 직접 써넣지 못하게).
 - `complete_onboarding`에 `p_adult_confirmed boolean`을 더한다(기존 함수는 지우고 새 시그니처로, PostgREST 오버로드 모호성 방지). `true`가 아니면 예외, `true`면 `adult_confirmed_at = now()`.
 
 ## 4. 흐름
@@ -59,8 +60,8 @@
 제출은 지금처럼 받는다. 운영자 클립 검수에서 유튜브가 아닌 클립은 "캠페인 공개({live_at}) 이후 게시" "인증된 계정({인증 목록})의 게시물" 두 항목을 체크해야 승인 버튼이 켜진다. 유튜브 클립은 게시일·채널 자동 확인 결과를 표시만 한다.
 
 ### 4.4 삭제·비공개 감지
-- 조회수 수집(`/api/cron/youtube-views`)이 `part=statistics,status`로 조회한다. 응답에 영상이 없으면 `deleted`, `privacyStatus`가 `private`·`unlisted`면 그 사유로 `unavailable_at`(비어 있을 때만)과 `unavailable_reason`을 기록하고, 새로 표시한 클립을 슬랙에 한 번 알린다. 이미 표시된 클립은 다시 알리지 않는다.
-- 운영자 클립 화면: 승인된 클립에 "삭제·비공개로 표시"(사유 `manual`)와, 표시된 클립에 "표시 해제" 버튼.
+- 조회수 수집(`/api/cron/youtube-views`)이 `part=statistics,status`로 조회한다. 응답에 영상이 없으면(삭제 또는 비공개) `missing`, `privacyStatus`가 `unlisted`면 `unlisted`로 `unavailable_at`(비어 있을 때만)과 `unavailable_reason`을 기록하고, 새로 표시한 클립을 슬랙에 한 번 알린다. 이미 표시된 클립은 수집 대상에서 빼고 다시 알리지 않는다.
+- 운영자: 캠페인 상세의 "승인된 클립"에서 "삭제·비공개로 표시"(사유 `manual`), 클립 검수 화면의 "정산이 멈춘 클립"에서 "표시 해제".
 - 정산: `calculateWeeklySettlementDrafts` 입력에 `unavailableAt`을 더해, `unavailableAt < periodEnd`인 클립은 그 주부터 건너뛴다(이미 지급한 돈은 그대로).
 - 크리에이터 제출 현황: "영상이 삭제되거나 비공개로 바뀌어 정산이 멈췄어요. 다시 공개했다면 운영팀에 알려 주세요."
 
@@ -78,14 +79,14 @@
 | `apps/app/app/creator/settings/channel-actions.ts`, `channels-card.tsx` | 내 채널 등록·인증·삭제 |
 | `apps/app/app/creator/campaigns/submit-clip-action.ts`, `submit-clip-dialog.tsx` | 유튜브 서버 제출 |
 | `apps/app/app/admin/channels/page.tsx`, 사이드바 | 계정 인증 목록 |
-| `apps/app/app/admin/review-actions.tsx`, `admin/clips/page.tsx` | 확인 항목, 자동 확인 표시, 삭제·비공개 표시·해제 |
+| `apps/app/app/admin/review-actions.tsx`, `admin/clips/page.tsx`, `admin/campaigns/[id]/page.tsx` | 확인 항목, 자동 확인 표시, 삭제·비공개 표시(캠페인 상세)·해제(클립 검수) |
 | `apps/app/app/api/cron/youtube-views/route.ts` | 감지·기록·알림 |
 | `packages/db/src/onboarding.ts` (+test), `onboarding-flow.tsx` | 연령 스위치 |
 
 ## 6. 문구·법률
 - 약관 초안 🔸 [확인 필요]: 제12~13조에 "캠페인 공개 이후 게시한 영상만, 인증한 계정에서 올린 영상만 인정", 제13조에 "삭제·비공개로 바뀐 영상은 그 주부터 정산 중단". `docs/legal/README.md`의 변호사 질문에 추가.
 - 처리방침 초안 🔸 [확인 필요]: 수집 항목에 "등록한 플랫폼 계정 주소와 채널 ID(계정 인증용)", 보유는 탈퇴 시까지.
-- 크리에이터 FAQ·가이드: 계정 인증 방법과 "캠페인 공개 이후 올린 영상만" 규칙을 안내한다. "화면 캡처" 표현 금지(기존 규칙).
+- 크리에이터 FAQ: 새 질문 하나로 "캠페인 공개 이후, 인증한 내 계정에 올린 영상만" 규칙과 인증 방법을 안내한다(랜딩·llms.txt가 같은 목록을 쓴다). "화면 캡처" 표현 금지(기존 규칙).
 
 ## 7. 검증
 - 순수 함수 테스트: 주소 정규화(핸들, 채널 ID, 잘못된 주소), 코드 생성·포함 판정, 유튜브 판정 4가지 거절과 통과, 정산 제외(표시 전 주 지급, 표시된 주부터 제외), 온보딩 통과 조건.
