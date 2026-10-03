@@ -1419,6 +1419,9 @@
 .cl-guide__section p + p { margin-top: var(--space-3); }
 .cl-guide__section ul, .cl-guide__section ol { display: grid; gap: var(--space-2); margin: var(--space-3) 0 0; padding-left: 1.3em; }
 .cl-guide__section .cl-link { display: inline-block; margin-top: var(--space-3); }
+/* A section's links: one per line, so several never run together. */
+.cl-guide__section .cl-guide__links { padding-left: 0; list-style: none; }
+.cl-guide__section .cl-guide__links .cl-link { margin-top: 0; font-size: 16px; }
 .cl-guide__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
 .cl-guide__table { width: 100%; margin-top: var(--space-6); border-collapse: collapse; border-radius: 12px; overflow: hidden; background: var(--color-panel); font-variant-numeric: tabular-nums; }
 .cl-guide__table caption { margin-bottom: var(--space-2); color: var(--color-text-subtle); font-size: var(--font-size-1); text-align: left; caption-side: top; }

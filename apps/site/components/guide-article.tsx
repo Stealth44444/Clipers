@@ -67,16 +67,22 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
                 ))}
               </ul>
             )}
-            {section.links?.map((link) =>
-              link.href.startsWith('/') ? (
-                <Link className="cl-link" href={link.href} key={link.href}>
-                  {link.label}
-                </Link>
-              ) : (
-                <a className="cl-link" href={link.href} key={link.href} rel="noopener" target="_blank">
-                  {link.label}
-                </a>
-              )
+            {section.links && (
+              <ul className="cl-guide__links">
+                {section.links.map((link) => (
+                  <li key={link.href}>
+                    {link.href.startsWith('/') ? (
+                      <Link className="cl-link" href={link.href}>
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a className="cl-link" href={link.href} rel="noopener" target="_blank">
+                        {link.label}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
             )}
           </section>
         ))}
