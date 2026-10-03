@@ -1,3 +1,4 @@
+-- Applied 2026-10-03 through the SQL editor (not in supabase_migrations history); validated afterwards in a rolled-back transaction.
 -- Budget top-ups: a brand adds service amount to a live campaign, or to one closed because its budget ran out (which
 -- reopens it). Paid like the campaign deposit: bank transfer or balance, the operator records what arrived, short
 -- waits and extra goes back. Design: docs/superpowers/specs/2026-10-03-budget-topup-design.md. The minimum mirrors
