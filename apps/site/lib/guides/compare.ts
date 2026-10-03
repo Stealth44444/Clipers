@@ -5,9 +5,12 @@ import { SOURCES } from './sources';
 import type { Guide, GuideSource } from './types';
 
 // Comparison guides. By method (no names) and by name. Named comparisons only repeat what each service states on its
-// own pages, checked on the date in `sources`, and stay `legalReviewed: false` until a lawyer has read them. Never a
-// judgment (cheaper, slower, better): differences are structural — how cost arises, who picks creators, how results
-// are measured — and the closing section says which purpose each one fits.
+// own pages, checked on the date in `sources`. Never a judgment (cheaper, slower, better): differences are structural —
+// how cost arises, who picks creators, how results are measured — and the closing section says which purpose each one
+// fits. Rules from the 2026-10-03 legal pass (공정위 비교표시·광고 심사지침, 표시광고법 제3조, 부정경쟁방지법):
+// no quotes of another service's slogans or rankings, no figures of theirs that can go stale (prices), no claim that
+// they lack something, nothing that reads as Clipers having more of the same; the article shows a non-affiliation and
+// correction notice under the claims table (guide-article.tsx).
 
 const UPDATED = '2026-10-02';
 const checked = '2026-10-02';
@@ -19,7 +22,7 @@ const CLIPERS_SECTION = {
   heading: 'Clipers는 이렇게 돌아가요',
   paragraphs: [
     `광고주가 ${MIN_BUDGET}(부가세 별도)부터 캠페인을 열면 크리에이터가 지원하고, 운영팀이 승인한 크리에이터가 숏폼을 올려요. 검수 시간은 ${REVIEW_CHOICES} 중에서 정하고, 검수를 통과한 영상의 검증된 조회수만큼만 예산이 쓰여요.`,
-    `올릴 수 있는 플랫폼은 ${PLATFORM_LIST}예요. 영상 하나와 크리에이터 한 명이 받을 수 있는 금액에 상한이 있어 예산이 여러 영상에 나뉘고, 크리에이터 정산과 지급은 Clipers가 원화로 맡아요.`,
+    `올릴 수 있는 플랫폼은 ${PLATFORM_LIST}, 모두 ${PLATFORMS.length}곳이에요. 영상 하나와 크리에이터 한 명이 받을 수 있는 금액에 상한이 있어 예산이 여러 영상에 나뉘고, 크리에이터 정산과 지급은 Clipers가 원화로 맡아요.`,
   ],
 };
 
@@ -30,7 +33,7 @@ const COMMON = {
   reviewed: REVIEWED,
 };
 
-const NAMED = { ...COMMON, faqIds: ['cost', 'creators', 'view-verification'], legalReviewed: false };
+const NAMED = { ...COMMON, faqIds: ['cost', 'creators', 'view-verification'], legalReviewed: true };
 
 const revuSources: GuideSource[] = [
   { label: '레뷰 비즈 — 지역·매장 체험단 진행 과정', url: 'https://biz.revu.net/local/process', checked },
@@ -178,7 +181,7 @@ export const COMPARE_GUIDES: Guide[] = [
       },
       {
         heading: '비용이 생기는 방식',
-        paragraphs: ['레뷰의 광고주 페이지에는 공개 가격이 없어요. Clipers는 검수를 통과한 영상의 검증된 조회수만큼 예산이 쓰이는 구조예요.'],
+        paragraphs: ['레뷰의 비용은 레뷰 광고주 페이지나 상담으로 확인할 수 있어요. Clipers는 검수를 통과한 영상의 검증된 조회수만큼 예산이 쓰이는 구조예요.'],
       },
       CLIPERS_SECTION,
       {
@@ -187,7 +190,7 @@ export const COMPARE_GUIDES: Guide[] = [
       },
     ],
     claims: [
-      { subject: '레뷰', text: '대한민국 대표 체험단, 인플루언서 마케팅 서비스라고 소개해요.', source: 0 },
+      { subject: '레뷰', text: '체험단과 인플루언서 마케팅을 진행하는 서비스로 소개해요.', source: 0 },
       { subject: '진행 과정', text: '상권 진단 → 상품 설계 → 전담 컨설턴트 운영 → 방문 일정 조율 → 콘텐츠 검수 → 보고서 제공 (지역·매장 체험단)', source: 0 },
       { subject: '인플루언서 선정', text: '지역, 업종, 콘텐츠 톤, 방문 가능 일정, 활동 지표를 확인해 매장에 맞는 인플루언서를 레뷰가 직접 선정한다고 밝혀요.', source: 0 },
       { subject: '채널', text: '블로그, 네이버 플레이스, 인스타그램, 숏폼, 유튜브 체험단을 안내해요.', source: 0 },
@@ -213,7 +216,7 @@ export const COMPARE_GUIDES: Guide[] = [
       },
       {
         heading: '비용이 생기는 방식',
-        paragraphs: ['피처링은 요금제 페이지에 월 구독 요금을 공개하고 있고, 인플루언서에게 주는 비용은 따로예요. Clipers는 구독료 없이 캠페인 예산 안에서 검증된 조회수만큼 쓰여요.'],
+        paragraphs: ['피처링은 요금제 페이지에 구독형 요금제를 안내하고 있어요(금액은 피처링 공식 페이지에서 확인하세요). Clipers는 광고주가 캠페인 예산을 넣으면, 그 안에서 검증된 조회수만큼 쓰여요.'],
       },
       CLIPERS_SECTION,
       {
@@ -223,7 +226,7 @@ export const COMPARE_GUIDES: Guide[] = [
     ],
     claims: [
       { subject: '피처링', text: 'All-In-One 인플루언서 마케팅 플랫폼으로, 인플루언서 검색부터 관리, 캠페인 성과 분석까지 제공한다고 소개해요.', source: 1 },
-      { subject: '요금', text: '스탠다드 월 420,000원, 프리미엄 월 837,000원, 엔터프라이즈는 별도 문의로 안내해요(연간 결제 요금도 따로 표시).', source: 0 },
+      { subject: '요금', text: '구독형 요금제를 요금제 페이지에 안내해요.', source: 0 },
       { subject: '인플루언서 선정', text: '플랫폼, 카테고리, 팔로워 수 등 원하는 조건을 입력해 광고주가 인플루언서를 찾는 방식이에요.', source: 1 },
       { subject: '지원 플랫폼', text: '인스타그램, 유튜브, 틱톡, 엑스, 네이버 블로그 5개를 지원한다고 밝혀요.', source: 0 },
       { subject: '성과 리포트', text: '참여율(ER), CPR, CPE 등 캠페인 주요 지표를 요약한 결과 리포트를 제공한다고 밝혀요.', source: 0 },
@@ -257,10 +260,9 @@ export const COMPARE_GUIDES: Guide[] = [
       },
     ],
     claims: [
-      { subject: '리뷰노트', text: '"대한민국 체험단 수 1위, 신뢰받는 리뷰"라고 소개해요(자체 표현).', source: 0 },
+      { subject: '리뷰노트', text: '리뷰어가 캠페인에 신청해 체험하고 후기를 남기는 체험단 서비스로 소개해요.', source: 0 },
       { subject: '캠페인 정보', text: '캠페인마다 모집 기간, 신청자 수, 제공 혜택(제품·이용권·포인트 등)을 공개해요.', source: 0 },
       { subject: '채널', text: '블로그, 릴스, 유튜브 등의 캠페인을 보여 줘요.', source: 0 },
-      { subject: '광고주 비용', text: '홈페이지에 광고주 비용 안내는 공개돼 있지 않아요.', source: 0 },
     ],
     related: ['clipers-vs-review-campaigns', 'clipers-vs-gangnam-matzip', 'clipers-vs-revu'],
     sources: reviewnoteSources,
@@ -291,12 +293,11 @@ export const COMPARE_GUIDES: Guide[] = [
       },
     ],
     claims: [
-      { subject: '강남맛집 체험단', text: '"전략적인 광고, 효과적인 결과"를 내건 리뷰 기반 마케팅 플랫폼으로 소개해요.', source: 0 },
+      { subject: '강남맛집 체험단', text: '리뷰 기반 마케팅 플랫폼으로 소개해요.', source: 0 },
       { subject: '상품', text: '블로그 배송형, 블로그 방문형, 블로그 기자단을 안내해요.', source: 0 },
       { subject: '리뷰어 선정', text: '업종과 지역에 맞는 리뷰어를 선별하고, 광고주 요구에 맞춰 전문 상담원이 방법을 제안한다고 밝혀요.', source: 0 },
       { subject: '결과 보고', text: '리뷰 노출 현황, 유입 키워드 분석, 마케팅 성과를 담은 보고서를 준다고 밝혀요.', source: 0 },
       { subject: '규모', text: '누적 리뷰어, 광고주, 캠페인, 리뷰 수를 광고주 페이지에 공개해요.', source: 0 },
-      { subject: '광고주 비용', text: '광고주 페이지에 공개 가격은 없어요.', source: 0 },
     ],
     related: ['clipers-vs-reviewnote', 'clipers-vs-review-campaigns', 'for-local-tourism'],
     sources: gangnamSources,
@@ -313,11 +314,11 @@ export const COMPARE_GUIDES: Guide[] = [
     sections: [
       {
         heading: '누가 승인하나',
-        paragraphs: ['Whop 문서에 따르면 캠페인 주인이 제출물을 보고 요구사항을 지켰는지 판단해 승인하거나 반려해요. Clipers는 운영팀이 크리에이터 지원과 영상 검수를 맡고, 반려할 때는 사유를 알려요.'],
+        paragraphs: ['Whop 문서에 따르면 캠페인 주인이 제출물을 보고 요구사항을 지켰는지 판단해 승인하거나 반려해요. Clipers는 운영팀이 크리에이터 지원과 영상 검수를 맡아요.'],
       },
       {
         heading: '플랫폼과 운영 언어',
-        paragraphs: ['Whop의 클리핑 캠페인은 틱톡, 유튜브 쇼츠, X, 인스타그램 릴스를 안내해요. Clipers는 여기에 페이스북, 네이버 클립, 카카오 숏폼까지 국내 플랫폼을 함께 지원하고, 한국어로 운영해요.'],
+        paragraphs: [`Whop의 클리핑 캠페인은 틱톡, 유튜브 쇼츠, X, 인스타그램 릴스를 안내해요. Clipers가 지원하는 플랫폼은 ${PLATFORM_LIST}, 모두 ${PLATFORMS.length}곳이고, 한국어와 원화로 운영해요.`],
       },
       CLIPERS_SECTION,
       {

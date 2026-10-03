@@ -6,8 +6,8 @@
 
 | 항목 | 상태 확인 방법 |
 |---|---|
-| 실명 비교 가이드 6개 변호사 확인 | `apps/site/lib/guides/compare.ts`에서 `legalReviewed: false`인 글: `clipers-vs-revu`, `clipers-vs-featuring`, `clipers-vs-reviewnote`, `clipers-vs-gangnam-matzip`, `clipers-vs-whop`, `clipers-vs-vyro`. 확인이 끝난 글만 `true`로 바꾸고, 확인을 받지 못한 글은 출시 전에 `COMPARE_GUIDES`에서 빼거나 출시를 미룬다 |
-| 약관·처리방침 확정 | `apps/app/app/legal-document.tsx`의 `DRAFT_NOTICE`를 지우고 시행일을 넣는다. 처리방침의 🔸 항목(방문 통계, 유입 경로 등)을 변호사 확인 후 확정 |
+| ~~실명 비교 가이드 6개 법률 점검~~ | 완료(2026-10-03, 내부 점검): 경쟁사 홍보 문구·가격·'없음' 서술을 빼고 제휴 없음·정정 요청 안내를 붙여 `legalReviewed: true`. 새 실명 비교는 `compare.ts` 머리 주석의 규칙을 지킨 뒤에만 `true`로 바꾼다 |
+| ~~약관·처리방침 확정~~ | 완료(2026-10-03): 초안 안내 삭제, 시행일 2026-10-04 |
 | 인증 메일 발송 | Resend SMTP를 Supabase에 연결한다(기본 메일은 시간당 2통 제한) |
 | 실명 비교·데이터 출처 재확인 | 각 가이드의 출처를 다시 열어 내용이 바뀌지 않았는지 확인하고 `checked`·`reviewed` 날짜를 새로 적는다 |
 

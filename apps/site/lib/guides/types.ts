@@ -51,7 +51,10 @@ export type Guide = {
   sources?: GuideSource[];
   /** Named comparisons: what the other service says about itself, each pointing at a source index. */
   claims?: { subject: string; text: string; source: number }[];
-  /** Named comparisons stay flagged until a lawyer has read them (the launch checklist lists the false ones). */
+  /**
+   * Named comparisons: true once their wording passed the legal-risk rules in compare.ts (2026-10-03 internal pass, not
+   * a lawyer's opinion). A new named comparison starts false and is not published until it passes.
+   */
   legalReviewed?: boolean;
   /** Glossary only. */
   terms?: { term: string; definition: string }[];

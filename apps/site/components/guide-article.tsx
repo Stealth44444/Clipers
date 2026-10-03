@@ -102,6 +102,9 @@ export default function GuideArticle({ guide, campaigns }: { guide: Guide; campa
                 ))}
               </tbody>
             </table>
+            <p className="cl-guide__updated">
+              확인일 기준으로 각 서비스가 공식 페이지에 밝힌 내용을 옮긴 것이며, Clipers의 평가가 아니에요. 서비스 이름과 상표는 각 회사의 것이고, Clipers는 이 회사들과 제휴·후원 관계가 없어요. 바뀐 내용이나 바로잡을 부분은 help@clipers.site로 알려 주시면 확인한 뒤 바로 고칠게요.
+            </p>
           </section>
         )}
 
