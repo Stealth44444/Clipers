@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getPreviousWeekPeriod, runPendingSettlements } from '@clipers/db';
 import { Badge, Button, DataTable, formatKRW } from '@clipers/ui';
 import { SETTLEMENT_STATUS, statusDisplay } from '@/lib/status';
@@ -33,7 +33,7 @@ export default function SettlementPanel() {
   const [error, setError] = useState('');
   const period = getPreviousWeekPeriod();
 
-  async function loadSettlements() {
+  const loadSettlements = useCallback(async () => {
     setLoading(true);
     setError('');
 
@@ -49,11 +49,11 @@ export default function SettlementPanel() {
       setSettlements((data ?? []) as unknown as StoredSettlement[]);
     }
     setLoading(false);
-  }
+  }, [period.period]);
 
   useEffect(() => {
     void loadSettlements();
-  }, []);
+  }, [loadSettlements]);
 
   // The weekly cron does this every Monday; the button is for a week it missed or before it is set up.
   async function generateSettlements() {
