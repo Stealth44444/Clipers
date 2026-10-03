@@ -15,6 +15,8 @@ export type SubmissionRow = {
   submitted_at: string;
   sla_deadline: string;
   rejection_reason: string | null;
+  /** Set when the video was found deleted, private or unlisted; settlement stopped from that week. */
+  unavailable_at: string | null;
   campaign: { title: string } | null;
   dispute: { status: string; resolution_note: string | null } | null;
   viewReport: { status: string; reported_view_count: number } | null;
@@ -65,6 +67,9 @@ export default function SubmissionsView({ rows, creatorId }: { rows: SubmissionR
             <Badge tone={status.tone}>{status.label}</Badge>
             {row.status === 'pending_review' && <p className="cl-meta-subtle">{dateLabel(row.sla_deadline)}까지 검수</p>}
             {row.rejection_reason && <p className="cl-meta-subtle">{row.rejection_reason}</p>}
+            {row.status === 'approved' && row.unavailable_at && (
+              <p className="cl-meta-subtle">영상이 삭제되거나 비공개로 바뀌어 정산이 멈췄어요. 다시 공개했다면 이의제기로 알려 주세요.</p>
+            )}
           </div>
         );
       },
@@ -112,6 +117,7 @@ function FollowUp({ row, creatorId }: { row: SubmissionRow; creatorId: string })
     );
   }
   if (row.status === 'rejected') return <DisputeDialog clipId={row.id} creatorId={creatorId} />;
+  if (row.status === 'approved' && row.unavailable_at) return <DisputeDialog clipId={row.id} creatorId={creatorId} />;
 
   if (row.status === 'approved' && extractYouTubeVideoId(row.url) === null) {
     if (row.viewReport) {

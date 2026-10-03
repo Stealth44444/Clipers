@@ -7,7 +7,7 @@ export default async function CreatorSubmissionsPage() {
   const [clips, disputes, reports] = await Promise.all([
     supabase
       .from('clips')
-      .select('id, url, platform, status, submitted_at, sla_deadline, rejection_reason, campaign:campaigns!clips_campaign_id_fkey(title)')
+      .select('id, url, platform, status, submitted_at, sla_deadline, rejection_reason, unavailable_at, campaign:campaigns!clips_campaign_id_fkey(title)')
       .eq('creator_id', user.id)
       .order('submitted_at', { ascending: false }),
     supabase.from('clip_disputes').select('clip_id, status, resolution_note').eq('creator_id', user.id),
