@@ -5,6 +5,7 @@ import { fileDispute, fileManualViewReport } from '@clipers/db';
 import { Field, Input, Textarea } from '@clipers/ui';
 import ActionDialog from '@/components/action-dialog';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { withdrawClip } from './withdraw-action';
 
 export function DisputeDialog({ clipId, creatorId }: { clipId: string; creatorId: string }) {
   const [reason, setReason] = useState('');
@@ -62,6 +63,14 @@ export function ViewReportDialog({ clipId, creatorId }: { clipId: string; creato
           value={evidenceUrl}
         />
       </Field>
+    </ActionDialog>
+  );
+}
+
+export function WithdrawDialog({ clipId }: { clipId: string }) {
+  return (
+    <ActionDialog canSubmit cancelLabel="닫기" onSubmit={() => withdrawClip(clipId)} submitLabel="제출 취소하기" submitVariant="danger" title="제출 취소" trigger="제출 취소">
+      <p className="cl-meta">검수 전이라 바로 취소돼요. 같은 영상은 나중에 다시 제출할 수 있어요.</p>
     </ActionDialog>
   );
 }

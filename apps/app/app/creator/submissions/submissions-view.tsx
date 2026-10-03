@@ -5,7 +5,7 @@ import { ExternalLink, Film } from 'lucide-react';
 import { countByStatus, extractYouTubeVideoId, platformLabel } from '@clipers/db';
 import { Badge, Card, DataTable, EmptyState, Tabs, formatCompactNumber, type Column } from '@clipers/ui';
 import { CLIP_STATUS, statusDisplay } from '@/lib/status';
-import { DisputeDialog, ViewReportDialog } from './clip-actions';
+import { DisputeDialog, ViewReportDialog, WithdrawDialog } from './clip-actions';
 
 export type SubmissionRow = {
   id: string;
@@ -116,6 +116,7 @@ function FollowUp({ row, creatorId }: { row: SubmissionRow; creatorId: string })
       <Badge tone="amber">이의제기 검토 중</Badge>
     );
   }
+  if (row.status === 'pending_review') return <WithdrawDialog clipId={row.id} />;
   if (row.status === 'rejected') return <DisputeDialog clipId={row.id} creatorId={creatorId} />;
   if (row.status === 'approved' && row.unavailable_at) return <DisputeDialog clipId={row.id} creatorId={creatorId} />;
 

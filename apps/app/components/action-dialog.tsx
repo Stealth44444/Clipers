@@ -7,12 +7,14 @@ import { Button, Dialog, type ButtonVariant } from '@clipers/ui';
 export type ActionResult = { ok: true } | { ok: false; message: string };
 
 /** A trigger button that opens a small form dialog, runs `onSubmit`, then refreshes the server data. */
-export default function ActionDialog({ trigger, triggerVariant = 'secondary', title, submitLabel, submitVariant = 'primary', canSubmit, onSubmit, children }: {
+export default function ActionDialog({ trigger, triggerVariant = 'secondary', title, submitLabel, submitVariant = 'primary', cancelLabel = '취소', canSubmit, onSubmit, children }: {
   trigger: string;
   triggerVariant?: ButtonVariant;
   title: string;
   submitLabel: string;
   submitVariant?: ButtonVariant;
+  /** The button that closes without submitting; rename it when the action itself is a cancellation. */
+  cancelLabel?: string;
   canSubmit: boolean;
   onSubmit: () => Promise<ActionResult>;
   children: ReactNode;
@@ -47,7 +49,7 @@ export default function ActionDialog({ trigger, triggerVariant = 'secondary', ti
         footer={
           <>
             <Button onClick={() => setOpen(false)} variant="secondary">
-              취소
+              {cancelLabel}
             </Button>
             <Button disabled={submitting || !canSubmit} form={formId} type="submit" variant={submitVariant}>
               {submitting ? '처리 중…' : submitLabel}
