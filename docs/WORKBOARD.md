@@ -32,7 +32,7 @@
 ## 사용자가 할 일
 
 0. **help@clipers.site** — 사이트·약관·처리방침에 주소 반영(커밋, 배포 전). Resend 받기 켜짐, MX 기록 Vercel DNS에 추가, 메일함 생성, 받기 MX 인증, 수신 테스트까지 완료(2026-10-03). 남은 것: push로 사이트·문서에 주소 공개. 받은 메일은 Resend Inbox에서 읽고 답한다.
-0-1. **인증 메일 한국어 템플릿 붙여 넣기** — Supabase → Authentication → Emails → Templates에 `docs/ops/auth-email-templates/`의 두 파일(가입 확인, 비밀번호 재설정)을 Subject와 함께 붙여 넣는다. 지금은 영어 기본 메일(Reset your password)이 나간다(2026-10-03 SMTP 시험으로 확인).
+0-1. ~~인증 메일 한국어 템플릿~~ — 완료(2026-10-03 22:43 KST). 사용자가 `docs/ops/auth-email-templates/`의 두 템플릿을 Supabase에 붙여 넣었고, 재설정 메일이 "Clipers 비밀번호를 다시 설정해 주세요" 제목으로 Resend를 거쳐 전달된 것을 확인(clipers-a1 요청, clipers-0b 확인).
 
 1. ~~push~~ — 완료(`e1b7e3e`).
 2. **화면 확인(선택)** — 제출 규칙은 실제 DB에서 확인함. 화면만 남음: 크리에이터 설정 '내 채널'에서 유튜브 채널 등록·'인증 확인', 운영자 '계정 인증', 클립 검수 확인 항목 두 개, 새 계정 온보딩의 '만 19세 이상' 스위치.
