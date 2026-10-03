@@ -4,6 +4,7 @@ import { ADVERTISER_PLATFORM_GUIDES } from './advertiser-platform';
 import { ADVERTISER_PROBLEM_GUIDES } from './advertiser-problem';
 import { COMPARE_GUIDES } from './compare';
 import { COST_GUIDES } from './cost';
+import { DATA_GUIDES } from './data';
 import { EXECUTION_GUIDES } from './execution';
 import { GLOSSARY_GUIDES } from './glossary';
 import { INDUSTRY_GUIDES } from './industry';
@@ -49,6 +50,7 @@ export const GUIDES: Guide[] = [
   ...COST_GUIDES,
   ...EXECUTION_GUIDES,
   ...GLOSSARY_GUIDES,
+  ...DATA_GUIDES,
 ];
 
 export function guideBySlug(slug: string): Guide | undefined {

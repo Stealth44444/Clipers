@@ -19,7 +19,7 @@ const ADVERTISER_COUNTS: Record<string, number> = {
   'advertiser-problem': 5,
   execution: 3,
   glossary: 1,
-  data: 0,
+  data: 1,
 };
 
 describe('guides', () => {
