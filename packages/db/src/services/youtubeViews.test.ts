@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { extractYouTubeVideoId, fetchYouTubeViewCount, fetchYouTubeViewCounts } from './youtubeViews';
+import { extractYouTubeVideoId, fetchYouTubeViewCount, fetchYouTubeViewCounts, findUnavailableClips } from './youtubeViews';
 
 const VIDEO_ID = 'dQw4w9WgXcQ';
 
@@ -34,17 +34,17 @@ describe('extractYouTubeVideoId', () => {
 });
 
 describe('fetchYouTubeViewCount', () => {
-  it('requests statistics for the parsed video id', async () => {
+  it('requests statistics and status for the parsed video id', async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
-      response({ items: [{ id: VIDEO_ID, statistics: { viewCount: '12500' } }] })
+      response({ items: [{ id: VIDEO_ID, statistics: { viewCount: '12500' }, status: { privacyStatus: 'public' } }] })
     );
 
     const result = await fetchYouTubeViewCount(`https://youtu.be/${VIDEO_ID}`, 'test-api-key', fetcher);
 
-    expect(result).toEqual({ ok: true, data: { videoId: VIDEO_ID, viewCount: 12500 } });
+    expect(result).toEqual({ ok: true, data: { videoId: VIDEO_ID, viewCount: 12500, privacyStatus: 'public' } });
     const requestedUrl = new URL(fetcher.mock.calls[0][0] as URL);
     expect(requestedUrl.pathname).toBe('/youtube/v3/videos');
-    expect(requestedUrl.searchParams.get('part')).toBe('statistics');
+    expect(requestedUrl.searchParams.get('part')).toBe('statistics,status');
     expect(requestedUrl.searchParams.get('id')).toBe(VIDEO_ID);
   });
 
@@ -107,5 +107,29 @@ describe('fetchYouTubeViewCount', () => {
     const result = await fetchYouTubeViewCount(`https://youtu.be/${VIDEO_ID}`, 'test-api-key', fetcher);
 
     expect(result).toMatchObject({ ok: false, code: 'YOUTUBE_REQUEST_FAILED' });
+  });
+});
+
+describe('findUnavailableClips', () => {
+  const clips = [
+    { id: 'clip-public', videoId: 'aaaaaaaaaaa' },
+    { id: 'clip-unlisted', videoId: 'bbbbbbbbbbb' },
+    { id: 'clip-gone', videoId: 'ccccccccccc' },
+  ];
+
+  it('marks videos YouTube no longer returns as missing and unlisted ones as unlisted', () => {
+    expect(
+      findUnavailableClips(clips, [
+        { videoId: 'aaaaaaaaaaa', viewCount: 10, privacyStatus: 'public' },
+        { videoId: 'bbbbbbbbbbb', viewCount: 10, privacyStatus: 'unlisted' },
+      ])
+    ).toEqual([
+      { clipId: 'clip-unlisted', reason: 'unlisted' },
+      { clipId: 'clip-gone', reason: 'missing' },
+    ]);
+  });
+
+  it('leaves a video alone when YouTube did not say its privacy', () => {
+    expect(findUnavailableClips([clips[0]], [{ videoId: 'aaaaaaaaaaa', viewCount: 10, privacyStatus: null }])).toEqual([]);
   });
 });
