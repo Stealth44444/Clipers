@@ -199,7 +199,22 @@ export default function LoginForm({
                 <strong>{sent.email}</strong>로 {sent.kind === 'signup' ? '인증 메일을 보냈어요. 메일의 링크를 열면 가입이 끝나요.' : '보냈어요. 메일의 링크를 열어 새 비밀번호를 정해 주세요.'}
               </p>
             </div>
-            <p className="cl-auth__note">메일이 안 보이면 스팸함도 확인해 주세요. 몇 분이 걸릴 수 있어요.</p>
+            <p className="cl-auth__note">
+              메일이 안 보이면 스팸함도 확인해 주세요. 몇 분이 걸릴 수 있어요.
+              {sent.kind === 'signup' && (
+                <>
+                  {' '}이미 가입한 이메일이면 메일이 가지 않아요.{' '}
+                  <button className="cl-link" onClick={() => switchTo('sign-in')} type="button">
+                    로그인
+                  </button>
+                  하거나{' '}
+                  <button className="cl-link" onClick={() => switchTo('reset')} type="button">
+                    비밀번호를 재설정
+                  </button>
+                  해 주세요.
+                </>
+              )}
+            </p>
             {error && <p className="cl-alert cl-tone-tomato" role="alert">{error}</p>}
             <Button block disabled={wait > 0 || submitting} onClick={() => void resend()} size="lg" variant="secondary">
               {wait > 0 ? `다시 보내기 (${wait}초)` : submitting ? '보내는 중…' : '다시 보내기'}
