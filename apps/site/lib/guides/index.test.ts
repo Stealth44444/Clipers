@@ -11,7 +11,7 @@ const count = (group: string) => GUIDES.filter((guide) => guide.group === group)
 
 // Advertiser guides per group, in question-map order (awareness → platform → compare → cost → execution → terms → data).
 const ADVERTISER_COUNTS: Record<string, number> = {
-  pillar: 0,
+  pillar: 1,
   'advertiser-platform': 7,
   compare: 9,
   cost: 2,

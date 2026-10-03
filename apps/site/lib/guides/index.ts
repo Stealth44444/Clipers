@@ -8,6 +8,7 @@ import { DATA_GUIDES } from './data';
 import { EXECUTION_GUIDES } from './execution';
 import { GLOSSARY_GUIDES } from './glossary';
 import { INDUSTRY_GUIDES } from './industry';
+import { PILLAR_GUIDES } from './pillar';
 import { PLATFORM_GUIDES } from './platform';
 import { PROBLEM_GUIDES } from './problem';
 import { SITUATION_GUIDES } from './situation';
@@ -51,6 +52,7 @@ export const GUIDES: Guide[] = [
   ...EXECUTION_GUIDES,
   ...GLOSSARY_GUIDES,
   ...DATA_GUIDES,
+  ...PILLAR_GUIDES,
 ];
 
 export function guideBySlug(slug: string): Guide | undefined {

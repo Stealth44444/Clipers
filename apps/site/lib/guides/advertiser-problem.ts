@@ -25,11 +25,33 @@ export const ADVERTISER_PROBLEM_GUIDES: Guide[] = [
         heading: '허락한 영상으로만',
         paragraphs: ['클리핑 캠페인은 원작자가 사용을 허락한 영상으로 열려요. 써도 되는 영상과 범위는 요구사항으로 정해요.'],
       },
+      {
+        heading: '어떤 광고주에게 맞나요',
+        paragraphs: [
+          '이미 알리고 싶은 영상이 있는 곳에 잘 맞아요. 방송 클립을 퍼뜨리려는 방송사, 무대와 뮤직비디오를 알리려는 기획사, 출시와 업데이트를 알리려는 게임사, 개봉을 앞둔 영화처럼요.',
+        ],
+        links: [
+          { label: '예능·드라마 클립을 숏폼으로 더 퍼뜨리려면', href: '/guides/for-broadcasters' },
+          { label: '신곡과 무대 영상을 숏폼으로 퍼뜨리려면', href: '/guides/for-music' },
+          { label: '게임 출시와 업데이트를 숏폼으로 알리려면', href: '/guides/for-games' },
+          { label: '개봉 전 영화를 숏폼으로 홍보하려면', href: '/guides/for-film' },
+        ],
+      },
+      {
+        heading: '인플루언서 마케팅과 무엇이 다른가요',
+        paragraphs: [
+          '인플루언서 마케팅은 정한 사람에게 게시물 단위로 비용을 내고, 클리핑 캠페인은 여러 크리에이터의 영상이 만든 검증된 조회수만큼만 비용을 내요. 숏폼 마케팅을 처음 시작한다면 전체 흐름부터 보세요.',
+        ],
+        links: [
+          { label: '인플루언서 마케팅과 클리핑 캠페인 비교', href: '/guides/clipers-vs-influencer-marketing' },
+          { label: '숏폼 마케팅, 어떻게 시작하면 되나요?', href: '/guides/short-form-marketing' },
+        ],
+      },
     ],
     faqIds: ['cost', 'creators', 'view-verification'],
-    related: ['pay-per-view', 'viral-without-influencers', 'repurpose-longform'],
+    related: ['short-form-marketing', 'pay-per-view', 'viral-without-influencers'],
     counterpart: 'what-is-clipping',
-    updated: UPDATED,
+    updated: '2026-10-03',
     reviewed: REVIEWED,
   },
   {
