@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildNotificationEmail, renderNotification } from './notifications';
+import { buildNotificationEmail, isMoneyNotification, renderNotification } from './notifications';
 
 describe('renderNotification', () => {
   it('writes creator notifications with the campaign and amounts', () => {
@@ -40,12 +40,70 @@ describe('renderNotification', () => {
   });
 });
 
+const appUrl = 'https://app.clipers.site/';
+
 describe('buildNotificationEmail', () => {
-  it('uses the title as the subject and links into the app', () => {
-    const email = buildNotificationEmail({ title: '지원이 승인됐어요', body: '바로 시작하세요 <b>', link: '/creator/campaigns' }, 'https://app.clipers.site/');
-    expect(email.subject).toBe('지원이 승인됐어요');
-    expect(email.text).toContain('https://app.clipers.site/creator/campaigns');
-    expect(email.html).toContain('href="https://app.clipers.site/creator/campaigns"');
-    expect(email.html).toContain('바로 시작하세요 &lt;b&gt;');
+  it('uses the title as the subject and links into the app with a button named for the page', () => {
+    const email = buildNotificationEmail({ kind: 'clip_rejected', data: { campaign_title: '봄 <b>', reason: '화질' }, link: '/creator/submissions' }, appUrl);
+    expect(email.subject).toBe('클립이 반려됐어요');
+    expect(email.text).toContain('제출 현황 보기: https://app.clipers.site/creator/submissions');
+    expect(email.html).toContain('href="https://app.clipers.site/creator/submissions"');
+    expect(email.html).toContain('>제출 현황 보기</a>');
+    expect(email.html).toContain('봄 &lt;b&gt;: 화질');
+    expect(email.html).not.toContain('봄 <b>');
+  });
+
+  it('shows the logo from the app and a hidden preview line', () => {
+    const email = buildNotificationEmail({ kind: 'application_approved', data: { campaign_title: '봄 캠페인' }, link: '/creator/campaigns' }, appUrl);
+    expect(email.html).toContain('src="https://app.clipers.site/logo/clipers-wordmark-email.png"');
+    expect(email.html).toContain('src="https://app.clipers.site/logo/clipers-wordmark-email-dark.png"');
+    expect(email.html).toMatch(/<div style="display:none[^"]*">봄 캠페인에 클립을 제출할 수 있어요\./);
+  });
+
+  it('sets the amount apart for money notifications and says they are always sent', () => {
+    const email = buildNotificationEmail({ kind: 'settlement_created', data: { amount: 128000 }, link: '/creator/earnings' }, appUrl);
+    expect(email.html).toContain('>정산 금액</p>');
+    expect(email.html).toContain('>128,000원</p>');
+    expect(email.text).toContain('정산 금액: 128,000원');
+    expect(email.html).toContain('메일 설정과 관계없이 보내 드려요');
+    expect(email.html).not.toContain('/settings');
+  });
+
+  it('links activity notifications to the right settings page', () => {
+    const creator = buildNotificationEmail({ kind: 'clip_approved', data: {}, link: '/creator/submissions' }, appUrl);
+    expect(creator.html).toContain('href="https://app.clipers.site/creator/settings"');
+    expect(creator.text).toContain('알림 설정에서 끌 수 있어요: https://app.clipers.site/creator/settings');
+    expect(creator.html).not.toContain('정산 금액');
+
+    const brand = buildNotificationEmail({ kind: 'first_clip_approved', data: { campaign_title: 'B' }, link: '/brand/campaigns/1' }, appUrl);
+    expect(brand.html).toContain('href="https://app.clipers.site/brand/settings"');
+  });
+
+  it('falls back to a generic button for an unknown kind', () => {
+    const email = buildNotificationEmail({ kind: 'something_new', data: {}, link: null }, appUrl);
+    expect(email.subject).toBe('새 알림이 있어요');
+    expect(email.html).toContain('href="https://app.clipers.site/"');
+    expect(email.html).toContain('>Clipers에서 보기</a>');
+  });
+});
+
+describe('money notifications', () => {
+  it('are always emailed; activity notifications can be turned off', () => {
+    expect(isMoneyNotification('settlement_created')).toBe(true);
+    expect(isMoneyNotification('deposit_short')).toBe(true);
+    expect(isMoneyNotification('clip_approved')).toBe(false);
+    expect(isMoneyNotification('connection_expired')).toBe(false);
+  });
+});
+
+describe('connection_expired', () => {
+  it('names the platform and points to the channels card', () => {
+    expect(renderNotification('connection_expired', { platform: 'tiktok' }).body).toBe(
+      "틱톡 연결이 만료됐어요. 설정의 '내 채널'에서 다시 연결해야 조회수를 계속 가져올 수 있어요."
+    );
+    expect(renderNotification('connection_expired', { platform: 'instagram_reels' }).body.startsWith('인스타그램 연결이')).toBe(true);
+    const email = buildNotificationEmail({ kind: 'connection_expired', data: { platform: 'tiktok' }, link: '/creator/settings#channels' }, appUrl);
+    expect(email.html).toContain('href="https://app.clipers.site/creator/settings#channels"');
+    expect(email.html).toContain('>다시 연결하기</a>');
   });
 });
