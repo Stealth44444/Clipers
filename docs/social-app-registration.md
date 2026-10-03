@@ -38,10 +38,11 @@
 
 심사 기간에는 각 플랫폼의 **테스트 사용자(샌드박스)**로 등록한 계정으로 위 과정을 녹화한다.
 
-## 4. 승인 뒤 할 일
+## 4. 키를 받은 뒤 할 일
 
-1. Vercel → `clipers-app` → Settings → Environment Variables(Production)에 등록하고 다시 배포한다.
+1. Vercel → `clipers-app` → Settings → Environment Variables(Production)에 등록하고 다시 배포한다. 키는 채팅·문서에 적지 않는다.
    - `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`
    - `INSTAGRAM_APP_ID`, `INSTAGRAM_APP_SECRET`
-2. 운영 DB에 `supabase/migrations/social_connections.sql`을 먼저 적용한다(키 등록 전에). 배포 뒤 `social_views_cron.sql`(매일 10:30 조회수 수집)을 적용한다.
-3. 처리방침의 [확인 필요] 칸(틱톡·Meta 연락처, 국가)을 승인 화면의 계약 주체로 채운다.
+2. 심사 시연 영상을 찍으려면 심사 전에 받은 샌드박스(틱톡)·개발 모드(Meta) 키를 먼저 같은 이름으로 넣는다. 승인 뒤 운영 키로 바꾼다.
+
+DB 마이그레이션(`social_connections`, `social_views_cron`)과 처리방침의 TikTok·Meta 항목은 2026-10-03에 이미 적용했다.
