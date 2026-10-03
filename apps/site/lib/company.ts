@@ -1,7 +1,8 @@
 import { siteUrl } from './urls';
 
-// Operator details shown in the footer, the about page and the trust guide. Add a contact email once the domain is
-// bought, and official channel URLs to sameAs as they open (they become Organization.sameAs).
+// Operator details shown in the footer, the about page and the trust guide. The domain is clipers.site (bought
+// 2026-10-03); add a contact email once mail for it is set up, and official channel URLs to sameAs as they open
+// (they become Organization.sameAs).
 export const COMPANY = {
   legalName: '주식회사 오디오닉스',
   representative: '안준성',
