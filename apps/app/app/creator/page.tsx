@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CircleUserRound, Film, Megaphone, Send, Wallet } from 'lucide-react';
+import { BadgeCheck, CircleUserRound, Film, Landmark, Megaphone, Send, Wallet } from 'lucide-react';
 import { creatorChecklist, fetchAllRows, platformLabel, summarizeEarnings } from '@clipers/db';
 import {
   Badge,
@@ -28,7 +28,7 @@ const ICON = { size: 18 };
 
 export default async function CreatorHomePage() {
   const { supabase, user, profile } = await getSession();
-  const [applications, clips, settlements, recentClips] = await Promise.all([
+  const [applications, clips, settlements, recentClips, verifiedChannels, payoutAccount] = await Promise.all([
     fetchAllRows((from, to) => supabase.from('campaign_applications').select('status').eq('creator_id', user.id).order('id').range(from, to)),
     fetchAllRows((from, to) => supabase.from('clips').select('status').eq('creator_id', user.id).order('id').range(from, to)),
     fetchAllRows((from, to) =>
@@ -40,6 +40,8 @@ export default async function CreatorHomePage() {
       .eq('creator_id', user.id)
       .order('submitted_at', { ascending: false })
       .limit(5),
+    supabase.from('creator_channels').select('id', { count: 'exact', head: true }).eq('creator_id', user.id).not('verified_at', 'is', null),
+    supabase.from('payout_accounts').select('creator_id').eq('creator_id', user.id).maybeSingle(),
   ]);
 
   const applicationRows = applications;
@@ -48,13 +50,21 @@ export default async function CreatorHomePage() {
   const earnings = summarizeEarnings(settlementRows);
   const verifiedViews = settlementRows.reduce((sum, row) => sum + Number(row.verified_views), 0);
   const steps = creatorChecklist({
+    verifiedChannels: verifiedChannels.count ?? 0,
     applications: applicationRows.length,
     clips: clipRows.length,
+    hasPayoutAccount: !!payoutAccount.data,
     settlements: settlementRows.length,
   });
 
   const STEP_CONTENT: Record<string, Omit<ChecklistItem, 'id' | 'done'>> = {
     account: { icon: <CircleUserRound {...ICON} />, title: '계정 만들기', description: '가입과 프로필 설정을 마쳤어요.' },
+    channel: {
+      icon: <BadgeCheck {...ICON} />,
+      title: '내 채널 인증하기',
+      description: '클립을 올리는 계정을 인증해야 제출할 수 있어요. 틱톡은 연결 한 번이면 끝나요.',
+      action: <ButtonLink href="/creator/settings#channels" size="sm" variant="secondary">채널 인증</ButtonLink>,
+    },
     apply: {
       icon: <Megaphone {...ICON} />,
       title: '캠페인에 지원하기',
@@ -66,6 +76,12 @@ export default async function CreatorHomePage() {
       title: '첫 클립 제출하기',
       description: '승인된 캠페인에 게시한 영상 링크를 제출하세요.',
       action: <ButtonLink href="/creator/campaigns" size="sm" variant="secondary">제출하기</ButtonLink>,
+    },
+    payout: {
+      icon: <Landmark {...ICON} />,
+      title: '수익금 받을 계좌 등록하기',
+      description: '본인 명의 계좌를 등록해야 정산된 수익금을 받을 수 있어요.',
+      action: <ButtonLink href="/creator/settings#payout" size="sm" variant="secondary">계좌 등록</ButtonLink>,
     },
     settle: {
       icon: <Wallet {...ICON} />,
@@ -82,7 +98,7 @@ export default async function CreatorHomePage() {
       <PageHeader description="오늘도 좋은 영상 기대할게요." title={`${greetingFor(new Date())}, ${profile.display_name}님`} />
       <Stack>
         {!setupComplete && (
-          <Checklist description="네 단계만 마치면 첫 정산을 받을 수 있어요." items={checklistItems} title="시작하기" />
+          <Checklist description="아래 단계를 마치면 첫 정산을 받을 수 있어요." items={checklistItems} title="시작하기" />
         )}
 
         <StatGrid>

@@ -17,9 +17,8 @@ export default async function CreatorSettingsPage({ searchParams }: { searchPara
 
   return (
     <Page>
-      <PageHeader description="프로필과 관심 분야를 바꾸면 추천 캠페인에 반영돼요." title="설정" />
+      <PageHeader description="클립을 제출하고 수익금을 받으려면 채널 인증과 계좌 등록이 필요해요." title="설정" />
       <Stack>
-        <SettingsForm email={user.email ?? ''} profile={profile} />
         <ChannelsCard
           channels={(channels ?? []).map((channel) => ({
             id: channel.id,
@@ -32,17 +31,18 @@ export default async function CreatorSettingsPage({ searchParams }: { searchPara
           connectResult={connect}
           connectable={connectablePlatforms()}
         />
-        <NotificationSettingsCard
-          initialActivityEmails={preferences?.email_activity_notifications ?? true}
-          moneyDescription="정산과 지급 소식은 메일로 항상 보내 드려요."
-          profileId={profile.id}
-        />
         <PayoutDetailsCard
           account={
             account
               ? { legalName: account.legal_name, bankCode: account.bank_code, accountNumber: account.account_number, updatedAt: account.updated_at }
               : null
           }
+        />
+        <SettingsForm email={user.email ?? ''} profile={profile} />
+        <NotificationSettingsCard
+          initialActivityEmails={preferences?.email_activity_notifications ?? true}
+          moneyDescription="정산과 지급 소식은 메일로 항상 보내 드려요."
+          profileId={profile.id}
         />
       </Stack>
     </Page>

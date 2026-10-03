@@ -56,14 +56,23 @@ export function summarizeEarnings(settlements: EarningsSettlement[], now: Date =
   return { total, unpaid: byStatus.pending.amount + byStatus.requested.amount, lastWeek, thisMonth, byStatus };
 }
 
-export type CreatorChecklistStep = { id: 'account' | 'apply' | 'submit' | 'settle'; done: boolean };
+export type CreatorChecklistStep = { id: 'account' | 'channel' | 'apply' | 'submit' | 'payout' | 'settle'; done: boolean };
 
-export function creatorChecklist(counts: { applications: number; clips: number; settlements: number }): CreatorChecklistStep[] {
+/** First-payout steps. A verified channel is needed to submit clips, and a payout account to be paid. */
+export function creatorChecklist(state: {
+  verifiedChannels: number;
+  applications: number;
+  clips: number;
+  hasPayoutAccount: boolean;
+  settlements: number;
+}): CreatorChecklistStep[] {
   return [
     { id: 'account', done: true },
-    { id: 'apply', done: counts.applications > 0 },
-    { id: 'submit', done: counts.clips > 0 },
-    { id: 'settle', done: counts.settlements > 0 },
+    { id: 'channel', done: state.verifiedChannels > 0 },
+    { id: 'apply', done: state.applications > 0 },
+    { id: 'submit', done: state.clips > 0 },
+    { id: 'payout', done: state.hasPayoutAccount },
+    { id: 'settle', done: state.settlements > 0 },
   ];
 }
 

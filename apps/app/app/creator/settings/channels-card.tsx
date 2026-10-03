@@ -2,15 +2,15 @@
 
 import { useActionState, useState, useTransition } from 'react';
 import { PLATFORMS, platformLabel } from '@clipers/db';
-import { Badge, Button, ButtonLink, Card, Field, Input, Select } from '@clipers/ui';
+import { Badge, Button, ButtonLink, Card, Field, Input, PlatformIcon, Select } from '@clipers/ui';
 import { addChannel, removeChannel, verifyYouTubeChannel, type ChannelActionState } from './channel-actions';
 import { disconnectChannel } from './connection-actions';
 
 export type CreatorChannel = { id: string; platform: string; url: string; verificationCode: string; verifiedAt: string | null; verifiedBy: string | null };
 
-const CONNECT: { platform: string; slug: string; label: string }[] = [
-  { platform: 'tiktok', slug: 'tiktok', label: '틱톡 연결' },
-  { platform: 'instagram_reels', slug: 'instagram', label: '인스타그램 연결' },
+const CONNECT: { platform: string; slug: string; name: string }[] = [
+  { platform: 'tiktok', slug: 'tiktok', name: '틱톡' },
+  { platform: 'instagram_reels', slug: 'instagram', name: '인스타그램' },
 ];
 
 // Results of /api/oauth/{platform}/callback, passed back as ?connect=.
@@ -35,68 +35,129 @@ export default function ChannelsCard({ channels, connectable = [], connectResult
   const [state, formAction, pending] = useActionState<ChannelActionState, FormData>(addChannel, null);
   const [platform, setPlatform] = useState('');
 
+  const verified = channels.some((channel) => channel.verifiedAt);
+  const connectRows = CONNECT.filter((item) => connectable.includes(item.platform));
+  const connectedChannels = channels.filter((channel) => channel.verifiedBy === 'oauth');
+  // Connected accounts show in the rows above; one whose platform can't be connected right now stays in the list below.
+  const otherChannels = channels.filter((channel) => channel.verifiedBy !== 'oauth' || !connectRows.some((item) => item.platform === channel.platform));
+
   return (
     <Card
-      description="클립을 올리는 계정을 등록하고 인증해 주세요. 인증한 계정이 있는 플랫폼만 클립을 제출할 수 있고, 캠페인 공개 이후 올린 영상만 정산돼요."
+      actions={verified ? undefined : <Badge tone="amber">인증 필요</Badge>}
+      description="인증한 계정이 있는 플랫폼만 클립을 제출할 수 있고, 캠페인 공개 이후 올린 영상만 정산돼요."
       id="channels"
       title="내 채널"
     >
-      {connectable.length > 0 && (
-        <div className="cl-stack-tight">
-          <p className="cl-meta">틱톡·인스타그램 계정을 연결하면 바로 인증되고, 클립 조회수를 매일 자동으로 가져와요.</p>
-          <div className="cl-inline">
-            {CONNECT.filter((item) => connectable.includes(item.platform)).map((item) => (
-              <ButtonLink href={`/api/oauth/${item.slug}/start`} key={item.slug} size="sm" variant="secondary">
-                {item.label}
-              </ButtonLink>
-            ))}
-          </div>
-        </div>
-      )}
-      {connected && (
-        <p className={connected.ok ? 'cl-alert cl-tone-brand' : 'cl-alert cl-tone-tomato'} role={connected.ok ? 'status' : 'alert'}>
-          {connected.text}
-        </p>
-      )}
-      {channels.length > 0 && (
-        <ul className="cl-channel-list">
-          {channels.map((channel) => (
-            <ChannelRow channel={channel} key={channel.id} />
-          ))}
-        </ul>
-      )}
-      <form action={formAction} className="cl-auth__form">
-        <div className="cl-form-row">
-          <Field htmlFor="channel-platform" label="플랫폼">
-            <Select id="channel-platform" name="platform" onChange={(event) => setPlatform(event.target.value)} required value={platform}>
-              <option value="">플랫폼 선택</option>
-              {PLATFORMS.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          <Field
-            hint={platform === 'youtube_shorts' ? 'youtube.com/@핸들 주소를 붙여 넣어 주세요.' : '내 프로필 페이지 주소를 붙여 넣어 주세요.'}
-            htmlFor="channel-url"
-            label="계정 주소"
-          >
-            <Input id="channel-url" name="url" placeholder="https://" required type="url" />
-          </Field>
-        </div>
-        {state && (
-          <p className={state.ok ? 'cl-alert cl-tone-brand' : 'cl-alert cl-tone-tomato'} role={state.ok ? 'status' : 'alert'}>
-            {state.message}
+      <div className="cl-stack-tight">
+        {connected && (
+          <p className={connected.ok ? 'cl-alert cl-tone-brand' : 'cl-alert cl-tone-tomato'} role={connected.ok ? 'status' : 'alert'}>
+            {connected.text}
           </p>
         )}
-        <div className="cl-inline">
-          <Button disabled={pending} type="submit" variant="secondary">
-            {pending ? '등록 중…' : '계정 등록'}
-          </Button>
-        </div>
-      </form>
+        {connectRows.length > 0 && (
+          <ul className="cl-connect-list">
+            {connectRows.map((item) => {
+              const accounts = connectedChannels.filter((channel) => channel.platform === item.platform);
+              return accounts.length > 0 ? (
+                accounts.map((channel) => <ConnectedRow channel={channel} key={channel.id} name={item.name} />)
+              ) : (
+                <li className="cl-connect" key={item.slug}>
+                  <PlatformIcon platform={item.platform} size={36} />
+                  <div className="cl-connect__body">
+                    <span className="cl-connect__name">{item.name}</span>
+                    <span className="cl-meta">연결하면 바로 인증되고, 클립 조회수를 매일 자동으로 가져와요.</span>
+                  </div>
+                  <ButtonLink href={`/api/oauth/${item.slug}/start`} size="sm" variant="primary">
+                    연결하기
+                  </ButtonLink>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        {otherChannels.length > 0 && (
+          <ul className="cl-channel-list">
+            {otherChannels.map((channel) => (
+              <ChannelRow channel={channel} key={channel.id} />
+            ))}
+          </ul>
+        )}
+        <form action={formAction} className="cl-auth__form cl-connect-manual">
+          <div>
+            <h3 className="cl-connect-manual__title">다른 플랫폼은 주소로 등록</h3>
+            <p className="cl-meta">프로필 주소를 등록하고 인증 코드를 프로필에 넣으면 인증돼요.</p>
+          </div>
+          <div className="cl-form-row">
+            <Field htmlFor="channel-platform" label="플랫폼">
+              <Select id="channel-platform" name="platform" onChange={(event) => setPlatform(event.target.value)} required value={platform}>
+                <option value="">플랫폼 선택</option>
+                {PLATFORMS.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field
+              hint={platform === 'youtube_shorts' ? 'youtube.com/@핸들 주소를 붙여 넣어 주세요.' : '내 프로필 페이지 주소를 붙여 넣어 주세요.'}
+              htmlFor="channel-url"
+              label="계정 주소"
+            >
+              <Input id="channel-url" name="url" placeholder="https://" required type="url" />
+            </Field>
+          </div>
+          {state && (
+            <p className={state.ok ? 'cl-alert cl-tone-brand' : 'cl-alert cl-tone-tomato'} role={state.ok ? 'status' : 'alert'}>
+              {state.message}
+            </p>
+          )}
+          <div className="cl-inline">
+            <Button disabled={pending} type="submit" variant="secondary">
+              {pending ? '등록 중…' : '계정 등록'}
+            </Button>
+          </div>
+        </form>
+      </div>
     </Card>
+  );
+}
+
+/** A platform account connected through its own login: verified, views collected daily. */
+function ConnectedRow({ channel, name }: { channel: CreatorChannel; name: string }) {
+  const [message, setMessage] = useState<string | null>(null);
+  const [working, startWorking] = useTransition();
+  const handle = channel.url.replace(/\/+$/, '').split('/').pop() ?? channel.url;
+
+  return (
+    <li className="cl-connect">
+      <PlatformIcon platform={channel.platform} size={36} />
+      <div className="cl-connect__body">
+        <span className="cl-connect__name">
+          {name} <Badge tone="brand">연결됨</Badge>
+        </span>
+        <a className="cl-link cl-meta" href={channel.url} rel="noreferrer" target="_blank">
+          {handle}
+        </a>
+        {message && (
+          <span className="cl-alert cl-tone-tomato" role="alert">
+            {message}
+          </span>
+        )}
+      </div>
+      <Button
+        disabled={working}
+        onClick={() =>
+          startWorking(async () => {
+            const result = await disconnectChannel(channel.id);
+            if (!result.ok) setMessage(result.message);
+          })
+        }
+        size="sm"
+        variant="secondary"
+      >
+        {working ? '해제 중…' : '연결 해제'}
+      </Button>
+    </li>
   );
 }
 

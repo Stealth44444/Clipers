@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from 'react';
 import { BANKS, bankName, maskAccountNumber } from '@clipers/db';
-import { Button, Card, Field, Input, Select, SummaryList } from '@clipers/ui';
+import { Badge, Button, Card, Field, Input, Select, SummaryList } from '@clipers/ui';
 import { savePayoutDetails, type PayoutDetailsState } from './payout-actions';
 
 export type PayoutAccountSummary = { legalName: string; bankCode: string; accountNumber: string; updatedAt: string };
@@ -23,11 +23,13 @@ export default function PayoutDetailsCard({ account }: { account: PayoutAccountS
           <Button onClick={() => setEditing(true)} size="sm" variant="secondary">
             변경
           </Button>
-        ) : undefined
+        ) : account ? undefined : (
+          <Badge tone="amber">등록 필요</Badge>
+        )
       }
-      description="지급 요청한 금액을 이 계좌로 보내요. 본인 명의 계좌만 등록할 수 있어요."
+      description="정산된 수익금을 지급 요청하면 이 계좌로 보내요. 본인 명의 계좌만 등록할 수 있어요."
       id="payout"
-      title="지급 정보"
+      title="수익금 받을 계좌"
     >
       {account && !editing ? (
         <>

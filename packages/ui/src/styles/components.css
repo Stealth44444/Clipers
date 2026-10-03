@@ -1588,5 +1588,18 @@ a.cl-notifications__item:hover { background: var(--gray-a3); }
 .cl-channel { display: grid; gap: var(--space-2); padding-bottom: var(--space-3); border-bottom: 1px solid var(--gray-a3); }
 .cl-channel:last-child { border-bottom: 0; padding-bottom: 0; }
 .cl-channel code { font-weight: 600; }
+/* Platform accounts connected through their own login: logo, name and state, one action. */
+.cl-connect-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.cl-connect { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--gray-a3); border-radius: var(--radius-4); background: var(--gray-a2); }
+.cl-connect .cl-platform-icon { border-radius: var(--radius-3); }
+.cl-connect__body { display: grid; flex: 1; gap: 2px; min-width: 0; }
+.cl-connect__name { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 600; }
+.cl-connect-manual { padding-top: var(--space-4); border-top: 1px solid var(--gray-a3); }
+.cl-connect-manual__title { font-size: var(--font-size-3); font-weight: 600; }
+@media (max-width: 520px) {
+  .cl-connect { flex-wrap: wrap; }
+  .cl-connect__body { flex-basis: calc(100% - 48px); }
+  .cl-connect > .cl-button { margin-left: 48px; }
+}
 .cl-review-actions { display: grid; gap: var(--space-2); justify-items: end; }
 .cl-review-checks { display: grid; gap: var(--space-1); justify-items: start; max-width: 320px; }

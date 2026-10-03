@@ -34,10 +34,12 @@ describe('summarizeEarnings', () => {
 
 describe('creatorChecklist', () => {
   it('marks steps done from real activity counts', () => {
-    expect(creatorChecklist({ applications: 1, clips: 0, settlements: 0 })).toEqual([
+    expect(creatorChecklist({ verifiedChannels: 1, applications: 1, clips: 0, hasPayoutAccount: false, settlements: 0 })).toEqual([
       { id: 'account', done: true },
+      { id: 'channel', done: true },
       { id: 'apply', done: true },
       { id: 'submit', done: false },
+      { id: 'payout', done: false },
       { id: 'settle', done: false },
     ]);
   });
