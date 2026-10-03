@@ -15,17 +15,17 @@
 | 세션 | 맡은 일 | 상태 | 문서 | 메모 |
 |---|---|---|---|---|
 | clipers-0b | 클립 부정 방지: 캠페인 공개 이후 게시물만, 계정 인증 필수, 삭제·비공개 감지 후 정산 중단, 온보딩 만 19세 확인 | 구현 완료 · DB 적용 완료 · **배포 대기** | `specs/2026-10-03-clip-fraud-guards-design.md`, `plans/2026-10-03-clip-fraud-guards.md` | 배포 전까지 운영 앱의 유튜브 제출·온보딩 완료가 막혀 있음(DB가 먼저 바뀜) |
-| clipers-8a | 알림(앱 안·메일), 예산 증액, Resend 메일 | 알림·예산 증액 DB 적용 완료 · 예산 증액 앱 **배포 대기** · Resend 도메인 `pending`(DNS 인증 전) | `specs/2026-10-03-notifications-design.md`, `specs/2026-10-03-budget-topup-design.md` | 지금 세션 목록에 없음. 알림 메일 정기 작업은 배포 뒤 적용(아래) |
+| clipers-8a | 알림(앱 안·메일), 예산 증액, Resend 메일 | 알림·예산 증액 DB 적용 완료 · 예산 증액 앱 **배포 대기** · Resend 연결은 clipers-f1이 마침 | `specs/2026-10-03-notifications-design.md`, `specs/2026-10-03-budget-topup-design.md` | 지금 세션 목록에 없음. 알림 메일 정기 작업은 배포 뒤 적용(아래) |
 | clipers-a1 | 틱톡·인스타 OAuth 계정 연결, 조회수 자동 수집 | 설계 커밋 · 구현 중 | `specs/2026-10-03-social-oauth-views-design.md` | 새 마이그레이션 예정(`creator_channels.verified_by`에 `oauth`, 토큰 표, `clips.external_video_id`) |
-| clipers-f1 | (세션이 채워 주세요) | | | |
+| clipers-f1 | Resend 메일 연결(완료), 알림 메일 디자인 개편, 활동 알림 메일 끄기 설정 | Resend·알림 메일 정기 작업 **운영 적용 완료** · 메일 디자인·수신 설정 구현 중 | `specs/2026-10-03-notifications-design.md` | 수신 설정은 새 마이그레이션 예정(`profiles`에 활동 알림 메일 끄기 칸, `private.notify`가 끈 사람의 활동 알림은 메일 없이 기록). 돈 관련 알림 메일은 항상 보냄 |
 
 ## 적용·배포를 기다리는 것
 
 | 항목 | 기다리는 것 | 담당 |
 |---|---|---|
 | origin/main 이후 커밋(부정 방지, 예산 증액 앱, 알림 문구 등) | 사용자의 push | 사용자 |
-| `supabase/migrations/20261003160000_notification_email_cron.sql` | 앱 배포 뒤 운영 DB 적용 | clipers-8a(없으면 아무 세션) |
-| Resend `clipers.site` 도메인 | DNS(DKIM·SPF) 기록 → 인증 → `RESEND_API_KEY`·`EMAIL_FROM` 등록 → Supabase 인증 메일(SMTP) 연결 | clipers-8a / 사용자 |
+| ~~`supabase/migrations/20261003160000_notification_email_cron.sql`~~ | 완료: `ea6eec1` 배포 뒤 운영 DB 적용, 5분마다 200 응답 확인 | clipers-f1 |
+| Resend `clipers.site` 도메인 | DNS·인증·`RESEND_API_KEY`·`EMAIL_FROM`(clipers-app)은 완료(테스트 메일 받은편지함 도착). 남은 것: Supabase 인증 메일(SMTP) 연결 | 사용자 |
 
 ## 사용자가 할 일
 
