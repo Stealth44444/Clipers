@@ -78,6 +78,8 @@ export async function GET(request: NextRequest) {
           kind: 'connection_expired',
           data: { platform: connection.platform },
           link: '/creator/settings#channels',
+          // Once per connection: a reconnect brings a new expiry, so a later break is told again.
+          dedupe_key: `connection_expired:${channelId}:${connection.access_expires_at}`,
         });
         await admin.from('channel_connections').update({ reconnect_notified_at: capturedAt }).eq('channel_id', channelId);
       }
