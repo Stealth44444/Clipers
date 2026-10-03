@@ -56,9 +56,14 @@ export default function LandingChrome({ path, cta, overDark = false, children }:
           <a href={appUrl('/privacy')}>개인정보 처리방침</a>
         </nav>
         <p>© 2026 Clipers</p>
-        <p className="cl-landing-footer__company">
-          {COMPANY.legalName} · 대표 {COMPANY.representative} · 사업자등록번호 {COMPANY.registrationNumber} · {COMPANY.address} · {COMPANY.email}
-        </p>
+        <div className="cl-landing-footer__company">
+          <p>
+            고객센터 <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+          </p>
+          <p>
+            {COMPANY.legalName} · 대표 {COMPANY.representative} · 사업자등록번호 {COMPANY.registrationNumber} · {COMPANY.address}
+          </p>
+        </div>
       </footer>
     </div>
   );

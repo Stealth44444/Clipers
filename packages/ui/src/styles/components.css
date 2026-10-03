@@ -964,8 +964,11 @@ a.cl-notifications__item:hover { background: var(--gray-a3); }
 .cl-landing-footer nav { display: flex; flex-wrap: wrap; gap: var(--space-5); }
 .cl-landing-footer nav a:hover { color: var(--color-text); }
 .cl-landing-footer p { margin-left: auto; }
-/* Operator details: a quiet full-width line under the footer row */
-.cl-landing-footer p.cl-landing-footer__company { flex-basis: 100%; margin-left: 0; color: var(--color-text-subtle); font-size: var(--font-size-1); line-height: 1.6; }
+/* Operator details: quiet full-width lines under the footer row — the support address on its own, then the business details */
+.cl-landing-footer__company { display: grid; gap: 2px; flex-basis: 100%; color: var(--color-text-subtle); font-size: var(--font-size-1); line-height: 1.6; }
+.cl-landing-footer .cl-landing-footer__company p { margin: 0; }
+.cl-landing-footer__company a { color: var(--color-text-muted); }
+.cl-landing-footer__company a:hover { color: var(--color-text); text-decoration: underline; }
 
 @media (max-width: 860px) {
   .cl-landing-nav__links > a { display: none; }
