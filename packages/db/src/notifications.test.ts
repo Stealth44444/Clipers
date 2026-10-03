@@ -49,22 +49,33 @@ describe('buildNotificationEmail', () => {
     expect(email.text).toContain('제출 현황 보기: https://app.clipers.site/creator/submissions');
     expect(email.html).toContain('href="https://app.clipers.site/creator/submissions"');
     expect(email.html).toContain('>제출 현황 보기</a>');
-    expect(email.html).toContain('봄 &lt;b&gt;: 화질');
     expect(email.html).not.toContain('봄 <b>');
   });
 
-  it('shows the logo from the app and a hidden preview line', () => {
+  it('lays the facts out as label and value rows under a lead sentence', () => {
+    const email = buildNotificationEmail({ kind: 'clip_rejected', data: { campaign_title: '봄 <b>', reason: '화질' }, link: '/creator/submissions' }, appUrl);
+    expect(email.html).toContain('검수에서 반려됐어요. 사유를 확인하고 다시 제출해 주세요.');
+    expect(email.html).toMatch(/>캠페인<\/td>\s*<td[^>]*>봄 &lt;b&gt;<\/td>/);
+    expect(email.html).toMatch(/>반려 사유<\/td>\s*<td[^>]*>화질<\/td>/);
+    expect(email.text).toContain('반려 사유: 화질');
+  });
+
+  it('leaves out the campaign row when there is no title', () => {
+    expect(buildNotificationEmail({ kind: 'clip_approved', data: {}, link: '/creator/submissions' }, appUrl).html).not.toContain('>캠페인</td>');
+  });
+
+  it('shows the logo badge from the app and a hidden preview line', () => {
     const email = buildNotificationEmail({ kind: 'application_approved', data: { campaign_title: '봄 캠페인' }, link: '/creator/campaigns' }, appUrl);
-    expect(email.html).toContain('src="https://app.clipers.site/logo/clipers-wordmark-email.png"');
-    expect(email.html).toContain('src="https://app.clipers.site/logo/clipers-wordmark-email-dark.png"');
-    expect(email.html).toMatch(/<div style="display:none[^"]*">봄 캠페인에 클립을 제출할 수 있어요\./);
+    expect(email.html).toContain('src="https://app.clipers.site/logo/clipers-email-badge.png"');
+    expect(email.html).toMatch(/<div style="display:none[^"]*">지원한 캠페인에 이제 클립을 제출할 수 있어요\./);
   });
 
   it('sets the amount apart for money notifications and says they are always sent', () => {
     const email = buildNotificationEmail({ kind: 'settlement_created', data: { amount: 128000 }, link: '/creator/earnings' }, appUrl);
-    expect(email.html).toContain('>정산 금액</p>');
+    expect(email.html).toContain('>이번 주 정산 금액</p>');
     expect(email.html).toContain('>128,000원</p>');
-    expect(email.text).toContain('정산 금액: 128,000원');
+    expect(email.text).toContain('이번 주 정산 금액: 128,000원');
+    expect(email.html).toMatch(/<div style="display:none[^"]*">이번 주 정산 금액 128,000원 · /);
     expect(email.html).toContain('메일 설정과 관계없이 보내 드려요');
     expect(email.html).not.toContain('/settings');
   });
@@ -72,7 +83,7 @@ describe('buildNotificationEmail', () => {
   it('links activity notifications to the right settings page', () => {
     const creator = buildNotificationEmail({ kind: 'clip_approved', data: {}, link: '/creator/submissions' }, appUrl);
     expect(creator.html).toContain('href="https://app.clipers.site/creator/settings"');
-    expect(creator.text).toContain('알림 설정에서 끌 수 있어요: https://app.clipers.site/creator/settings');
+    expect(creator.text).toContain('알림 설정에서 끌 수 있어요. https://app.clipers.site/creator/settings');
     expect(creator.html).not.toContain('정산 금액');
 
     const brand = buildNotificationEmail({ kind: 'first_clip_approved', data: { campaign_title: 'B' }, link: '/brand/campaigns/1' }, appUrl);

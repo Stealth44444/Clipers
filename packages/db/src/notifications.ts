@@ -84,110 +84,181 @@ export const MONEY_NOTIFICATION_KINDS = [
 
 export const isMoneyNotification = (kind: string) => (MONEY_NOTIFICATION_KINDS as readonly string[]).includes(kind);
 
-type EmailDetails = { action: string; amount?: { label: string; value: string } };
+type DetailRow = { label: string; value: string };
+type EmailDetails = { action: string; lead?: string; amount?: DetailRow; rows?: DetailRow[] };
 
 const OPEN_CAMPAIGN = '캠페인 보기';
 const OPEN_SUBMISSIONS = '제출 현황 보기';
 const OPEN_EARNINGS = '수익 보기';
 const OPEN_SPEND = '예산 사용 내역 보기';
 
-// What the email adds to the in-app wording: the button label, and the amount shown on its own for money notifications.
+const campaignRow = (d: NotificationData): DetailRow[] => (text(d.campaign_title) ? [{ label: '캠페인', value: text(d.campaign_title) }] : []);
+
+// What the email shows beyond the in-app title: a lead sentence, the amount set apart for money notifications, the facts
+// as label and value rows, and the button. Without a lead the in-app body is used.
 const EMAIL_DETAILS: Record<string, (data: NotificationData) => EmailDetails> = {
-  application_approved: () => ({ action: OPEN_CAMPAIGN }),
-  application_rejected: () => ({ action: OPEN_CAMPAIGN }),
-  clip_approved: () => ({ action: OPEN_SUBMISSIONS }),
-  clip_rejected: () => ({ action: OPEN_SUBMISSIONS }),
-  dispute_resolved: () => ({ action: OPEN_SUBMISSIONS }),
-  view_report_reviewed: () => ({ action: OPEN_SUBMISSIONS }),
-  settlement_created: (d) => ({ action: OPEN_EARNINGS, amount: { label: '정산 금액', value: won(d.amount) } }),
-  payout_paid: (d) => ({ action: OPEN_EARNINGS, amount: { label: '보낸 금액', value: won(d.net_amount) } }),
-  campaign_closed: () => ({ action: OPEN_CAMPAIGN }),
-  campaign_live: () => ({ action: OPEN_CAMPAIGN }),
-  deposit_short: (d) => ({ action: OPEN_CAMPAIGN, amount: { label: '더 입금할 금액', value: won(d.difference) } }),
-  first_clip_approved: () => ({ action: OPEN_CAMPAIGN }),
-  campaign_exhausted: () => ({ action: OPEN_CAMPAIGN }),
-  leftover_finalized: (d) => ({ action: OPEN_SPEND, amount: { label: '잔액으로 옮긴 금액', value: won(d.amount) } }),
-  topup_confirmed: (d) => ({ action: OPEN_CAMPAIGN, amount: { label: '늘어난 예산', value: won(d.amount) } }),
-  topup_short: (d) => ({ action: OPEN_CAMPAIGN, amount: { label: '더 입금할 금액', value: won(d.difference) } }),
-  refund_paid: (d) => ({ action: OPEN_SPEND, amount: { label: '보낸 금액', value: won(d.amount) } }),
-  clip_unavailable: () => ({ action: OPEN_SUBMISSIONS }),
-  clip_available_again: () => ({ action: OPEN_SUBMISSIONS }),
-  connection_expired: () => ({ action: '다시 연결하기' }),
+  application_approved: (d) => ({ action: OPEN_CAMPAIGN, lead: '지원한 캠페인에 이제 클립을 제출할 수 있어요.', rows: campaignRow(d) }),
+  application_rejected: (d) => ({ action: OPEN_CAMPAIGN, lead: '이번 캠페인 지원은 승인되지 않았어요. 다른 캠페인에도 지원해 보세요.', rows: campaignRow(d) }),
+  clip_approved: (d) => ({ action: OPEN_SUBMISSIONS, lead: '검수를 통과했어요. 이제부터 이 클립의 조회수가 정산에 들어가요.', rows: campaignRow(d) }),
+  clip_rejected: (d) => ({
+    action: OPEN_SUBMISSIONS,
+    lead: '검수에서 반려됐어요. 사유를 확인하고 다시 제출해 주세요.',
+    rows: [...campaignRow(d), { label: '반려 사유', value: text(d.reason, '제출 현황에서 확인해 주세요.') }],
+  }),
+  dispute_resolved: (d) => ({
+    action: OPEN_SUBMISSIONS,
+    lead: '보내 주신 이의제기를 검토했어요.',
+    rows: [...campaignRow(d), { label: '처리 결과', value: text(d.note, '제출 현황에서 확인해 주세요.') }],
+  }),
+  view_report_reviewed: (d) => ({
+    action: OPEN_SUBMISSIONS,
+    lead: d.verified ? '신고한 조회수를 확인해 정산에 반영했어요.' : '신고한 조회수를 확인했지만 정산에 반영하지 않았어요.',
+    rows: campaignRow(d),
+  }),
+  settlement_created: (d) => ({
+    action: OPEN_EARNINGS,
+    lead: `${won(MIN_WITHDRAWAL)}부터 지급을 요청할 수 있어요.`,
+    amount: { label: '이번 주 정산 금액', value: won(d.amount) },
+  }),
+  payout_paid: (d) => ({ action: OPEN_EARNINGS, lead: '등록한 계좌로 보냈어요.', amount: { label: '보낸 금액', value: won(d.net_amount) } }),
+  campaign_closed: (d) => ({ action: OPEN_CAMPAIGN, lead: '이 캠페인에는 더 이상 클립을 제출할 수 없어요.', rows: campaignRow(d) }),
+  campaign_live: (d) => ({ action: OPEN_CAMPAIGN, lead: '입금을 확인해 캠페인을 크리에이터에게 공개했어요.', rows: campaignRow(d) }),
+  deposit_short: (d) => ({
+    action: OPEN_CAMPAIGN,
+    lead: '확인된 입금이 예산보다 적어요. 차액을 더 입금하면 캠페인을 공개해요.',
+    amount: { label: '더 입금할 금액', value: won(d.difference) },
+    rows: [...campaignRow(d), { label: '확인된 입금', value: won(d.received) }],
+  }),
+  first_clip_approved: (d) => ({ action: OPEN_CAMPAIGN, lead: '검수를 통과한 첫 클립이 올라왔어요.', rows: campaignRow(d) }),
+  campaign_exhausted: (d) => ({ action: OPEN_CAMPAIGN, lead: '예산을 모두 써서 캠페인이 종료됐어요.', rows: campaignRow(d) }),
+  leftover_finalized: (d) => ({
+    action: OPEN_SPEND,
+    lead: '중단한 캠페인에서 남은 금액을 잔액으로 옮겼어요.',
+    amount: { label: '잔액으로 옮긴 금액', value: won(d.amount) },
+    rows: campaignRow(d),
+  }),
+  topup_confirmed: (d) => ({
+    action: OPEN_CAMPAIGN,
+    lead: d.reopened ? '입금을 확인해 예산을 늘리고 캠페인을 다시 열었어요.' : '입금을 확인해 예산을 늘렸어요.',
+    amount: { label: '늘어난 예산', value: won(d.amount) },
+    rows: campaignRow(d),
+  }),
+  topup_short: (d) => ({
+    action: OPEN_CAMPAIGN,
+    lead: '확인된 증액 입금이 요청한 금액보다 적어요. 차액을 더 입금해 주세요.',
+    amount: { label: '더 입금할 금액', value: won(d.difference) },
+    rows: [...campaignRow(d), { label: '확인된 입금', value: won(d.received) }],
+  }),
+  refund_paid: (d) => ({
+    action: OPEN_SPEND,
+    lead: d.refund_kind === 'over_deposit' ? '초과 입금한 금액을 입금한 계좌로 돌려드렸어요.' : '남은 금액을 요청한 계좌로 보냈어요.',
+    amount: { label: '보낸 금액', value: won(d.amount) },
+  }),
+  clip_unavailable: (d) => ({
+    action: OPEN_SUBMISSIONS,
+    lead: '영상이 삭제되거나 비공개로 바뀐 것을 확인해 이 클립의 정산을 멈췄어요. 다시 공개했다면 제출 현황에서 이의제기로 알려 주세요.',
+    rows: campaignRow(d),
+  }),
+  clip_available_again: (d) => ({
+    action: OPEN_SUBMISSIONS,
+    lead: '영상이 다시 공개된 것을 확인했어요. 다음 정산부터 이 클립이 다시 포함돼요.',
+    rows: campaignRow(d),
+  }),
+  connection_expired: (d) => ({
+    action: '다시 연결하기',
+    lead: "연결이 만료돼 조회수를 가져오지 못하고 있어요. 설정의 '내 채널'에서 다시 연결해 주세요.",
+    rows: [{ label: '플랫폼', value: CONNECTED_PLATFORMS[String(d.platform)] ?? '연결한 계정' }],
+  }),
 };
 
 const escapeHtml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const FONT = "-apple-system,BlinkMacSystemFont,'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif";
+const FONT = "-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Malgun Gothic',sans-serif";
+const BRAND_GREEN = '#2f7d52';
 
-// Mail clients that honour prefers-color-scheme (Apple Mail, iOS Mail, Outlook for Mac) get the dark version;
-// Gmail ignores it and applies its own inversion, which the light layout survives.
+// Apple Mail, iOS Mail and Outlook for Mac follow prefers-color-scheme. Gmail ignores it and inverts colours itself but
+// never images, so the logo is a badge with its own dark background that reads the same in both modes.
 const DARK_MODE_STYLE = `<style>
-.dark-logo{display:none}
 @media (prefers-color-scheme:dark){
 .page{background:#000000!important}
-.card{background:#1c1c1e!important}
+.card{background:#1c1c1e!important;border-color:#2c2c2e!important}
 .ink{color:#f5f5f7!important}
-.muted{color:#a1a1a6!important}
-.amount{background:#2c2c2e!important}
-.light-logo{display:none!important}
-.dark-logo{display:inline-block!important}
+.soft{color:#c7c7cc!important}
+.muted{color:#8e8e93!important}
+.rule{border-color:#2c2c2e!important}
 }
 </style>`;
 
-/** A transactional email for one notification: logo, the in-app wording, the amount on its own, and a button to the page. */
+/** A transactional email for one notification: logo badge, title, the amount set apart, the facts, and a button to the page. */
 export function buildNotificationEmail(notification: { kind: string; data: NotificationData; link: string | null }, appUrl: string) {
   const { title, body } = renderNotification(notification.kind, notification.data);
   const details = EMAIL_DETAILS[notification.kind]?.(notification.data ?? {}) ?? { action: 'Clipers에서 보기' };
+  const lead = details.lead ?? body;
+  const rows = details.rows ?? [];
   const url = new URL(notification.link ?? '/', appUrl).toString();
   const settingsUrl = new URL(notification.link?.startsWith('/brand') ? '/brand/settings' : '/creator/settings', appUrl).toString();
-  const logo = (file: string) => new URL(`/logo/${file}`, appUrl).toString();
   const money = isMoneyNotification(notification.kind);
+  const e = escapeHtml;
 
-  const footerText = money
-    ? '정산·입금처럼 돈과 관련된 알림이라 메일 설정과 관계없이 보내 드려요.'
-    : `Clipers 계정 활동을 알려 드리는 메일이에요. 활동 알림 메일은 알림 설정에서 끌 수 있어요: ${settingsUrl}`;
-  const text = [title, body, details.amount && `${details.amount.label}: ${details.amount.value}`, `${details.action}: ${url}`, footerText]
+  const reason = money
+    ? '돈과 관련된 알림이라 메일 설정과 관계없이 보내 드려요.'
+    : 'Clipers 계정 활동을 알려 드리는 메일이에요. 활동 알림 메일은 알림 설정에서 끌 수 있어요.';
+  const text = [
+    title,
+    details.amount && `${details.amount.label}: ${details.amount.value}`,
+    lead,
+    ...rows.map((row) => `${row.label}: ${row.value}`),
+    `${details.action}: ${url}`,
+    money ? reason : `${reason} ${settingsUrl}`,
+  ]
     .filter(Boolean)
     .join('\n\n');
 
-  const footerHtml = money
-    ? '정산·입금처럼 돈과 관련된 알림이라 메일 설정과 관계없이 보내 드려요.'
-    : `Clipers 계정 활동을 알려 드리는 메일이에요. 활동 알림 메일은 <a href="${escapeHtml(settingsUrl)}" class="muted" style="color:#8e8e93;text-decoration:underline">알림 설정</a>에서 끌 수 있어요.`;
   const amountHtml = details.amount
-    ? `<tr><td class="amount" style="padding:16px 20px;border-radius:12px;background:#f5f5f7">
-<p class="muted" style="margin:0 0 4px;font-size:13px;line-height:1.4;color:#6e6e73">${escapeHtml(details.amount.label)}</p>
-<p class="ink" style="margin:0;font-size:24px;line-height:1.3;font-weight:700;color:#1d1d1f">${escapeHtml(details.amount.value)}</p>
-</td></tr>
-<tr><td style="height:24px;line-height:24px;font-size:0">&nbsp;</td></tr>`
+    ? `<p class="muted" style="margin:24px 0 4px;font-size:13px;line-height:1.4;color:#8e8e93">${e(details.amount.label)}</p>
+<p class="ink" style="margin:0;font-size:34px;line-height:1.2;font-weight:700;letter-spacing:-0.02em;color:#111111">${e(details.amount.value)}</p>`
     : '';
+  const leadHtml = lead
+    ? `<p class="soft" style="margin:${details.amount ? '16px' : '10px'} 0 0;font-size:15px;line-height:1.65;color:#48484a">${e(lead)}</p>`
+    : '';
+  const rowsHtml = rows.length
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;border-collapse:collapse">
+${rows
+  .map(
+    (row) => `<tr><td class="rule muted" valign="top" style="width:88px;padding:14px 12px 14px 0;border-top:1px solid #ececf0;font-size:13px;line-height:1.55;color:#8e8e93">${e(row.label)}</td>
+<td class="rule ink" valign="top" style="padding:14px 0;border-top:1px solid #ececf0;font-size:14px;line-height:1.55;font-weight:500;color:#1d1d1f">${e(row.value)}</td></tr>`
+  )
+  .join('\n')}
+</table>`
+    : '';
+  const reasonHtml = money
+    ? e(reason)
+    : `Clipers 계정 활동을 알려 드리는 메일이에요. 활동 알림 메일은 <a href="${e(settingsUrl)}" class="muted" style="color:#8e8e93;text-decoration:underline">알림 설정</a>에서 끌 수 있어요.`;
   // Hidden preview line for the inbox list; the trailing spacers stop clients from pulling in the text after it.
-  const preheader = `<div style="display:none;max-height:0;overflow:hidden;opacity:0">${escapeHtml(body || title)}${'&#8204;&nbsp;'.repeat(40)}</div>`;
+  const preview = details.amount ? `${details.amount.label} ${details.amount.value} · ${lead}` : lead || title;
+  const preheader = `<div style="display:none;max-height:0;overflow:hidden;opacity:0">${e(preview)}${'&#8204;&nbsp;'.repeat(40)}</div>`;
 
   const html = `<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark">
-<title>${escapeHtml(title)}</title>${DARK_MODE_STYLE}</head>
-<body class="page" style="margin:0;padding:0;background:#f5f5f7;font-family:${FONT}">
+<title>${e(title)}</title>${DARK_MODE_STYLE}</head>
+<body class="page" style="margin:0;padding:0;background:#f2f2f4;font-family:${FONT};-webkit-font-smoothing:antialiased">
 ${preheader}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="page" style="background:#f5f5f7"><tr><td align="center" style="padding:32px 16px">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
-<tr><td style="padding:0 4px 20px">
-<img src="${escapeHtml(logo('clipers-wordmark-email.png'))}" width="96" height="35" alt="Clipers" class="light-logo" style="display:inline-block;border:0;height:35px;width:96px">
-<img src="${escapeHtml(logo('clipers-wordmark-email-dark.png'))}" width="96" height="35" alt="Clipers" class="dark-logo" style="display:none;border:0;height:35px;width:96px">
-</td></tr>
-<tr><td class="card" style="padding:32px 28px;border-radius:16px;background:#ffffff">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-<tr><td>
-<p class="ink" style="margin:0 0 8px;font-size:20px;line-height:1.4;font-weight:700;color:#1d1d1f">${escapeHtml(title)}</p>
-${body ? `<p class="muted" style="margin:0;font-size:15px;line-height:1.6;color:#48484a">${escapeHtml(body)}</p>` : ''}
-</td></tr>
-<tr><td style="height:24px;line-height:24px;font-size:0">&nbsp;</td></tr>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="page" style="background:#f2f2f4"><tr><td align="center" style="padding:40px 16px 48px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px">
+<tr><td style="padding:0 4px 24px"><img src="${e(new URL('/logo/clipers-email-badge.png', appUrl).toString())}" width="96" height="40" alt="Clipers" style="display:block;border:0;width:96px;height:40px"></td></tr>
+<tr><td class="card" style="padding:36px 32px 32px;border:1px solid #e6e6ea;border-radius:20px;background:#ffffff">
+<p class="ink" style="margin:0;font-size:22px;line-height:1.4;font-weight:700;letter-spacing:-0.02em;color:#111111">${e(title)}</p>
 ${amountHtml}
-<tr><td><a href="${escapeHtml(url)}" style="display:inline-block;padding:12px 20px;border-radius:10px;background:#58b982;color:#06140c;font-size:15px;font-weight:600;line-height:1.2;text-decoration:none">${escapeHtml(details.action)}</a></td></tr>
-</table>
+${leadHtml}
+${rowsHtml}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:32px"><tr><td align="center" bgcolor="${BRAND_GREEN}" style="border-radius:12px;background:${BRAND_GREEN}">
+<a href="${e(url)}" style="display:block;padding:15px 20px;font-size:15px;line-height:1.2;font-weight:600;color:#ffffff;text-decoration:none">${e(details.action)}</a>
+</td></tr></table>
 </td></tr>
-<tr><td style="padding:20px 4px 0">
-<p class="muted" style="margin:0;font-size:12px;line-height:1.6;color:#8e8e93">${footerHtml}</p>
+<tr><td style="padding:24px 8px 0">
+<p class="muted" style="margin:0;font-size:12px;line-height:1.7;color:#8e8e93">${reasonHtml}</p>
+<p class="muted" style="margin:12px 0 0;font-size:12px;line-height:1.7;color:#aeaeb2">Clipers · <a href="https://clipers.site" class="muted" style="color:#aeaeb2;text-decoration:none">clipers.site</a></p>
 </td></tr>
 </table>
 </td></tr></table>
