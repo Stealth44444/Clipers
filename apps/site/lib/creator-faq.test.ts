@@ -7,7 +7,7 @@ describe('CREATOR_FAQ', () => {
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids).toEqual([
       'what-is-clipping', 'small-channel', 'others-videos', 'fees', 'how-much', 'per-clip-max', 'daily-limit',
-      'min-views', 'budget-runs-out', 'when-paid', 'platforms', 'view-check', 'rejected',
+      'min-views', 'budget-runs-out', 'when-paid', 'platforms', 'which-videos', 'view-check', 'rejected',
     ]);
   });
 
