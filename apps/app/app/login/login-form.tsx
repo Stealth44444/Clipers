@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import type { Attribution, OnboardingRole } from '@clipers/db';
 import { Button, Field, IconButton, Input, Tabs } from '@clipers/ui';
-import AuthStatus from '@/components/auth-status';
 import { authErrorMessage } from '@/lib/auth';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
 import { siteUrl } from '@/lib/urls';
@@ -218,7 +217,7 @@ export default function LoginForm({
                 </>
               )}
             </p>
-            {error && <AuthStatus message={error} />}
+            {error && <p className="cl-alert cl-tone-tomato" role="alert">{error}</p>}
             <Button block disabled={wait > 0 || submitting} onClick={() => void resend()} size="lg" variant="secondary">
               {wait > 0 ? `다시 보내기 (${wait}초)` : submitting ? '보내는 중…' : '다시 보내기'}
             </Button>
@@ -277,7 +276,7 @@ export default function LoginForm({
                 </p>
               )}
 
-              {error && <AuthStatus message={error} />}
+              {error && <p className="cl-alert cl-tone-tomato" role="alert">{error}</p>}
 
               <Button block disabled={submitting} size="lg" type="submit" variant="primary">
                 {submitting ? '처리 중…' : mode === 'sign-up' ? '계정 만들기' : mode === 'reset' ? '재설정 메일 보내기' : '로그인'}
