@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { descriptionHasCode, fetchYouTubeChannel, newVerificationCode, parseChannelUrl, PLATFORMS } from '@clipers/db';
+import { channelPlatformOf, descriptionHasCode, fetchYouTubeChannel, newVerificationCode, parseChannelUrl } from '@clipers/db';
 import { getSupabaseAdminClient } from '@/lib/supabase-admin';
 import { getSupabaseServerClient } from '@/lib/supabase-server';
 
@@ -24,9 +24,16 @@ export async function addChannel(_previous: ChannelActionState, form: FormData):
   const creatorId = await signedInCreatorId();
   if (!creatorId) return { ok: false, message: '다시 로그인해 주세요.' };
 
-  const platform = String(form.get('platform') ?? '');
-  if (!PLATFORMS.some((item) => item.value === platform)) return { ok: false, message: '플랫폼을 골라 주세요.' };
-  const parsed = parseChannelUrl(platform, String(form.get('url') ?? ''));
+  // The form asks for the address alone; its host says which platform it is.
+  const input = String(form.get('url') ?? '');
+  const platform = channelPlatformOf(input);
+  if (!platform) {
+    return {
+      ok: false,
+      message: '등록할 수 있는 플랫폼의 주소가 아니에요. 유튜브, 틱톡, 인스타그램, 페이스북, X, 네이버 클립, 카카오 숏폼의 프로필 주소를 붙여 넣어 주세요.',
+    };
+  }
+  const parsed = parseChannelUrl(platform, input);
   if (!parsed) {
     return {
       ok: false,
@@ -43,7 +50,7 @@ export async function addChannel(_previous: ChannelActionState, form: FormData):
   if (error) return { ok: false, message: error.code === '23505' ? '이미 등록한 계정이에요.' : '등록하지 못했어요. 잠시 후 다시 시도해 주세요.' };
 
   revalidatePath('/creator/settings');
-  return { ok: true, message: '등록했어요. 아래 안내대로 인증 코드를 넣어 주세요.' };
+  return { ok: true, message: '등록했어요. 위 안내대로 인증 코드를 프로필에 넣어 주세요.' };
 }
 
 /** Checks the YouTube channel description for the code and marks the channel verified. */

@@ -239,7 +239,8 @@
 .cl-empty__action { margin-top: var(--space-3); }
 
 /* ---------- form controls ---------- */
-.cl-field { display: grid; gap: var(--space-2); }
+/* align-content: a field beside a taller one (its neighbour has a hint) keeps its label and control at the top. */
+.cl-field { display: grid; align-content: start; gap: var(--space-2); }
 .cl-field__label { color: var(--color-text); font-size: var(--font-size-2); font-weight: 500; }
 .cl-field__meta { display: flex; justify-content: space-between; gap: var(--space-2); color: var(--gray-9); font-size: var(--font-size-1); }
 .cl-field__counter { margin-left: auto; }
@@ -274,6 +275,21 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23b4b4b4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right var(--space-3) center;
+}
+/* A field's control with its action on the same line; the control can carry a leading icon. */
+.cl-field-inline { display: flex; align-items: stretch; gap: var(--space-2); }
+.cl-field-inline > .cl-button { flex: 0 0 auto; height: 40px; }
+.cl-input-icon { position: relative; flex: 1 1 auto; min-width: 0; }
+.cl-input-icon > svg,
+.cl-input-icon > .cl-platform-icon { position: absolute; top: 50%; left: 10px; transform: translateY(-50%); pointer-events: none; }
+.cl-input-icon > svg { left: 12px; color: var(--gray-9); }
+.cl-input-icon > .cl-platform-icon { border-radius: 5px; }
+.cl-input-icon > .cl-input { padding-left: 40px; }
+/* Narrow screens: the control, then its hint, then the action at full width (the hint stays next to what it describes). */
+@media (max-width: 520px) {
+  .cl-field-inline { display: contents; }
+  .cl-field__meta { order: 1; }
+  .cl-field-inline > .cl-button { order: 2; width: 100%; margin-top: var(--space-2); }
 }
 
 .cl-switch {
@@ -1584,7 +1600,7 @@ a.cl-notifications__item:hover { background: var(--gray-a3); }
 .cl-legal__table th, .cl-legal__table td { padding: var(--space-3); text-align: left; vertical-align: top; box-shadow: inset 0 -1px 0 var(--gray-a3); }
 .cl-legal__table th { color: var(--color-text-muted); font-weight: 600; white-space: nowrap; }
 
-.cl-channel-list { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; gap: var(--space-3); }
+.cl-channel-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
 .cl-channel { display: grid; gap: var(--space-2); padding-bottom: var(--space-3); border-bottom: 1px solid var(--gray-a3); }
 .cl-channel:last-child { border-bottom: 0; padding-bottom: 0; }
 .cl-channel code { font-weight: 600; }

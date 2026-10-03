@@ -1,8 +1,9 @@
 'use client';
 
 import { useActionState, useState, useTransition } from 'react';
-import { PLATFORMS, platformLabel } from '@clipers/db';
-import { Badge, Button, ButtonLink, Card, Field, Input, PlatformIcon, Select } from '@clipers/ui';
+import { Link2 } from 'lucide-react';
+import { channelPlatformOf, parseChannelUrl, PLATFORMS, platformLabel, type PlatformValue } from '@clipers/db';
+import { Badge, Button, ButtonLink, Card, cx, Field, Input, PlatformIcon, PlatformIcons } from '@clipers/ui';
 import { addChannel, removeChannel, verifyYouTubeChannel, type ChannelActionState } from './channel-actions';
 import { disconnectChannel } from './connection-actions';
 
@@ -12,6 +13,17 @@ const CONNECT: { platform: string; slug: string; name: string }[] = [
   { platform: 'tiktok', slug: 'tiktok', name: '틱톡' },
   { platform: 'instagram_reels', slug: 'instagram', name: '인스타그램' },
 ];
+
+// What an account on each platform is called (platformLabel names the video format: 쇼츠, 릴스).
+const ACCOUNT_NAME: Record<PlatformValue, string> = {
+  youtube_shorts: '유튜브',
+  tiktok: '틱톡',
+  instagram_reels: '인스타그램',
+  facebook: '페이스북',
+  x: 'X',
+  naver_clip: '네이버 클립',
+  kakao_shorts: '카카오 숏폼',
+};
 
 // Results of /api/oauth/{platform}/callback, passed back as ?connect=.
 const CONNECT_RESULT: Record<string, { ok: boolean; text: string }> = {
@@ -32,9 +44,6 @@ export default function ChannelsCard({ channels, connectable = [], connectResult
   connectResult?: string;
 }) {
   const connected = connectResult ? CONNECT_RESULT[connectResult] : undefined;
-  const [state, formAction, pending] = useActionState<ChannelActionState, FormData>(addChannel, null);
-  const [platform, setPlatform] = useState('');
-
   const verified = channels.some((channel) => channel.verifiedAt);
   const connectRows = CONNECT.filter((item) => connectable.includes(item.platform));
   const connectedChannels = channels.filter((channel) => channel.verifiedBy === 'oauth');
@@ -82,43 +91,91 @@ export default function ChannelsCard({ channels, connectable = [], connectResult
             ))}
           </ul>
         )}
-        <form action={formAction} className="cl-auth__form cl-connect-manual">
-          <div>
-            <h3 className="cl-connect-manual__title">다른 플랫폼은 주소로 등록</h3>
-            <p className="cl-meta">프로필 주소를 등록하고 인증 코드를 프로필에 넣으면 인증돼요.</p>
-          </div>
-          <div className="cl-form-row">
-            <Field htmlFor="channel-platform" label="플랫폼">
-              <Select id="channel-platform" name="platform" onChange={(event) => setPlatform(event.target.value)} required value={platform}>
-                <option value="">플랫폼 선택</option>
-                {PLATFORMS.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field
-              hint={platform === 'youtube_shorts' ? 'youtube.com/@핸들 주소를 붙여 넣어 주세요.' : '내 프로필 페이지 주소를 붙여 넣어 주세요.'}
-              htmlFor="channel-url"
-              label="계정 주소"
-            >
-              <Input id="channel-url" name="url" placeholder="https://" required type="url" />
-            </Field>
-          </div>
-          {state && (
-            <p className={state.ok ? 'cl-alert cl-tone-brand' : 'cl-alert cl-tone-tomato'} role={state.ok ? 'status' : 'alert'}>
-              {state.message}
-            </p>
-          )}
-          <div className="cl-inline">
-            <Button disabled={pending} type="submit" variant="secondary">
-              {pending ? '등록 중…' : '계정 등록'}
-            </Button>
-          </div>
-        </form>
+        <AddChannelForm
+          afterConnectRows={connectRows.length > 0}
+          divided={!!connected || connectRows.length > 0 || otherChannels.length > 0}
+          prominent={channels.length === 0}
+        />
       </div>
     </Card>
+  );
+}
+
+/** Registers an account by its profile address. The platform is read from the address, so there is nothing to pick. */
+function AddChannelForm({ afterConnectRows, divided, prominent }: {
+  /** Shown under the connect rows: the heading says this is for the other platforms. */
+  afterConnectRows: boolean;
+  /** Something is listed above: draw the dividing line. */
+  divided: boolean;
+  /** No account yet: registering is the next step, so its button leads. */
+  prominent: boolean;
+}) {
+  const [url, setUrl] = useState('');
+  const [state, formAction, pending] = useActionState<ChannelActionState, FormData>(async (previous, form) => {
+    const result = await addChannel(previous, form);
+    if (result?.ok) setUrl('');
+    return result;
+  }, null);
+
+  const platform = channelPlatformOf(url);
+  const valid = platform !== null && parseChannelUrl(platform, url) !== null;
+  const youtube = platform === 'youtube_shorts';
+  const hint = !platform ? (
+    <span className="cl-inline">
+      <PlatformIcons
+        label={`등록할 수 있는 플랫폼: ${Object.values(ACCOUNT_NAME).join(', ')}`}
+        platforms={PLATFORMS.map((item) => item.value)}
+        size="sm"
+      />
+      프로필 주소를 붙여 넣어 주세요.
+    </span>
+  ) : valid ? (
+    youtube ? (
+      '유튜브 채널이에요. 등록한 뒤 채널 설명에 인증 코드를 넣으면 바로 인증돼요.'
+    ) : (
+      `${ACCOUNT_NAME[platform]} 계정이에요. 등록한 뒤 프로필 소개에 인증 코드를 넣으면 운영팀이 확인해요.`
+    )
+  ) : youtube ? (
+    '유튜브는 youtube.com/@핸들 형식의 채널 주소를 붙여 넣어 주세요.'
+  ) : (
+    `${ACCOUNT_NAME[platform]} 프로필 페이지 주소를 붙여 넣어 주세요.`
+  );
+
+  return (
+    <form action={formAction} className={cx('cl-auth__form', divided && 'cl-connect-manual')}>
+      {afterConnectRows && (
+        <div>
+          <h3 className="cl-connect-manual__title">다른 플랫폼은 주소로 등록</h3>
+          <p className="cl-meta">프로필 주소를 등록하고 인증 코드를 프로필에 넣으면 인증돼요.</p>
+        </div>
+      )}
+      <Field hint={hint} htmlFor="channel-url" label="계정 주소">
+        <div className="cl-field-inline">
+          <div className="cl-input-icon">
+            {platform ? <PlatformIcon platform={platform} size={20} /> : <Link2 aria-hidden size={16} />}
+            <Input
+              autoComplete="off"
+              id="channel-url"
+              name="url"
+              onChange={(event) => setUrl(event.target.value)}
+              placeholder="https://youtube.com/@핸들"
+              required
+              spellCheck={false}
+              type="url"
+              value={url}
+            />
+          </div>
+          <Button disabled={pending || !url.trim()} type="submit" variant={prominent ? 'primary' : 'secondary'}>
+            {pending ? '등록 중…' : '계정 등록'}
+          </Button>
+        </div>
+      </Field>
+      {state && (
+        <p className={state.ok ? 'cl-alert cl-tone-brand' : 'cl-alert cl-tone-tomato'} role={state.ok ? 'status' : 'alert'}>
+          {state.message}
+        </p>
+      )}
+    </form>
   );
 }
 

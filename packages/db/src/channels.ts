@@ -1,5 +1,6 @@
 // Accounts creators register to prove they own them (creator_channels). Each account reduces to one url, so the
 // database can let only one person verify it; the creator proves ownership by putting a code in its description.
+import type { PlatformValue } from './platforms';
 
 export type YouTubeChannelRef = { handle: string } | { channelId: string };
 export type ParsedChannelUrl = { url: string; youtube: YouTubeChannelRef | null };
@@ -27,6 +28,25 @@ function decode(segment: string): string | null {
   }
 }
 
+const accountHost = (url: URL) => url.hostname.toLowerCase().replace(/^(www|m)\./, '');
+
+/** The platform whose accounts live at this address's host, whatever the path (null: not a platform we take). */
+export function channelPlatformOf(input: string): PlatformValue | null {
+  let parsed: URL;
+  try {
+    parsed = new URL(input.trim());
+  } catch {
+    return null;
+  }
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return null;
+  const host = accountHost(parsed);
+  if (host === 'youtube.com') return 'youtube_shorts';
+  for (const [platform, hosts] of Object.entries(PLATFORM_HOSTS)) {
+    if (hosts.some((allowed) => host === allowed || host.endsWith(`.${allowed}`))) return platform as PlatformValue;
+  }
+  return null;
+}
+
 /** The account url to store for `platform`, or null when `input` isn't a profile on that platform. */
 export function parseChannelUrl(platform: string, input: string): ParsedChannelUrl | null {
   let parsed: URL;
@@ -36,7 +56,7 @@ export function parseChannelUrl(platform: string, input: string): ParsedChannelU
     return null;
   }
   if (parsed.protocol !== 'https:') return null;
-  const host = parsed.hostname.toLowerCase().replace(/^(www|m)\./, '');
+  const host = accountHost(parsed);
   const segments = parsed.pathname.split('/').filter(Boolean);
 
   if (platform === 'youtube_shorts') {

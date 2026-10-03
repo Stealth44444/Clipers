@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { descriptionHasCode, newVerificationCode, parseChannelUrl } from './channels';
+import { channelPlatformOf, descriptionHasCode, newVerificationCode, parseChannelUrl } from './channels';
 
 describe('parseChannelUrl', () => {
   it.each([
@@ -39,6 +39,40 @@ describe('parseChannelUrl', () => {
     expect(parseChannelUrl('tiktok', 'https://instagram.com/clipers')).toBeNull();
     expect(parseChannelUrl('instagram_reels', 'https://instagram.com/')).toBeNull();
     expect(parseChannelUrl('unknown', 'https://example.com/clipers')).toBeNull();
+  });
+});
+
+describe('channelPlatformOf', () => {
+  it.each([
+    ['https://www.youtube.com/@clipers_kr', 'youtube_shorts'],
+    ['https://m.youtube.com/watch?v=dQw4w9WgXcQ', 'youtube_shorts'],
+    ['https://www.tiktok.com/@clipers', 'tiktok'],
+    ['https://instagram.com/clipers/', 'instagram_reels'],
+    ['https://www.facebook.com/clipers', 'facebook'],
+    ['https://twitter.com/Clipers', 'x'],
+    ['https://x.com/clipers', 'x'],
+    ['https://clip.naver.com/@clipers', 'naver_clip'],
+    ['https://tv.kakao.com/channel/123', 'kakao_shorts'],
+  ])('reads the platform of %s from its host, whatever the path', (input, platform) => {
+    expect(channelPlatformOf(input)).toBe(platform);
+  });
+
+  it.each(['https://youtube.com.evil.example/@clipers', 'https://example.com/clipers', 'youtube.com/@clipers', 'mailto:team@tiktok.com', 'not a url', ''])(
+    'has no platform for %s',
+    (input) => {
+      expect(channelPlatformOf(input)).toBeNull();
+    }
+  );
+
+  it('names the platform every parsable account url belongs to', () => {
+    for (const [platform, url] of [
+      ['youtube_shorts', 'https://www.youtube.com/@clipers_kr'],
+      ['tiktok', 'https://www.tiktok.com/@clipers'],
+      ['naver_clip', 'https://clip.naver.com/Abc123'],
+    ] as const) {
+      expect(parseChannelUrl(platform, url)).not.toBeNull();
+      expect(channelPlatformOf(url)).toBe(platform);
+    }
   });
 });
 
